@@ -1332,8 +1332,8 @@ public:
 				im.date = time(NULL);
 				im.key.random();
 				im.mine = true;
-				Job_Broadcast->Add(im);
-				BroadcastDB->AddMessage(im);
+				if (Job_Broadcast->Add(im))
+					BroadcastDB->AddMessage(im);
 			}
 		}
 
