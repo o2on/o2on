@@ -1325,14 +1325,14 @@ GeneralDlgProc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp)
 			case IDC_UPNPCONFIG: {
 					TCHAR portstr[16];
 					Edit_GetText(GD(hwnd, IDC_P2P_PORT), portstr, 16);
-					ushort port = (ushort)_tcstoul(portstr, NULL, 10);
-					if (port == 0 || port > 65535) {
+					ulong port = _tcstoul(portstr, NULL, 10);
+					if (port == 0UL || port > 65535UL) {
 						MessageBox(hwnd,
 							L"設定にはP2Pポート番号が必要です",
 							NULL, MB_OK);
 						return TRUE;
 					}
-					OpenUPnPDialog(hwnd, port);
+					OpenUPnPDialog(hwnd, (ushort)port);
 					PostMessage(hwnd, UM_DLGREFRESH, 0, 0);
 				}
 				return TRUE;
