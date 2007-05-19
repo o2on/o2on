@@ -423,13 +423,9 @@ StaticListenThread(void *data)
 {
 	CoInitialize(NULL); 
 
-	WSADATA wsaData;
-	WSAStartup(MAKEWORD(2, 0), &wsaData);
-
 	O2Server *me = (O2Server*)data;
 	me->ListenThread();
 
-	WSACleanup();
 	CoUninitialize();
 
 	_endthreadex(0);
@@ -555,13 +551,9 @@ StaticNetIOThread(void *data)
 {
 	CoInitialize(NULL); 
 
-	WSADATA wsaData;
-	WSAStartup(MAKEWORD(2, 0), &wsaData);
-
 	O2Server *me = (O2Server*)data;
 	me->NetIOThread();
 
-	WSACleanup();
 	CoUninitialize();
 
 	_endthreadex(0);
@@ -765,8 +757,6 @@ StaticIPFilteringThread(void *data)
 {
 	CoInitialize(NULL); 
 
-	WSADATA wsaData;
-	WSAStartup(MAKEWORD(2, 0), &wsaData);
 
 	IPFilteringThreadParam *param = (IPFilteringThreadParam*)data;
 	O2Server *server = param->server;
@@ -783,7 +773,6 @@ StaticIPFilteringThread(void *data)
 	server->IPFilteringThreadCount--;
 	server->IPFilteringThreadCountLock.Unlock();
 
-	WSACleanup();
 	CoUninitialize();
 
 	_endthreadex(0);

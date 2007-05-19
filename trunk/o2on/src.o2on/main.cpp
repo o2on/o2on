@@ -284,6 +284,9 @@ InitializeApp(TCHAR *cmdline, int cmdshow)
 	InitCommonControlsEx(&icex);
 
 	CoInitialize(NULL); 
+	
+	WSADATA wsaData;
+	WSAStartup(MAKEWORD(2, 0), &wsaData);
 
 	TaskbarRestartMsg = RegisterWindowMessage(_T("TaskbarCreated"));
 	if (!O2DEBUG) {
@@ -890,6 +893,7 @@ FinalizeAppThread(void *param)
 
 	ProgressInfo.Reset(false, false);
 	DeleteTrayIcon();
+	WSACleanup();
 	CoUninitialize(); 
 
 	CloseHandle(ThreadHandle);
@@ -2190,13 +2194,10 @@ static uint WINAPI
 UPnP_PortMappingTestThread(void *data)
 {
 	CoInitialize(NULL);
-	WSADATA wsaData;
-	WSAStartup(MAKEWORD(2, 0), &wsaData);
 
 	UPnP_PortMappingTest(data);
 	PostMessage(hwndUPnPDlg, UM_UPNP_END_TEST, 0, 0);
 
-	WSACleanup();
 	CoUninitialize();
 
 	CloseHandle(UPnPThreadHandle);

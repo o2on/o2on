@@ -324,13 +324,9 @@ StaticLaunchThread(void *data)
 {
 	CoInitialize(NULL); 
 
-	WSADATA wsaData;
-	WSAStartup(MAKEWORD(2, 0), &wsaData);
-
 	O2Client *me = (O2Client*)data;
 	me->LaunchThread();
 
-	WSACleanup();
 	CoUninitialize();
 
 	_endthreadex(0);
@@ -404,9 +400,6 @@ StaticConnectionThread(void *data)
 {
 	CoInitialize(NULL); 
 
-	WSADATA wsaData;
-	WSAStartup(MAKEWORD(2, 0), &wsaData);
-
 	ConnectThreadParam *param = (ConnectThreadParam*)data;
 	O2Client *client = param->client;
 	O2SocketSession *ss = param->ss;
@@ -422,7 +415,6 @@ StaticConnectionThread(void *data)
 	client->connectss.erase(ss);
 	client->ConnectSessionLock.Unlock();
 
-	WSACleanup();
 	CoUninitialize();
 
 	_endthreadex(0);
@@ -511,13 +503,9 @@ StaticNetIOThread(void *data)
 {
 	CoInitialize(NULL); 
 
-	WSADATA wsaData;
-	WSAStartup(MAKEWORD(2, 0), &wsaData);
-
 	O2Client *me = (O2Client*)data;
 	me->NetIOThread();
 
-	WSACleanup();
 	CoUninitialize();
 
 	_endthreadex(0);
