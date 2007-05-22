@@ -296,12 +296,17 @@ select(const wchar_t *sql, SQLResultList &out)
 	if (err != SQLITE_ROW && err != SQLITE_DONE)
 		goto error;
 
+	if (out.empty()) {
+		//ˆês–Ú
+		cols.clear();
+		get_column_names(stmt, cols);
+		out.push_back(cols);
+		cols.clear();
+		get_columns(stmt, cols);
+		out.push_back(cols);
+	}
 	while (sqlite3_step(stmt) == SQLITE_ROW) {
-		if (out.empty()) {
-			cols.clear();
-			get_column_names(stmt, cols);
-			out.push_back(cols);
-		}
+		//2s–ÚˆÈ~
 		cols.clear();
 		get_columns(stmt, cols);
 		out.push_back(cols);

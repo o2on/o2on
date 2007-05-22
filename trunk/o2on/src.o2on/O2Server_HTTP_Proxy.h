@@ -103,7 +103,9 @@ protected:
 		param->me = this;
 		param->ss = ss;
 
-		_beginthreadex(NULL, 0, StaticParseThread, (void*)param, 0, NULL);
+		HANDLE handle =
+			(HANDLE)_beginthreadex(NULL, 0, StaticParseThread, (void*)param, 0, NULL);
+		CloseHandle(handle);
 	}
 
 private:
