@@ -1,6 +1,6 @@
 // ================================================================
-//  jkl-parsexml.js ---- JavaScript Kantan Library for Parse XML
-//  Copyright 2005-2006 Kawasaki Yusuke <u-suke@kawa.net>
+//  jkl-parsexml.js ---- JavaScript Kantan Library for Parsing XML
+//  Copyright 2005-2007 Kawasaki Yusuke <u-suke@kawa.net>
 //  http://www.kawa.net/works/js/jkl/parsexml.html
 // ================================================================
 //  v0.01  2005/05/18  first release
@@ -19,6 +19,9 @@
 //  v0.16  2005/11/15  new sub class: LoadVars, and UTF-8 text on Safari
 //  v0.18  2005/11/16  improve: UTF-8 text file on Safari
 //  v0.19  2006/02/03  use XMLHTTPRequest instead of ActiveX on IE7,iCab
+//  v0.20  2006/03/22  (skipped)
+//  v0.21  2006/11/30  use ActiveX again on IE7
+//  v0.22  2007/01/04  JKL.ParseXML.JSON.parseResponse() updated
 // ================================================================
 
 if ( typeof(JKL) == 'undefined' ) JKL = function() {};
@@ -35,7 +38,7 @@ JKL.ParseXML = function ( url, query, method ) {
 // ================================================================
 //  class variables
 
-JKL.ParseXML.VERSION = "0.19";
+JKL.ParseXML.VERSION = "0.22";
 JKL.ParseXML.MIME_TYPE_XML  = "text/xml";
 JKL.ParseXML.MAP_NODETYPE = [
     "",
@@ -278,6 +281,7 @@ JKL.ParseXML.Text = function ( url, query, method ) {
 
 JKL.ParseXML.Text.prototype.parse = JKL.ParseXML.prototype.parse;
 JKL.ParseXML.Text.prototype.async = JKL.ParseXML.prototype.async;
+JKL.ParseXML.Text.prototype.onerror = JKL.ParseXML.prototype.onerror;
 
 JKL.ParseXML.Text.prototype.parseResponse = function () {
     var data = this.http.responseText();
@@ -295,9 +299,13 @@ JKL.ParseXML.JSON = function ( url, query, method ) {
 
 JKL.ParseXML.JSON.prototype.parse = JKL.ParseXML.prototype.parse;
 JKL.ParseXML.JSON.prototype.async = JKL.ParseXML.prototype.async;
+JKL.ParseXML.JSON.prototype.onerror = JKL.ParseXML.prototype.onerror;
 
 JKL.ParseXML.JSON.prototype.parseResponse = function () {
     var text = this.http.responseText();
+    // http://www.antimon2.atnifty.com/2007/01/jklparsexmljson.html
+    if ( typeof(text) == 'undefined' ) return;
+    if ( ! text.length ) return;
     var data = eval( "("+text+")" );
     return data;
 }
@@ -313,6 +321,7 @@ JKL.ParseXML.DOM = function ( url, query, method ) {
 
 JKL.ParseXML.DOM.prototype.parse = JKL.ParseXML.prototype.parse;
 JKL.ParseXML.DOM.prototype.async = JKL.ParseXML.prototype.async;
+JKL.ParseXML.DOM.prototype.onerror = JKL.ParseXML.prototype.onerror;
 
 JKL.ParseXML.DOM.prototype.parseResponse = function () {
     var data = this.http.documentElement();
@@ -330,6 +339,7 @@ JKL.ParseXML.CSV = function ( url, query, method ) {
 
 JKL.ParseXML.CSV.prototype.parse = JKL.ParseXML.prototype.parse;
 JKL.ParseXML.CSV.prototype.async = JKL.ParseXML.prototype.async;
+JKL.ParseXML.CSV.prototype.onerror = JKL.ParseXML.prototype.onerror;
 
 JKL.ParseXML.CSV.prototype.parseResponse = function () {
     var text = this.http.responseText();
@@ -403,6 +413,7 @@ JKL.ParseXML.CSVmap = function ( url, query, method ) {
 
 JKL.ParseXML.CSVmap.prototype.parse = JKL.ParseXML.prototype.parse;
 JKL.ParseXML.CSVmap.prototype.async = JKL.ParseXML.prototype.async;
+JKL.ParseXML.CSVmap.prototype.onerror = JKL.ParseXML.prototype.onerror;
 JKL.ParseXML.CSVmap.prototype.parseCSV = JKL.ParseXML.CSV.prototype.parseCSV;
 
 JKL.ParseXML.CSVmap.prototype.parseResponse = function () {
@@ -434,6 +445,7 @@ JKL.ParseXML.LoadVars = function ( url, query, method ) {
 
 JKL.ParseXML.LoadVars.prototype.parse = JKL.ParseXML.prototype.parse;
 JKL.ParseXML.LoadVars.prototype.async = JKL.ParseXML.prototype.async;
+JKL.ParseXML.LoadVars.prototype.onerror = JKL.ParseXML.prototype.onerror;
 
 JKL.ParseXML.LoadVars.prototype.parseResponse = function () {
     var text = this.http.responseText();
@@ -491,9 +503,7 @@ JKL.ParseXML.HTTP.EPOCH_TIMESTAMP = "Thu, 01 Jun 1970 00:00:00 GMT"
 
 // ================================================================
 
-JKL.ParseXML.HTTP.prototype.onerror = function( func ) {
-    this.onerror_func = func;
-}
+JKL.ParseXML.HTTP.prototype.onerror = JKL.ParseXML.prototype.onerror;
 JKL.ParseXML.HTTP.prototype.async = function( func ) {
     this.async_func = func;
 }
@@ -523,10 +533,7 @@ JKL.ParseXML.HTTP.prototype.async = function( func ) {
 
 JKL.ParseXML.HTTP.prototype.load = function() {
     // create XMLHttpRequest object
-    if ( window.XMLHttpRequest ) {              // Firefox, Opera, IE7, iCab
-        // debug.print( "new XMLHttpRequest()" );
-        this.req = new XMLHttpRequest();
-    } else if ( window.ActiveXObject ) {                    // IE5.5/6
+    if ( window.ActiveXObject ) {                           // IE5.5,6,7
         var activex = JKL.ParseXML.HTTP.ACTIVEX_XMLHTTP;    // IXMLHttpRequest
         if ( this.method == "GET" && ! this.textmode ) {
             // use IXMLDOMElement to accept any mime types
@@ -535,6 +542,9 @@ JKL.ParseXML.HTTP.prototype.load = function() {
         }
         // debug.print( "new ActiveXObject( '"+activex+"' )" );
         this.req = new ActiveXObject( activex );
+    } else if ( window.XMLHttpRequest ) {                   // Firefox, Opera, iCab
+        // debug.print( "new XMLHttpRequest()" );
+        this.req = new XMLHttpRequest();
     }
 
     // async mode when call back function is specified
