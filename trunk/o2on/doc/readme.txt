@@ -1,46 +1,46 @@
-���ӎ����F
-�E���̃\�t�g�E�F�A�͖��ۏ؂ł�
-�E���݂̓��ł̂��ߓ��삪�s����ł��邱�Ƃ���������������
-�E���W����dat�̈����͂Q�����˂�̋K��ɏ]���Ă������� http://www.2ch.net/
+﻿注意事項：
+・このソフトウェアは無保証です
+・現在はα版のため動作が不安定であることをご了承ください
+・収集したdatの扱いは２ちゃんねるの規約に従ってください http://www.2ch.net/
 
 
-�����:
-Win32�� : Windows 2000/XP/2003/Vista
-x64��   : Windows XP/2003/Vista x64 Edition
+動作環境:
+Win32版 : Windows 2000/XP/2003/Vista
+x64版   : Windows XP/2003/Vista x64 Edition
 
 
-�K�v�ȕ�:
-�E2ch��p�u���E�U
-�E�N������MSXML3.0�G���[���o��ꍇ�́����C���X�g�[���B
+必要な物:
+・2ch専用ブラウザ
+・起動時にMSXML3.0エラーが出る場合は↓をインストール。
 http://www.microsoft.com/downloads/details.aspx?FamilyID=28494391-052b-42ff-9674-f752bdca9582&DisplayLang=ja
 
 
-�K�v�ȏ���:
-���[�^�̃|�[�g�ݒ�
-�ݒ肵�Ȃ������ꍇ�́A�܂������g���Ȃ� or �����炩��̈���I�Ȑڑ������ł��Ȃ�
-�܂��A�����̒ʒm�A���b�Z�[�W����M�s��
+必要な準備:
+ルータのポート設定
+設定しなかった場合は、まったく使えない or こちらからの一方的な接続しかできない
+また、検索の通知、メッセージも受信不可
 
 
-�菇:
-1. o2on.exe�����s
-2. �g���C�A�C�R������u�I�v�V�����v
-3. P2P�|�[�g�ԍ������
-4. �g���C�A�C�R������uP2P�N���v
+手順:
+1. o2on.exeを実行
+2. トレイアイコンから「オプション」
+3. P2Pポート番号を入力
+4. トレイアイコンから「P2P起動」
 
-5. �g���C�A�C�R������u�Ǘ���ʁv
-6. �m�[�h��ʂ́u�����m�[�h�ǉ��v������
-7. �����m�[�h��������R�s�y���āuOK�v
+5. トレイアイコンから「管理画面」
+6. ノード画面の「初期ノード追加」を押す
+7. 初期ノード文字列をコピペして「OK」
 
-5. ��u���N��
-6. ��u���̓ǂݍ��݃v���L�V���u127.0.0.1:�v���L�V�|�[�g�ԍ�(�f�t�H���g8000)�v�ɐݒ�
-7. 2ch�������̂悤�Ɍ���
-8. ���܂�Web�Ǘ���ʂ��ώ@����
-9. 7.�ɖ߂�
+5. 専ブラ起動
+6. 専ブラの読み込みプロキシを「127.0.0.1:プロキシポート番号(デフォルト8000)」に設定
+7. 2chをいつものように見る
+8. たまにWeb管理画面を観察する
+9. 7.に戻る
 
 
-�z�z���̈���:
-�E�����p�Ȃ̂łQ���z�z�A�\�[�X�̓]�p�͂��Ȃ��ł�������
-�E���肵�Ă�����BSD���C�Z���X������Ɉڍs�������Ǝv���܂�
+配布物の扱い:
+・実験用なので２次配布、ソースの転用はしないでください
+・安定してきたらBSDライセンスあたりに移行したいと思います
 
 --
-o2on project  http://o2on.net/
+o2on project  http://o2on.sourceforge.jp/
