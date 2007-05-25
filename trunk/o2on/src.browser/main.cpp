@@ -488,7 +488,7 @@ TranslateWBAccelerator(HWND hwndIE, MSG *msg)
 			case VK_ESCAPE:
 				pWebBrowser2->Stop();
 				return true;
-			case 'R':
+			case VK_F4:
 				if (GetKeyState(VK_CONTROL))
 					pWebBrowser2->Refresh();
 				return true;
