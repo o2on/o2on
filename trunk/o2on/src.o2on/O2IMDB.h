@@ -47,7 +47,17 @@ struct O2IMessage
 
 	bool operator==(const O2IMessage &src)
 	{
-		return (key == src.key ? true : false);
+		//この部分のコメントアウトを解除
+		//return (key == src.key ? true : false);
+
+		//note:ブロードキャストメッセージの件の暫定対応
+		// この構造体はIMDBでも使用しているため、
+		// 修正によってメッセンジャーの方にも影響あり。
+		// メッセージ内容(IP/PORT/本文が同じ)だと一つのメッセージになる。
+		if(ip == src.ip && port == src.port && msg == src.msg)
+			return true;
+		else
+			return false;
 	}
 };
 typedef std::list<O2IMessage> O2IMessages;
