@@ -428,7 +428,7 @@ StaticListenThread(void *data)
 
 	CoUninitialize();
 
-	_endthreadex(0);
+	//_endthreadex(0);
 	return (0);
 }
 
@@ -556,7 +556,7 @@ StaticNetIOThread(void *data)
 
 	CoUninitialize();
 
-	_endthreadex(0);
+	//_endthreadex(0);
 	return (0);
 }
 
@@ -775,7 +775,7 @@ StaticIPFilteringThread(void *data)
 
 	CoUninitialize();
 
-	_endthreadex(0);
+	//_endthreadex(0);
 	return (0);
 }
 

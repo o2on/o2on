@@ -843,7 +843,7 @@ StaticRebuildDBThread(void *data)
 	CloseHandle(me->RebuildDBThreadHandle);
 	me->RebuildDBThreadHandle = NULL;
 
-	_endthreadex(0);
+	//_endthreadex(0);
 	return (0);
 }
 
@@ -996,7 +996,7 @@ StaticEnumDatThread(void *data)
 	me->EnumDatThreadNum--;
 	me->EnumDatThreadNumLock.Unlock();
 
-	_endthreadex(0);
+	//_endthreadex(0);
 	return (0);
 }
 
@@ -1103,6 +1103,6 @@ StaticReindexThread(void *data)
 	CloseHandle(me->ReindexThreadHandle);
 	me->ReindexThreadHandle = NULL;
 
-	_endthreadex(0);
+	//_endthreadex(0);
 	return (0);
 }

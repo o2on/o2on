@@ -1341,7 +1341,7 @@ StaticUpdateThread(void *data)
 	me->UpdateThread();
 	CoUninitialize();
 
-	_endthreadex(0);
+	//_endthreadex(0);
 	return (0);
 }
 void

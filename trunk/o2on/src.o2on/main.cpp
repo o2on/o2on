@@ -898,7 +898,7 @@ FinalizeAppThread(void *param)
 
 	CloseHandle(ThreadHandle);
 	ThreadHandle = NULL;
-	_endthreadex(0);
+	//_endthreadex(0);
 	return (0);
 }
 
@@ -2202,7 +2202,7 @@ UPnP_PortMappingTestThread(void *data)
 
 	CloseHandle(UPnPThreadHandle);
 	UPnPThreadHandle = NULL;
-	_endthreadex(0);
+	//_endthreadex(0);
 	return (0);
 }
 

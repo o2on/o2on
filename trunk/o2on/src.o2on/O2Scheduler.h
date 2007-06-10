@@ -96,7 +96,7 @@ protected:
 		me->Scheduler();
 		CoUninitialize();
 
-		_endthreadex(0);
+		//_endthreadex(0);
 		return (0);
 	}
 	void Scheduler(void)
@@ -129,7 +129,7 @@ protected:
 		job->SetLastTime(time(NULL)); //再度セット
 		CoUninitialize();
 
-		_endthreadex(0);
+		//_endthreadex(0);
 		return (0);
 	}
 };
