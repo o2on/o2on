@@ -226,12 +226,12 @@ public:
 		, cur_device(NULL)
 		, cur_service(NULL)
 	{
-		XMLPlatformUtils::Initialize();
+		//XMLPlatformUtils::Initialize();
 	}
 
 	~UPnPDeviceDescriptionParser()
 	{
-		XMLPlatformUtils::Terminate();
+		//XMLPlatformUtils::Terminate();
 	}
 
 	bool Parse(const wchar_t	*charset,
@@ -444,12 +444,12 @@ public:
 		, cur_action(NULL)
 		, cur_argument(NULL)
 	{
-		XMLPlatformUtils::Initialize();
+		//XMLPlatformUtils::Initialize();
 	}
 
 	~UPnPServiceDescriptionParser()
 	{
-		XMLPlatformUtils::Terminate();
+		//XMLPlatformUtils::Terminate();
 	}
 
 	bool Parse(const wchar_t	*charset,
@@ -610,12 +610,12 @@ public:
 		, cur_action(NULL)
 		, cur_argument(NULL)
 	{
-		XMLPlatformUtils::Initialize();
+		//XMLPlatformUtils::Initialize();
 	}
 
 	~UPnPSOAPResponseParser()
 	{
-		XMLPlatformUtils::Terminate();
+		//XMLPlatformUtils::Terminate();
 	}
 
 	bool Parse(const wchar_t	*charset,

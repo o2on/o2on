@@ -24,13 +24,13 @@ wstring O2SAX2Parser::xml_message_type;
 O2SAX2Parser::
 O2SAX2Parser(void)
 {
-	XMLPlatformUtils::Initialize();
+	//XMLPlatformUtils::Initialize();
 }
 
 O2SAX2Parser::
 ~O2SAX2Parser()
 {
-	XMLPlatformUtils::Terminate();
+	//XMLPlatformUtils::Terminate();
 }
 
 // ---------------------------------------------------------------------------

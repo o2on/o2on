@@ -287,6 +287,7 @@ InitializeApp(TCHAR *cmdline, int cmdshow)
 	
 	WSADATA wsaData;
 	WSAStartup(MAKEWORD(2, 0), &wsaData);
+	XMLPlatformUtils::Initialize();
 
 	TaskbarRestartMsg = RegisterWindowMessage(_T("TaskbarCreated"));
 	if (!O2DEBUG) {
@@ -893,6 +894,7 @@ FinalizeAppThread(void *param)
 
 	ProgressInfo.Reset(false, false);
 	DeleteTrayIcon();
+	XMLPlatformUtils::Terminate();
 	WSACleanup();
 	CoUninitialize(); 
 
