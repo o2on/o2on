@@ -701,7 +701,6 @@ InitializeApp(TCHAR *cmdline, int cmdshow)
 		return false;
 
 	// コールバックメッセージ登録
-	DatIO->SetEmergencyHaltCallbackMsg(hwndMain, UM_EMERGENCYHALT);
 	LagQueryQueue->SetBaloonCallbackMsg(hwndMain, UM_SHOWBALOON);
 	Server_P2P->SetIconCallbackMsg(hwndMain, UM_SETICON);
 	Server_P2P->SetBaloonCallbackMsg(hwndMain, UM_SHOWBALOON);
@@ -2874,6 +2873,7 @@ StartP2P(bool baloon)
 		}
 	}
 
+	DatIO->SetEmergencyHaltCallbackMsg(hwndMain, UM_EMERGENCYHALT);
 	//
 	//	P2P開始
 	//
@@ -2935,6 +2935,8 @@ StopP2P(bool baloon)
 	ChangeTrayIcon(IDI_DISABLE);
 	if (baloon && Profile->IsBaloon_P2P())
 		ShowTrayBaloon(L"o2on", L"o2onが停止しました", 3*1000, NIIF_INFO);
+
+	DatIO->SetEmergencyHaltCallbackMsg(NULL, NULL);
 
 	Active = false;
 

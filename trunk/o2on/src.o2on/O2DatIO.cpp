@@ -108,7 +108,7 @@ CheckQuarterOverflow(uint64 add_size)
 
 	if (quarter_size && DatDB->select_totaldisksize() + add_size >= quarter_size) {
 		if (hwndEmergencyHaltCallback) {
-			SendMessage(
+			PostMessage(
 				hwndEmergencyHaltCallback,
 				msgEmergencyHaltCallback,
 				0, 0);
