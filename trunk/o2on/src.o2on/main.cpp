@@ -432,8 +432,13 @@ InitializeApp(TCHAR *cmdline, int cmdshow)
 		brdfile += L".default";
 		Boards->Load(brdfile.c_str());
 		Boards->Save();
+		if (!Boards->LoadEx()) {
+			Boards->EnableExAll();
+		}
 	}
-	Boards->LoadEx();
+	else {
+		Boards->LoadEx();
+	}
 	Profile->SetDatStorageFlag(Boards->SizeEx() ? true : false);
 
 	//

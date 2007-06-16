@@ -103,6 +103,7 @@ public:
 	size_t SizeEx(void);
 	bool IsEnabledEx(const wchar_t *domain, const wchar_t *bbsname); 
 	void EnableEx(wstrarray &enableboards);
+	void EnableExAll(void);
 	void ClearEx(void);
 	bool AddEx(const char *url);
 	size_t GetExList(wstrarray &boards);

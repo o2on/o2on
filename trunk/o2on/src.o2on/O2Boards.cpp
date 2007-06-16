@@ -313,6 +313,27 @@ EnableEx(wstrarray &enableboards)
 
 
 // ---------------------------------------------------------------------------
+//	EnableExAll()
+//	07/06/16 by k-uehara
+// ---------------------------------------------------------------------------
+void
+O2Boards::
+EnableExAll(void)
+{
+	wstrarray enboards;
+
+	BoardsLock.Lock();
+	for(O2BoardArrayIt it = boards.begin(); it != boards.end(); it++) {
+		enboards.push_back(it->domain+L":"+it->bbsname);
+	}
+	BoardsLock.Unlock();
+	EnableEx(enboards);
+}
+
+
+
+
+// ---------------------------------------------------------------------------
 //	ClearEx()
 //	
 // ---------------------------------------------------------------------------
