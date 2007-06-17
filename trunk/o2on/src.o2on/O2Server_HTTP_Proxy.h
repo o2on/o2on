@@ -443,7 +443,7 @@ private:
 
 		//decode gzip
 		it = ohdr.fields.find("Content-Encoding");
-		if (it != ohdr.fields.end() && it->second == "gzip") {
+		if (it != ohdr.fields.end() && (it->second == "gzip" || it->second == "x-gzip")) {
 			string decoded;
 			ZLibUncompressor *gzu = new ZLibUncompressor(decoded, true);
 			gzu->init(&body[0], body.size());
