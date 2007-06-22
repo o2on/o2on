@@ -95,6 +95,11 @@ static UINT						ResumeTimer;
 static HANDLE					UPnPThreadHandle;
 static bool						UPnPLoop;
 static UPnPService				*UPnPServiceUsingForPortMapping;
+static DWORD					TickCount;
+static uint64					Send;
+static uint64					Recv;
+static double					SendRate;
+static double					RecvRate;
 
 static O2Logger					*Logger;
 static O2Profile				*Profile;
@@ -2768,10 +2773,25 @@ ShowTrayBaloon(const TCHAR *title, const TCHAR *msg, UINT timeout, DWORD infofla
 static void
 MakeTrayIconTipString(NOTIFYICONDATA *nid)
 {
-	_stprintf_s(nid->szTip, 64, _T(APP_VER_FORMAT)_T("\nPort: %d"),
+	DWORD TimeSpan;
+	DWORD Now = GetTickCount();
+
+	TimeSpan = Now - TickCount;
+	if (TimeSpan > 10*1000) {
+		uint64 SendByte = Server_P2P->GetSendByte();
+		uint64 RecvByte = Server_P2P->GetRecvByte();
+
+		SendRate = (double)(SendByte - Send) / TimeSpan;
+		RecvRate = (double)(RecvByte - Recv) / TimeSpan;
+		TickCount = Now;
+		Send = SendByte;
+		Recv = RecvByte;
+	}
+	_stprintf_s(nid->szTip, 128, _T(APP_VER_FORMAT)_T("\nPort: %d\nSend:%.1f Recv:%.1f (KB/s)"),
 		_T(APP_NAME), APP_VER_MAJOR, APP_VER_MINOR,
 		_T(APP_VER_PREFIX), APP_BUILDNO,
-		Profile->GetP2PPort());
+		Profile->GetP2PPort(),
+		SendRate, RecvRate);
 }
 
 
