@@ -2787,7 +2787,7 @@ MakeTrayIconTipString(NOTIFYICONDATA *nid)
 		Send = SendByte;
 		Recv = RecvByte;
 	}
-	_stprintf_s(nid->szTip, 128, _T(APP_VER_FORMAT)_T("\nPort: %d\nSend:%.1f Recv:%.1f (KB/s)"),
+	_stprintf_s(nid->szTip, 128, _T(APP_VER_FORMAT)_T("\nPort: %d\nSend: %.1f Recv: %.1f (KB/s)"),
 		_T(APP_NAME), APP_VER_MAJOR, APP_VER_MINOR,
 		_T(APP_VER_PREFIX), APP_BUILDNO,
 		Profile->GetP2PPort(),
