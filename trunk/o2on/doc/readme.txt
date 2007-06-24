@@ -5,8 +5,7 @@
 
 
 動作環境:
-Win32版 : Windows 2000/XP/2003/Vista
-x64版   : Windows XP/2003/Vista x64 Edition
+Windows 2000/XP/2003/Vista
 
 
 必要な物:
@@ -38,9 +37,10 @@ http://www.microsoft.com/downloads/details.aspx?FamilyID=28494391-052b-42ff-9674
 9. 7.に戻る
 
 
-配布物の扱い:
-・実験用なので２次配布、ソースの転用はしないでください
-・安定してきたらBSDライセンスあたりに移行したいと思います
+ライセンス:
+修正BSDライセンスです
+詳しくはlicense.txtをご覧ください
+
 
 --
 o2on project  http://o2on.sourceforge.jp/
