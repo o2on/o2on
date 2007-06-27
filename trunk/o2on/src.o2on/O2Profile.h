@@ -102,6 +102,7 @@ private:
 	wstring		DBDirW;
 	string		CacheRootA;
 	wstring		CacheRootW;
+	string		CacheRootFullPathA;
 	string		AdminRootA;
 	wstring		AdminRootW;
 
@@ -207,6 +208,7 @@ public:
 	void SetCacheRoot(const wchar_t *path);
 	const char *GetCacheRootA(void) const;
 	const wchar_t *GetCacheRootW(void) const;
+	const char *GetCacheRootFullPathA(void) const;
 	bool MakeCacheRoot(void);
 
 	void SetAdminRoot(const wchar_t *path);

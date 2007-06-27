@@ -552,6 +552,11 @@ SetCacheRoot(const wchar_t *path)
 	if (CacheRootW[CacheRootW.size()-1] == L'\\')
 		CacheRootW.erase(CacheRootW.size()-1);
 	FromUnicode(L"shift_jis", CacheRootW, CacheRootA);
+
+	char abspath[_MAX_PATH];
+	_fullpath(abspath, GetCacheRootA(), _MAX_PATH);
+	CacheRootFullPathA = "\\\\?\\";
+	CacheRootFullPathA += abspath;
 }
 const char *
 O2Profile::
@@ -564,6 +569,12 @@ O2Profile::
 GetCacheRootW(void) const
 {
 	return (&CacheRootW[0]);
+}
+const char *
+O2Profile::
+GetCacheRootFullPathA(void) const
+{
+	return (&CacheRootFullPathA[0]);
 }
 bool
 O2Profile::
