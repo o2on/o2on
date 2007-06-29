@@ -343,7 +343,7 @@ Load(const O2DatPath &datpath, uint64 offset, string &out)
 	FILE *fp = NULL;
 
 	string path;
-	datpath.getpath(Profile->GetCacheRootFullPathA(), path);
+	datpath.getpath(Profile->GetCacheRootA(), path);
 
 	if (_stat64(path.c_str(), &st) == -1)
 		goto cleanup;
@@ -480,7 +480,7 @@ Put(O2DatPath &datpath, const char *dat, uint64 len, uint64 startpos)
 		return (0);
 
 	string path;
-	datpath.getpath(Profile->GetCacheRootFullPathA(), path);
+	datpath.getpath(Profile->GetCacheRootA(), path);
 	if (!datpath.makedir(Profile->GetCacheRootA()))
 		return false;
 
