@@ -698,6 +698,7 @@ Dat2HTML(const hashT &hash, string &out)
 	string url;
 	datpath.geturl(url);
 
+	bool firstres = false;
 	size_t pos1 = 0;
 	size_t pos2 = 0;
 	uint n = 1;
@@ -709,7 +710,7 @@ Dat2HTML(const hashT &hash, string &out)
 		strarray token;
 		splitstr(line.c_str(), "<>", token);
 
-		if (token.size() == 5) {
+		if (!firstres && token.size() == 5) {
 			out += "<html>\r\n";
 			out += "<head>\r\n";
 			out += "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=shift_jis\">\r\n";
@@ -726,6 +727,7 @@ Dat2HTML(const hashT &hash, string &out)
 			out += token[4];
 			out += "</font>\r\n";
 			out += "<dl class=\"thread\">\r\n";
+			firstres = true;
 		}
 
 		out += "<dt>";
