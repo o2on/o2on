@@ -176,6 +176,10 @@ public:
 		strmap:: const_iterator it = header.fields.find(X_O2_ORG_DAT_URL);
 		if (it != header.fields.end()) {
 			// X-O2-Original-DAT-URL: http://...
+			size_t pos = it->second.find("..");
+			if (FOUND(pos))
+				return false;
+
 			datpath.set(it->second.c_str());
 		}
 		else {
@@ -183,6 +187,11 @@ public:
 			it = header.fields.find(X_O2_DATPATH);
 			if (it == header.fields.end())
 				return false;
+
+			size_t pos = it->second.find("..");
+			if (FOUND(pos))
+				return false;
+
 			strarray token;
 			if (split(it->second.c_str(), "/", token) < 3)
 				return false;
