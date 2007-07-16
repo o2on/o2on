@@ -2777,15 +2777,23 @@ MakeTrayIconTipString(NOTIFYICONDATA *nid)
 	DWORD Now = GetTickCount();
 
 	TimeSpan = Now - TickCount;
-	if (TimeSpan > 10*1000) {
-		uint64 SendByte = Server_P2P->GetSendByte();
-		uint64 RecvByte = Server_P2P->GetRecvByte();
+	if (Server_P2P->IsActive()) {
+		if (TimeSpan > 10*1000) {
+			uint64 SendByte = Server_P2P->GetSendByte();
+			uint64 RecvByte = Server_P2P->GetRecvByte();
 
-		SendRate = (double)(SendByte - Send) / TimeSpan;
-		RecvRate = (double)(RecvByte - Recv) / TimeSpan;
+			SendRate = (double)(SendByte - Send) / TimeSpan;
+			RecvRate = (double)(RecvByte - Recv) / TimeSpan;
+			TickCount = Now;
+			Send = SendByte;
+			Recv = RecvByte;
+		}
+	} else {
 		TickCount = Now;
-		Send = SendByte;
-		Recv = RecvByte;
+		Send = 0;
+		Recv = 0;
+		SendRate = 0;
+		RecvRate = 0;
 	}
 	_stprintf_s(nid->szTip, 128, _T(APP_VER_FORMAT)_T("\nPort: %d\nSend: %.1f Recv: %.1f (KB/s)"),
 		_T(APP_NAME), APP_VER_MAJOR, APP_VER_MINOR,
