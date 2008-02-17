@@ -215,18 +215,14 @@ StaticLaunchThread(void *data)
 {
 	CoInitialize(NULL); 
 
-	WSADATA wsaData;
-	WSAStartup(MAKEWORD(2, 0), &wsaData);
-
 	O2Agent *me = (O2Agent*)data;
 	uint ret = me->LaunchThread();
 
-	WSACleanup();
 	CoUninitialize();
 
 	CloseHandle(me->LaunchThreadHandle);
 	me->LaunchThreadHandle = NULL;
-	_endthreadex(0);
+	//_endthreadex(0);
 	return (ret);
 }
 
@@ -462,18 +458,14 @@ StaticNetIOThread(void *data)
 {
 	CoInitialize(NULL); 
 
-	WSADATA wsaData;
-	WSAStartup(MAKEWORD(2, 0), &wsaData);
-
 	O2Agent *me = (O2Agent*)data;
 	uint ret = me->NetIOThread();
 
-	WSACleanup();
 	CoUninitialize();
 
 	CloseHandle(me->NetIOThreadHandle);
 	me->NetIOThreadHandle = NULL;
-	_endthreadex(0);
+	//_endthreadex(0);
 	return (ret);
 }
 
