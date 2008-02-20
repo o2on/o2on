@@ -37,7 +37,7 @@ protected:
 
 public:
 	File(void)
-		: hFile(NULL)
+		: hFile(INVALID_HANDLE_VALUE)
 	{
 	}
 
@@ -170,9 +170,9 @@ public:
 
 	void close(void)
 	{
-		if (hFile) {
+		if (hFile != INVALID_HANDLE_VALUE) {
 			CloseHandle(hFile);
-			hFile = NULL;
+			hFile = INVALID_HANDLE_VALUE;
 		}
 	}
 
@@ -208,7 +208,7 @@ protected:
 
 public:
 	MappedFile(void)
-		: hFile(NULL)
+		: hFile(INVALID_HANDLE_VALUE)
 		, hMap(NULL)
 		, addrP(NULL)
 		, ov(NULL)
@@ -313,9 +313,9 @@ public:
 			delete ov;
 			ov = NULL;
 		}
-		if (hFile) {
+		if (hFile != INVALID_HANDLE_VALUE) {
 			CloseHandle(hFile);
-			hFile = NULL;
+			hFile = INVALID_HANDLE_VALUE;
 		}
 	}
 
