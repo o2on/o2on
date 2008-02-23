@@ -122,7 +122,10 @@ private:
 	static uint WINAPI StaticThread(void *data)
 	{
 		O2LagQueryQueue *me = (O2LagQueryQueue*)data;
+
+		CoInitialize(NULL);
 		me->Checker();
+		CoUninitialize();
 
 		//_endthreadex(0);
 		return (0);
