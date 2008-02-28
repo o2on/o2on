@@ -19,6 +19,7 @@
 #include <mlang.h>
 #include <sstream>
 #include <boost/regex.hpp>
+#include <cassert>
 
 const char *hex 	= "0123456789abcdef";
 const wchar_t *whex = L"0123456789abcdef";
@@ -646,6 +647,7 @@ bool ToUnicode(const wchar_t *charset, const char *in, const uint len, wstring &
 	HRESULT hr = CoCreateInstance(CLSID_CMultiLanguage, NULL,
 		CLSCTX_ALL, IID_IMultiLanguage, (LPVOID*)&lang);
 
+	assert(SUCCEEDED(hr));
 	//CharsetèÓïÒéÊìæ
 	MIMECSETINFO csetinfo;
 	if (SUCCEEDED(hr))
@@ -685,6 +687,7 @@ bool FromUnicode(const wchar_t *charset, const wchar_t *in, uint len, string &ou
 	HRESULT hr = CoCreateInstance(CLSID_CMultiLanguage, NULL,
 		CLSCTX_ALL, IID_IMultiLanguage, (LPVOID*)&lang);
 
+	assert(SUCCEEDED(hr));
 	//CharsetèÓïÒéÊìæ
 	MIMECSETINFO csetinfo;
 	if (SUCCEEDED(hr))
