@@ -336,7 +336,7 @@ public:
 
 		if (wcsstr(cur_element.c_str(), L"URL")) {
 			if (strncmp(str.c_str(), "http://", 7) != 0)
-				str = base_url + str;
+				str = base_url + (str[0] == '/' ? "" : "/") + str;
 		}
 
 		if (cur_device) {
