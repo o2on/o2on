@@ -1255,7 +1255,7 @@ ExportToXML(const O2ProfileSelectCondition cond, string &out)
 	}
 
 	//AdminRoot
-	if (cond.mask & PROF_XMLELM_CACHEROOT) {
+	if (cond.mask & PROF_XMLELM_ADMINROOT) {
 		xml += L" <AdminRoot><![CDATA[";
 		xml += AdminRootW;
 		xml += L"]]></AdminRoot>"EOL;
