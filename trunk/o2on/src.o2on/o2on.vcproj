@@ -133,6 +133,110 @@
 			/>
 		</Configuration>
 		<Configuration
+			Name="Debug|Win32"
+			OutputDirectory="..\build\$(PlatformName).$(ConfigurationName)"
+			IntermediateDirectory="..\build\$(PlatformName).$(ConfigurationName)\obj.$(ProjectName)"
+			ConfigurationType="1"
+			UseOfMFC="0"
+			ATLMinimizesCRunTimeLibraryUsage="false"
+			CharacterSet="1"
+			>
+			<Tool
+				Name="VCPreBuildEventTool"
+				CommandLine=""
+			/>
+			<Tool
+				Name="VCCustomBuildTool"
+			/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"
+			/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"
+			/>
+			<Tool
+				Name="VCMIDLTool"
+				PreprocessorDefinitions="_DEBUG"
+				MkTypLibCompatible="true"
+				SuppressStartupBanner="true"
+				TargetEnvironment="1"
+				TypeLibraryName=".\build\Debug/o2on.tlb"
+				HeaderFileName=""
+			/>
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="0"
+				AdditionalIncludeDirectories="..\..\sqlite.3.3.12"
+				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;XML_LIBRARY"
+				MinimalRebuild="true"
+				BasicRuntimeChecks="3"
+				RuntimeLibrary="1"
+				DisableLanguageExtensions="false"
+				UsePrecompiledHeader="0"
+				PrecompiledHeaderThrough=""
+				PrecompiledHeaderFile="$(IntDir)\$(TargetName).pch"
+				AssemblerListingLocation=""
+				ObjectFile="$(IntDir)\"
+				ProgramDataBaseFileName="$(IntDir)\vc80.pdb"
+				WarningLevel="3"
+				SuppressStartupBanner="true"
+				Detect64BitPortabilityProblems="false"
+				DebugInformationFormat="4"
+				CallingConvention="0"
+				CompileAs="2"
+			/>
+			<Tool
+				Name="VCManagedResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCResourceCompilerTool"
+				PreprocessorDefinitions="_UNICODE;UNICODE"
+				Culture="0"
+			/>
+			<Tool
+				Name="VCPreLinkEventTool"
+			/>
+			<Tool
+				Name="VCLinkerTool"
+				AdditionalDependencies="comctl32.lib ws2_32.lib pdh.lib iphlpapi.lib cryptlib.lib Xerces-c_static_2D.lib"
+				OutputFile="$(OutDir)\$(ProjectName).exe"
+				LinkIncremental="2"
+				SuppressStartupBanner="true"
+				AdditionalLibraryDirectories="..\..\cryptopp\Win32\output\Debug"
+				GenerateDebugInformation="true"
+				ProgramDatabaseFile="$(TargetDir)$(TargetName).pdb"
+				SubSystem="2"
+				TargetMachine="1"
+			/>
+			<Tool
+				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCManifestTool"
+				AdditionalManifestFiles="o2on.manifest"
+			/>
+			<Tool
+				Name="VCXDCMakeTool"
+			/>
+			<Tool
+				Name="VCBscMakeTool"
+				SuppressStartupBanner="true"
+				OutputFile="$(OutDir)/$(ProjectName).bsc"
+			/>
+			<Tool
+				Name="VCFxCopTool"
+			/>
+			<Tool
+				Name="VCAppVerifierTool"
+			/>
+			<Tool
+				Name="VCWebDeploymentTool"
+			/>
+			<Tool
+				Name="VCPostBuildEventTool"
+			/>
+		</Configuration>
+		<Configuration
 			Name="Release|x64"
 			OutputDirectory="..\build\$(PlatformName).$(ConfigurationName)"
 			IntermediateDirectory="..\build\$(PlatformName).$(ConfigurationName)\obj.$(ProjectName)"
@@ -245,110 +349,6 @@
 			<Tool
 				Name="VCPostBuildEventTool"
 				CommandLine=""
-			/>
-		</Configuration>
-		<Configuration
-			Name="Debug|Win32"
-			OutputDirectory="..\build\$(PlatformName).$(ConfigurationName)"
-			IntermediateDirectory="..\build\$(PlatformName).$(ConfigurationName)\obj.$(ProjectName)"
-			ConfigurationType="1"
-			UseOfMFC="0"
-			ATLMinimizesCRunTimeLibraryUsage="false"
-			CharacterSet="1"
-			>
-			<Tool
-				Name="VCPreBuildEventTool"
-				CommandLine=""
-			/>
-			<Tool
-				Name="VCCustomBuildTool"
-			/>
-			<Tool
-				Name="VCXMLDataGeneratorTool"
-			/>
-			<Tool
-				Name="VCWebServiceProxyGeneratorTool"
-			/>
-			<Tool
-				Name="VCMIDLTool"
-				PreprocessorDefinitions="_DEBUG"
-				MkTypLibCompatible="true"
-				SuppressStartupBanner="true"
-				TargetEnvironment="1"
-				TypeLibraryName=".\build\Debug/o2on.tlb"
-				HeaderFileName=""
-			/>
-			<Tool
-				Name="VCCLCompilerTool"
-				Optimization="0"
-				AdditionalIncludeDirectories="..\..\sqlite.3.3.12"
-				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;XML_LIBRARY"
-				MinimalRebuild="true"
-				BasicRuntimeChecks="3"
-				RuntimeLibrary="1"
-				DisableLanguageExtensions="false"
-				UsePrecompiledHeader="0"
-				PrecompiledHeaderThrough=""
-				PrecompiledHeaderFile="$(IntDir)\$(TargetName).pch"
-				AssemblerListingLocation=""
-				ObjectFile="$(IntDir)\"
-				ProgramDataBaseFileName="$(IntDir)\vc80.pdb"
-				WarningLevel="3"
-				SuppressStartupBanner="true"
-				Detect64BitPortabilityProblems="false"
-				DebugInformationFormat="4"
-				CallingConvention="0"
-				CompileAs="2"
-			/>
-			<Tool
-				Name="VCManagedResourceCompilerTool"
-			/>
-			<Tool
-				Name="VCResourceCompilerTool"
-				PreprocessorDefinitions="_UNICODE;UNICODE"
-				Culture="0"
-			/>
-			<Tool
-				Name="VCPreLinkEventTool"
-			/>
-			<Tool
-				Name="VCLinkerTool"
-				AdditionalDependencies="comctl32.lib ws2_32.lib pdh.lib iphlpapi.lib cryptlib.lib Xerces-c_static_2D.lib"
-				OutputFile="$(OutDir)\$(ProjectName).exe"
-				LinkIncremental="2"
-				SuppressStartupBanner="true"
-				AdditionalLibraryDirectories="..\..\cryptopp\Win32\output\Debug"
-				GenerateDebugInformation="true"
-				ProgramDatabaseFile="$(TargetDir)$(TargetName).pdb"
-				SubSystem="2"
-				TargetMachine="1"
-			/>
-			<Tool
-				Name="VCALinkTool"
-			/>
-			<Tool
-				Name="VCManifestTool"
-				AdditionalManifestFiles="o2on.manifest"
-			/>
-			<Tool
-				Name="VCXDCMakeTool"
-			/>
-			<Tool
-				Name="VCBscMakeTool"
-				SuppressStartupBanner="true"
-				OutputFile="$(OutDir)/$(ProjectName).bsc"
-			/>
-			<Tool
-				Name="VCFxCopTool"
-			/>
-			<Tool
-				Name="VCAppVerifierTool"
-			/>
-			<Tool
-				Name="VCWebDeploymentTool"
-			/>
-			<Tool
-				Name="VCPostBuildEventTool"
 			/>
 		</Configuration>
 		<Configuration
@@ -474,7 +474,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Release|x64"
+					Name="Debug|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -482,7 +482,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Debug|Win32"
+					Name="Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -510,7 +510,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Release|x64"
+					Name="Debug|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -518,7 +518,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Debug|Win32"
+					Name="Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -546,7 +546,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Release|x64"
+					Name="Debug|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -554,7 +554,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Debug|Win32"
+					Name="Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -582,7 +582,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Release|x64"
+					Name="Debug|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -590,7 +590,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Debug|Win32"
+					Name="Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -618,7 +618,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Release|x64"
+					Name="Debug|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -626,7 +626,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Debug|Win32"
+					Name="Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -654,7 +654,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Release|x64"
+					Name="Debug|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -662,7 +662,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Debug|Win32"
+					Name="Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -690,7 +690,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Release|x64"
+					Name="Debug|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -698,7 +698,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Debug|Win32"
+					Name="Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -726,7 +726,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Release|x64"
+					Name="Debug|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -734,7 +734,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Debug|Win32"
+					Name="Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -762,7 +762,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Release|x64"
+					Name="Debug|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -770,7 +770,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Debug|Win32"
+					Name="Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -805,14 +805,14 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Release|x64"
+					Name="Debug|Win32"
 					>
 					<Tool
 						Name="VCCustomBuildTool"
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Debug|Win32"
+					Name="Release|x64"
 					>
 					<Tool
 						Name="VCCustomBuildTool"
@@ -849,14 +849,14 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Release|x64"
+					Name="Debug|Win32"
 					>
 					<Tool
 						Name="VCCustomBuildTool"
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Debug|Win32"
+					Name="Release|x64"
 					>
 					<Tool
 						Name="VCCustomBuildTool"
@@ -893,14 +893,14 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Release|x64"
+					Name="Debug|Win32"
 					>
 					<Tool
 						Name="VCCustomBuildTool"
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Debug|Win32"
+					Name="Release|x64"
 					>
 					<Tool
 						Name="VCCustomBuildTool"
@@ -929,14 +929,14 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Release|x64"
+					Name="Debug|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Debug|Win32"
+					Name="Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -961,14 +961,14 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Release|x64"
+					Name="Debug|Win32"
 					>
 					<Tool
 						Name="VCCustomBuildTool"
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Debug|Win32"
+					Name="Release|x64"
 					>
 					<Tool
 						Name="VCCustomBuildTool"
@@ -997,14 +997,14 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Release|x64"
+					Name="Debug|Win32"
 					>
 					<Tool
 						Name="VCCustomBuildTool"
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Debug|Win32"
+					Name="Release|x64"
 					>
 					<Tool
 						Name="VCCustomBuildTool"
@@ -1033,14 +1033,14 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Release|x64"
+					Name="Debug|Win32"
 					>
 					<Tool
 						Name="VCCustomBuildTool"
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Debug|Win32"
+					Name="Release|x64"
 					>
 					<Tool
 						Name="VCCustomBuildTool"
@@ -1065,14 +1065,14 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Release|x64"
+					Name="Debug|Win32"
 					>
 					<Tool
 						Name="VCCustomBuildTool"
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Debug|Win32"
+					Name="Release|x64"
 					>
 					<Tool
 						Name="VCCustomBuildTool"
@@ -1101,14 +1101,14 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Release|x64"
+					Name="Debug|Win32"
 					>
 					<Tool
 						Name="VCCustomBuildTool"
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Debug|Win32"
+					Name="Release|x64"
 					>
 					<Tool
 						Name="VCCustomBuildTool"
@@ -1141,14 +1141,14 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Release|x64"
+					Name="Debug|Win32"
 					>
 					<Tool
 						Name="VCCustomBuildTool"
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Debug|Win32"
+					Name="Release|x64"
 					>
 					<Tool
 						Name="VCCustomBuildTool"
@@ -1226,7 +1226,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Release|x64"
+					Name="Debug|Win32"
 					>
 					<Tool
 						Name="VCResourceCompilerTool"
@@ -1234,7 +1234,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Debug|Win32"
+					Name="Release|x64"
 					>
 					<Tool
 						Name="VCResourceCompilerTool"
@@ -1297,14 +1297,14 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Release|x64"
+					Name="Debug|Win32"
 					>
 					<Tool
 						Name="VCCustomBuildTool"
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Debug|Win32"
+					Name="Release|x64"
 					>
 					<Tool
 						Name="VCCustomBuildTool"
@@ -1345,14 +1345,14 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Release|x64"
+					Name="Debug|Win32"
 					>
 					<Tool
 						Name="VCCustomBuildTool"
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Debug|Win32"
+					Name="Release|x64"
 					>
 					<Tool
 						Name="VCCustomBuildTool"
@@ -1381,14 +1381,14 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Release|x64"
+					Name="Debug|Win32"
 					>
 					<Tool
 						Name="VCCustomBuildTool"
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Debug|Win32"
+					Name="Release|x64"
 					>
 					<Tool
 						Name="VCCustomBuildTool"
@@ -1461,14 +1461,14 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Release|x64"
+					Name="Debug|Win32"
 					>
 					<Tool
 						Name="VCCustomBuildTool"
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Debug|Win32"
+					Name="Release|x64"
 					>
 					<Tool
 						Name="VCCustomBuildTool"
@@ -1493,14 +1493,14 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Release|x64"
+					Name="Debug|Win32"
 					>
 					<Tool
 						Name="VCCustomBuildTool"
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Debug|Win32"
+					Name="Release|x64"
 					>
 					<Tool
 						Name="VCCustomBuildTool"
@@ -1545,14 +1545,14 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Release|x64"
+					Name="Debug|Win32"
 					>
 					<Tool
 						Name="VCCustomBuildTool"
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Debug|Win32"
+					Name="Release|x64"
 					>
 					<Tool
 						Name="VCCustomBuildTool"
@@ -1601,14 +1601,14 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Release|x64"
+					Name="Debug|Win32"
 					>
 					<Tool
 						Name="VCCustomBuildTool"
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Debug|Win32"
+					Name="Release|x64"
 					>
 					<Tool
 						Name="VCCustomBuildTool"
@@ -1635,20 +1635,10 @@
 			Name="sqlite.c"
 			>
 			<File
-				RelativePath="..\..\sqlite.3.3.12\alter.c"
+				RelativePath="..\..\sqlite\alter.c"
 				>
 				<FileConfiguration
 					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						PreprocessorDefinitions="NO_TCL;THREADSAFE=1"
-						CompileAs="1"
-						DisableSpecificWarnings="4018;4244;4996"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -1667,32 +1657,12 @@
 						DisableSpecificWarnings="4018;4244;4996"
 					/>
 				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|x64"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						PreprocessorDefinitions="NO_TCL;THREADSAFE=1"
-						CompileAs="1"
-						DisableSpecificWarnings="4018;4244;4996"
-					/>
-				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="..\..\sqlite.3.3.12\analyze.c"
+				RelativePath="..\..\sqlite\analyze.c"
 				>
 				<FileConfiguration
 					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						PreprocessorDefinitions="NO_TCL;THREADSAFE=1"
-						CompileAs="1"
-						DisableSpecificWarnings="4018;4244;4996"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -1711,32 +1681,12 @@
 						DisableSpecificWarnings="4018;4244;4996"
 					/>
 				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|x64"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						PreprocessorDefinitions="NO_TCL;THREADSAFE=1"
-						CompileAs="1"
-						DisableSpecificWarnings="4018;4244;4996"
-					/>
-				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="..\..\sqlite.3.3.12\attach.c"
+				RelativePath="..\..\sqlite\attach.c"
 				>
 				<FileConfiguration
 					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						PreprocessorDefinitions="NO_TCL;THREADSAFE=1"
-						CompileAs="1"
-						DisableSpecificWarnings="4018;4244;4996"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -1755,32 +1705,12 @@
 						DisableSpecificWarnings="4018;4244;4996"
 					/>
 				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|x64"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						PreprocessorDefinitions="NO_TCL;THREADSAFE=1"
-						CompileAs="1"
-						DisableSpecificWarnings="4018;4244;4996"
-					/>
-				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="..\..\sqlite.3.3.12\auth.c"
+				RelativePath="..\..\sqlite\auth.c"
 				>
 				<FileConfiguration
 					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						PreprocessorDefinitions="NO_TCL;THREADSAFE=1"
-						CompileAs="1"
-						DisableSpecificWarnings="4018;4244;4996"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -1799,32 +1729,12 @@
 						DisableSpecificWarnings="4018;4244;4996"
 					/>
 				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|x64"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						PreprocessorDefinitions="NO_TCL;THREADSAFE=1"
-						CompileAs="1"
-						DisableSpecificWarnings="4018;4244;4996"
-					/>
-				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="..\..\sqlite.3.3.12\btree.c"
+				RelativePath="..\..\sqlite\btmutex.c"
 				>
 				<FileConfiguration
 					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						PreprocessorDefinitions="NO_TCL;THREADSAFE=1"
-						CompileAs="1"
-						DisableSpecificWarnings="4018;4244;4996"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -1843,32 +1753,12 @@
 						DisableSpecificWarnings="4018;4244;4996"
 					/>
 				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|x64"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						PreprocessorDefinitions="NO_TCL;THREADSAFE=1"
-						CompileAs="1"
-						DisableSpecificWarnings="4018;4244;4996"
-					/>
-				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="..\..\sqlite.3.3.12\build.c"
+				RelativePath="..\..\sqlite\btree.c"
 				>
 				<FileConfiguration
 					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						PreprocessorDefinitions="NO_TCL;THREADSAFE=1"
-						CompileAs="1"
-						DisableSpecificWarnings="4018;4244;4996"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -1887,32 +1777,12 @@
 						DisableSpecificWarnings="4018;4244;4996"
 					/>
 				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|x64"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						PreprocessorDefinitions="NO_TCL;THREADSAFE=1"
-						CompileAs="1"
-						DisableSpecificWarnings="4018;4244;4996"
-					/>
-				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="..\..\sqlite.3.3.12\callback.c"
+				RelativePath="..\..\sqlite\build.c"
 				>
 				<FileConfiguration
 					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						PreprocessorDefinitions="NO_TCL;THREADSAFE=1"
-						CompileAs="1"
-						DisableSpecificWarnings="4018;4244;4996"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -1931,32 +1801,12 @@
 						DisableSpecificWarnings="4018;4244;4996"
 					/>
 				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|x64"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						PreprocessorDefinitions="NO_TCL;THREADSAFE=1"
-						CompileAs="1"
-						DisableSpecificWarnings="4018;4244;4996"
-					/>
-				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="..\..\sqlite.3.3.12\complete.c"
+				RelativePath="..\..\sqlite\callback.c"
 				>
 				<FileConfiguration
 					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						PreprocessorDefinitions="NO_TCL;THREADSAFE=1"
-						CompileAs="1"
-						DisableSpecificWarnings="4018;4244;4996"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -1975,32 +1825,12 @@
 						DisableSpecificWarnings="4018;4244;4996"
 					/>
 				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|x64"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						PreprocessorDefinitions="NO_TCL;THREADSAFE=1"
-						CompileAs="1"
-						DisableSpecificWarnings="4018;4244;4996"
-					/>
-				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="..\..\sqlite.3.3.12\date.c"
+				RelativePath="..\..\sqlite\complete.c"
 				>
 				<FileConfiguration
 					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						PreprocessorDefinitions="NO_TCL;THREADSAFE=1"
-						CompileAs="1"
-						DisableSpecificWarnings="4018;4244;4996"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -2019,32 +1849,12 @@
 						DisableSpecificWarnings="4018;4244;4996"
 					/>
 				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|x64"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						PreprocessorDefinitions="NO_TCL;THREADSAFE=1"
-						CompileAs="1"
-						DisableSpecificWarnings="4018;4244;4996"
-					/>
-				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="..\..\sqlite.3.3.12\delete.c"
+				RelativePath="..\..\sqlite\date.c"
 				>
 				<FileConfiguration
 					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						PreprocessorDefinitions="NO_TCL;THREADSAFE=1"
-						CompileAs="1"
-						DisableSpecificWarnings="4018;4244;4996"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -2063,32 +1873,12 @@
 						DisableSpecificWarnings="4018;4244;4996"
 					/>
 				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|x64"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						PreprocessorDefinitions="NO_TCL;THREADSAFE=1"
-						CompileAs="1"
-						DisableSpecificWarnings="4018;4244;4996"
-					/>
-				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="..\..\sqlite.3.3.12\expr.c"
+				RelativePath="..\..\sqlite\delete.c"
 				>
 				<FileConfiguration
 					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						PreprocessorDefinitions="NO_TCL;THREADSAFE=1"
-						CompileAs="1"
-						DisableSpecificWarnings="4018;4244;4996"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -2107,32 +1897,12 @@
 						DisableSpecificWarnings="4018;4244;4996"
 					/>
 				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|x64"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						PreprocessorDefinitions="NO_TCL;THREADSAFE=1"
-						CompileAs="1"
-						DisableSpecificWarnings="4018;4244;4996"
-					/>
-				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="..\..\sqlite.3.3.12\fts1.c"
+				RelativePath="..\..\sqlite\expr.c"
 				>
 				<FileConfiguration
 					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						PreprocessorDefinitions="NO_TCL;THREADSAFE=1"
-						CompileAs="1"
-						DisableSpecificWarnings="4018;4244;4996"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -2151,32 +1921,12 @@
 						DisableSpecificWarnings="4018;4244;4996"
 					/>
 				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|x64"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						PreprocessorDefinitions="NO_TCL;THREADSAFE=1"
-						CompileAs="1"
-						DisableSpecificWarnings="4018;4244;4996"
-					/>
-				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="..\..\sqlite.3.3.12\fts1_hash.c"
+				RelativePath="..\..\sqlite\fault.c"
 				>
 				<FileConfiguration
 					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						PreprocessorDefinitions="NO_TCL;THREADSAFE=1"
-						CompileAs="1"
-						DisableSpecificWarnings="4018;4244;4996"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -2195,32 +1945,12 @@
 						DisableSpecificWarnings="4018;4244;4996"
 					/>
 				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|x64"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						PreprocessorDefinitions="NO_TCL;THREADSAFE=1"
-						CompileAs="1"
-						DisableSpecificWarnings="4018;4244;4996"
-					/>
-				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="..\..\sqlite.3.3.12\fts1_porter.c"
+				RelativePath="..\..\sqlite\fts3.c"
 				>
 				<FileConfiguration
 					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						PreprocessorDefinitions="NO_TCL;THREADSAFE=1"
-						CompileAs="1"
-						DisableSpecificWarnings="4018;4244;4996"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -2239,32 +1969,12 @@
 						DisableSpecificWarnings="4018;4244;4996"
 					/>
 				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|x64"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						PreprocessorDefinitions="NO_TCL;THREADSAFE=1"
-						CompileAs="1"
-						DisableSpecificWarnings="4018;4244;4996"
-					/>
-				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="..\..\sqlite.3.3.12\fts1_tokenizer1.c"
+				RelativePath="..\..\sqlite\fts3_hash.c"
 				>
 				<FileConfiguration
 					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						PreprocessorDefinitions="NO_TCL;THREADSAFE=1"
-						CompileAs="1"
-						DisableSpecificWarnings="4018;4244;4996"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -2283,32 +1993,12 @@
 						DisableSpecificWarnings="4018;4244;4996"
 					/>
 				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|x64"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						PreprocessorDefinitions="NO_TCL;THREADSAFE=1"
-						CompileAs="1"
-						DisableSpecificWarnings="4018;4244;4996"
-					/>
-				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="..\..\sqlite.3.3.12\func.c"
+				RelativePath="..\..\sqlite\fts3_icu.c"
 				>
 				<FileConfiguration
 					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						PreprocessorDefinitions="NO_TCL;THREADSAFE=1"
-						CompileAs="1"
-						DisableSpecificWarnings="4018;4244;4996"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -2327,32 +2017,12 @@
 						DisableSpecificWarnings="4018;4244;4996"
 					/>
 				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|x64"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						PreprocessorDefinitions="NO_TCL;THREADSAFE=1"
-						CompileAs="1"
-						DisableSpecificWarnings="4018;4244;4996"
-					/>
-				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="..\..\sqlite.3.3.12\hash.c"
+				RelativePath="..\..\sqlite\fts3_porter.c"
 				>
 				<FileConfiguration
 					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						PreprocessorDefinitions="NO_TCL;THREADSAFE=1"
-						CompileAs="1"
-						DisableSpecificWarnings="4018;4244;4996"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -2371,32 +2041,12 @@
 						DisableSpecificWarnings="4018;4244;4996"
 					/>
 				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|x64"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						PreprocessorDefinitions="NO_TCL;THREADSAFE=1"
-						CompileAs="1"
-						DisableSpecificWarnings="4018;4244;4996"
-					/>
-				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="..\..\sqlite.3.3.12\insert.c"
+				RelativePath="..\..\sqlite\fts3_tokenizer.c"
 				>
 				<FileConfiguration
 					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						PreprocessorDefinitions="NO_TCL;THREADSAFE=1"
-						CompileAs="1"
-						DisableSpecificWarnings="4018;4244;4996"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -2415,32 +2065,12 @@
 						DisableSpecificWarnings="4018;4244;4996"
 					/>
 				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|x64"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						PreprocessorDefinitions="NO_TCL;THREADSAFE=1"
-						CompileAs="1"
-						DisableSpecificWarnings="4018;4244;4996"
-					/>
-				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="..\..\sqlite.3.3.12\legacy.c"
+				RelativePath="..\..\sqlite\fts3_tokenizer1.c"
 				>
 				<FileConfiguration
 					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						PreprocessorDefinitions="NO_TCL;THREADSAFE=1"
-						CompileAs="1"
-						DisableSpecificWarnings="4018;4244;4996"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -2459,32 +2089,12 @@
 						DisableSpecificWarnings="4018;4244;4996"
 					/>
 				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|x64"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						PreprocessorDefinitions="NO_TCL;THREADSAFE=1"
-						CompileAs="1"
-						DisableSpecificWarnings="4018;4244;4996"
-					/>
-				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="..\..\sqlite.3.3.12\loadext.c"
+				RelativePath="..\..\sqlite\func.c"
 				>
 				<FileConfiguration
 					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						PreprocessorDefinitions="NO_TCL;THREADSAFE=1"
-						CompileAs="1"
-						DisableSpecificWarnings="4018;4244;4996"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -2503,8 +2113,22 @@
 						DisableSpecificWarnings="4018;4244;4996"
 					/>
 				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\sqlite\hash.c"
+				>
 				<FileConfiguration
-					Name="Debug|x64"
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						PreprocessorDefinitions="NO_TCL;THREADSAFE=1"
+						CompileAs="1"
+						DisableSpecificWarnings="4018;4244;4996"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -2515,7 +2139,7 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="..\..\sqlite.3.3.12\main.c"
+				RelativePath="..\..\sqlite\insert.c"
 				>
 				<FileConfiguration
 					Name="Release|Win32"
@@ -2523,14 +2147,98 @@
 					<Tool
 						Name="VCCLCompilerTool"
 						PreprocessorDefinitions="NO_TCL;THREADSAFE=1"
-						ObjectFile="$(IntDir)\$(InputName)1.obj"
-						XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
 						CompileAs="1"
 						DisableSpecificWarnings="4018;4244;4996"
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Release|x64"
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						PreprocessorDefinitions="NO_TCL;THREADSAFE=1"
+						CompileAs="1"
+						DisableSpecificWarnings="4018;4244;4996"
+					/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\sqlite\journal.c"
+				>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						PreprocessorDefinitions="NO_TCL;THREADSAFE=1"
+						CompileAs="1"
+						DisableSpecificWarnings="4018;4244;4996"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						PreprocessorDefinitions="NO_TCL;THREADSAFE=1"
+						CompileAs="1"
+						DisableSpecificWarnings="4018;4244;4996"
+					/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\sqlite\legacy.c"
+				>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						PreprocessorDefinitions="NO_TCL;THREADSAFE=1"
+						CompileAs="1"
+						DisableSpecificWarnings="4018;4244;4996"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						PreprocessorDefinitions="NO_TCL;THREADSAFE=1"
+						CompileAs="1"
+						DisableSpecificWarnings="4018;4244;4996"
+					/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\sqlite\loadext.c"
+				>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						PreprocessorDefinitions="NO_TCL;THREADSAFE=1"
+						CompileAs="1"
+						DisableSpecificWarnings="4018;4244;4996"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						PreprocessorDefinitions="NO_TCL;THREADSAFE=1"
+						CompileAs="1"
+						DisableSpecificWarnings="4018;4244;4996"
+					/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\sqlite\main.c"
+				>
+				<FileConfiguration
+					Name="Release|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -2553,34 +2261,12 @@
 						DisableSpecificWarnings="4018;4244;4996"
 					/>
 				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|x64"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						PreprocessorDefinitions="NO_TCL;THREADSAFE=1"
-						ObjectFile="$(IntDir)\$(InputName)1.obj"
-						XMLDocumentationFileName="$(IntDir)\$(InputName)1.xdc"
-						CompileAs="1"
-						DisableSpecificWarnings="4018;4244;4996"
-					/>
-				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="..\..\sqlite.3.3.12\opcodes.c"
+				RelativePath="..\..\sqlite\malloc.c"
 				>
 				<FileConfiguration
 					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						PreprocessorDefinitions="NO_TCL;THREADSAFE=1"
-						CompileAs="1"
-						DisableSpecificWarnings="4018;4244;4996"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -2599,32 +2285,12 @@
 						DisableSpecificWarnings="4018;4244;4996"
 					/>
 				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|x64"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						PreprocessorDefinitions="NO_TCL;THREADSAFE=1"
-						CompileAs="1"
-						DisableSpecificWarnings="4018;4244;4996"
-					/>
-				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="..\..\sqlite.3.3.12\os.c"
+				RelativePath="..\..\sqlite\mem1.c"
 				>
 				<FileConfiguration
 					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						PreprocessorDefinitions="NO_TCL;THREADSAFE=1"
-						CompileAs="1"
-						DisableSpecificWarnings="4018;4244;4996"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -2643,32 +2309,12 @@
 						DisableSpecificWarnings="4018;4244;4996"
 					/>
 				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|x64"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						PreprocessorDefinitions="NO_TCL;THREADSAFE=1"
-						CompileAs="1"
-						DisableSpecificWarnings="4018;4244;4996"
-					/>
-				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="..\..\sqlite.3.3.12\os_os2.c"
+				RelativePath="..\..\sqlite\mem2.c"
 				>
 				<FileConfiguration
 					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						PreprocessorDefinitions="NO_TCL;THREADSAFE=1"
-						CompileAs="1"
-						DisableSpecificWarnings="4018;4244;4996"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -2687,32 +2333,12 @@
 						DisableSpecificWarnings="4018;4244;4996"
 					/>
 				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|x64"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						PreprocessorDefinitions="NO_TCL;THREADSAFE=1"
-						CompileAs="1"
-						DisableSpecificWarnings="4018;4244;4996"
-					/>
-				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="..\..\sqlite.3.3.12\os_unix.c"
+				RelativePath="..\..\sqlite\mem3.c"
 				>
 				<FileConfiguration
 					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						PreprocessorDefinitions="NO_TCL;THREADSAFE=1"
-						CompileAs="1"
-						DisableSpecificWarnings="4018;4244;4996"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -2731,32 +2357,12 @@
 						DisableSpecificWarnings="4018;4244;4996"
 					/>
 				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|x64"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						PreprocessorDefinitions="NO_TCL;THREADSAFE=1"
-						CompileAs="1"
-						DisableSpecificWarnings="4018;4244;4996"
-					/>
-				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="..\..\sqlite.3.3.12\os_win.c"
+				RelativePath="..\..\sqlite\mem4.c"
 				>
 				<FileConfiguration
 					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						PreprocessorDefinitions="NO_TCL;THREADSAFE=1"
-						CompileAs="1"
-						DisableSpecificWarnings="4018;4244;4996"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -2775,32 +2381,12 @@
 						DisableSpecificWarnings="4018;4244;4996"
 					/>
 				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|x64"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						PreprocessorDefinitions="NO_TCL;THREADSAFE=1"
-						CompileAs="1"
-						DisableSpecificWarnings="4018;4244;4996"
-					/>
-				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="..\..\sqlite.3.3.12\pager.c"
+				RelativePath="..\..\sqlite\mutex.c"
 				>
 				<FileConfiguration
 					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						PreprocessorDefinitions="NO_TCL;THREADSAFE=1"
-						CompileAs="1"
-						DisableSpecificWarnings="4018;4244;4996"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -2819,32 +2405,12 @@
 						DisableSpecificWarnings="4018;4244;4996"
 					/>
 				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|x64"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						PreprocessorDefinitions="NO_TCL;THREADSAFE=1"
-						CompileAs="1"
-						DisableSpecificWarnings="4018;4244;4996"
-					/>
-				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="..\..\sqlite.3.3.12\parse.c"
+				RelativePath="..\..\sqlite\mutex_os2.c"
 				>
 				<FileConfiguration
 					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						PreprocessorDefinitions="NO_TCL;THREADSAFE=1"
-						CompileAs="1"
-						DisableSpecificWarnings="4018;4244;4996"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -2863,32 +2429,12 @@
 						DisableSpecificWarnings="4018;4244;4996"
 					/>
 				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|x64"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						PreprocessorDefinitions="NO_TCL;THREADSAFE=1"
-						CompileAs="1"
-						DisableSpecificWarnings="4018;4244;4996"
-					/>
-				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="..\..\sqlite.3.3.12\pragma.c"
+				RelativePath="..\..\sqlite\mutex_unix.c"
 				>
 				<FileConfiguration
 					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						PreprocessorDefinitions="NO_TCL;THREADSAFE=1"
-						CompileAs="1"
-						DisableSpecificWarnings="4018;4244;4996"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -2907,32 +2453,12 @@
 						DisableSpecificWarnings="4018;4244;4996"
 					/>
 				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|x64"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						PreprocessorDefinitions="NO_TCL;THREADSAFE=1"
-						CompileAs="1"
-						DisableSpecificWarnings="4018;4244;4996"
-					/>
-				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="..\..\sqlite.3.3.12\prepare.c"
+				RelativePath="..\..\sqlite\mutex_w32.c"
 				>
 				<FileConfiguration
 					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						PreprocessorDefinitions="NO_TCL;THREADSAFE=1"
-						CompileAs="1"
-						DisableSpecificWarnings="4018;4244;4996"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -2951,32 +2477,12 @@
 						DisableSpecificWarnings="4018;4244;4996"
 					/>
 				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|x64"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						PreprocessorDefinitions="NO_TCL;THREADSAFE=1"
-						CompileAs="1"
-						DisableSpecificWarnings="4018;4244;4996"
-					/>
-				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="..\..\sqlite.3.3.12\printf.c"
+				RelativePath="..\..\sqlite\opcodes.c"
 				>
 				<FileConfiguration
 					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						PreprocessorDefinitions="NO_TCL;THREADSAFE=1"
-						CompileAs="1"
-						DisableSpecificWarnings="4018;4244;4996"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -2995,32 +2501,12 @@
 						DisableSpecificWarnings="4018;4244;4996"
 					/>
 				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|x64"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						PreprocessorDefinitions="NO_TCL;THREADSAFE=1"
-						CompileAs="1"
-						DisableSpecificWarnings="4018;4244;4996"
-					/>
-				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="..\..\sqlite.3.3.12\random.c"
+				RelativePath="..\..\sqlite\os.c"
 				>
 				<FileConfiguration
 					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						PreprocessorDefinitions="NO_TCL;THREADSAFE=1"
-						CompileAs="1"
-						DisableSpecificWarnings="4018;4244;4996"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -3039,32 +2525,12 @@
 						DisableSpecificWarnings="4018;4244;4996"
 					/>
 				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|x64"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						PreprocessorDefinitions="NO_TCL;THREADSAFE=1"
-						CompileAs="1"
-						DisableSpecificWarnings="4018;4244;4996"
-					/>
-				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="..\..\sqlite.3.3.12\select.c"
+				RelativePath="..\..\sqlite\os_os2.c"
 				>
 				<FileConfiguration
 					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						PreprocessorDefinitions="NO_TCL;THREADSAFE=1"
-						CompileAs="1"
-						DisableSpecificWarnings="4018;4244;4996"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -3083,32 +2549,12 @@
 						DisableSpecificWarnings="4018;4244;4996"
 					/>
 				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|x64"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						PreprocessorDefinitions="NO_TCL;THREADSAFE=1"
-						CompileAs="1"
-						DisableSpecificWarnings="4018;4244;4996"
-					/>
-				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="..\..\sqlite.3.3.12\shell.c"
+				RelativePath="..\..\sqlite\os_unix.c"
 				>
 				<FileConfiguration
 					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						PreprocessorDefinitions="NO_TCL;THREADSAFE=1"
-						CompileAs="1"
-						DisableSpecificWarnings="4018;4244;4996"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -3127,32 +2573,12 @@
 						DisableSpecificWarnings="4018;4244;4996"
 					/>
 				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|x64"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						PreprocessorDefinitions="NO_TCL;THREADSAFE=1"
-						CompileAs="1"
-						DisableSpecificWarnings="4018;4244;4996"
-					/>
-				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="..\..\sqlite.3.3.12\table.c"
+				RelativePath="..\..\sqlite\os_win.c"
 				>
 				<FileConfiguration
 					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						PreprocessorDefinitions="NO_TCL;THREADSAFE=1"
-						CompileAs="1"
-						DisableSpecificWarnings="4018;4244;4996"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -3171,32 +2597,12 @@
 						DisableSpecificWarnings="4018;4244;4996"
 					/>
 				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|x64"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						PreprocessorDefinitions="NO_TCL;THREADSAFE=1"
-						CompileAs="1"
-						DisableSpecificWarnings="4018;4244;4996"
-					/>
-				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="..\..\sqlite.3.3.12\tclsqlite.c"
+				RelativePath="..\..\sqlite\pager.c"
 				>
 				<FileConfiguration
 					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						PreprocessorDefinitions="NO_TCL;THREADSAFE=1"
-						CompileAs="1"
-						DisableSpecificWarnings="4018;4244;4996"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -3215,32 +2621,12 @@
 						DisableSpecificWarnings="4018;4244;4996"
 					/>
 				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|x64"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						PreprocessorDefinitions="NO_TCL;THREADSAFE=1"
-						CompileAs="1"
-						DisableSpecificWarnings="4018;4244;4996"
-					/>
-				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="..\..\sqlite.3.3.12\tokenize.c"
+				RelativePath="..\..\sqlite\parse.c"
 				>
 				<FileConfiguration
 					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						PreprocessorDefinitions="NO_TCL;THREADSAFE=1"
-						CompileAs="1"
-						DisableSpecificWarnings="4018;4244;4996"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -3259,32 +2645,12 @@
 						DisableSpecificWarnings="4018;4244;4996"
 					/>
 				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|x64"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						PreprocessorDefinitions="NO_TCL;THREADSAFE=1"
-						CompileAs="1"
-						DisableSpecificWarnings="4018;4244;4996"
-					/>
-				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="..\..\sqlite.3.3.12\trigger.c"
+				RelativePath="..\..\sqlite\pragma.c"
 				>
 				<FileConfiguration
 					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						PreprocessorDefinitions="NO_TCL;THREADSAFE=1"
-						CompileAs="1"
-						DisableSpecificWarnings="4018;4244;4996"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -3303,32 +2669,12 @@
 						DisableSpecificWarnings="4018;4244;4996"
 					/>
 				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|x64"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						PreprocessorDefinitions="NO_TCL;THREADSAFE=1"
-						CompileAs="1"
-						DisableSpecificWarnings="4018;4244;4996"
-					/>
-				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="..\..\sqlite.3.3.12\update.c"
+				RelativePath="..\..\sqlite\prepare.c"
 				>
 				<FileConfiguration
 					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						PreprocessorDefinitions="NO_TCL;THREADSAFE=1"
-						CompileAs="1"
-						DisableSpecificWarnings="4018;4244;4996"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -3347,32 +2693,12 @@
 						DisableSpecificWarnings="4018;4244;4996"
 					/>
 				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|x64"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						PreprocessorDefinitions="NO_TCL;THREADSAFE=1"
-						CompileAs="1"
-						DisableSpecificWarnings="4018;4244;4996"
-					/>
-				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="..\..\sqlite.3.3.12\utf.c"
+				RelativePath="..\..\sqlite\printf.c"
 				>
 				<FileConfiguration
 					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						PreprocessorDefinitions="NO_TCL;THREADSAFE=1"
-						CompileAs="1"
-						DisableSpecificWarnings="4018;4244;4996"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -3391,32 +2717,12 @@
 						DisableSpecificWarnings="4018;4244;4996"
 					/>
 				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|x64"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						PreprocessorDefinitions="NO_TCL;THREADSAFE=1"
-						CompileAs="1"
-						DisableSpecificWarnings="4018;4244;4996"
-					/>
-				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="..\..\sqlite.3.3.12\util.c"
+				RelativePath="..\..\sqlite\random.c"
 				>
 				<FileConfiguration
 					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						PreprocessorDefinitions="NO_TCL;THREADSAFE=1"
-						CompileAs="1"
-						DisableSpecificWarnings="4018;4244;4996"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -3435,32 +2741,12 @@
 						DisableSpecificWarnings="4018;4244;4996"
 					/>
 				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|x64"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						PreprocessorDefinitions="NO_TCL;THREADSAFE=1"
-						CompileAs="1"
-						DisableSpecificWarnings="4018;4244;4996"
-					/>
-				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="..\..\sqlite.3.3.12\vacuum.c"
+				RelativePath="..\..\sqlite\select.c"
 				>
 				<FileConfiguration
 					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						PreprocessorDefinitions="NO_TCL;THREADSAFE=1"
-						CompileAs="1"
-						DisableSpecificWarnings="4018;4244;4996"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -3479,32 +2765,12 @@
 						DisableSpecificWarnings="4018;4244;4996"
 					/>
 				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|x64"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						PreprocessorDefinitions="NO_TCL;THREADSAFE=1"
-						CompileAs="1"
-						DisableSpecificWarnings="4018;4244;4996"
-					/>
-				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="..\..\sqlite.3.3.12\vdbe.c"
+				RelativePath="..\..\sqlite\shell.c"
 				>
 				<FileConfiguration
 					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						PreprocessorDefinitions="NO_TCL;THREADSAFE=1"
-						CompileAs="1"
-						DisableSpecificWarnings="4018;4244;4996"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -3523,32 +2789,12 @@
 						DisableSpecificWarnings="4018;4244;4996"
 					/>
 				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|x64"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						PreprocessorDefinitions="NO_TCL;THREADSAFE=1"
-						CompileAs="1"
-						DisableSpecificWarnings="4018;4244;4996"
-					/>
-				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="..\..\sqlite.3.3.12\vdbeapi.c"
+				RelativePath="..\..\sqlite\table.c"
 				>
 				<FileConfiguration
 					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						PreprocessorDefinitions="NO_TCL;THREADSAFE=1"
-						CompileAs="1"
-						DisableSpecificWarnings="4018;4244;4996"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -3567,32 +2813,12 @@
 						DisableSpecificWarnings="4018;4244;4996"
 					/>
 				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|x64"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						PreprocessorDefinitions="NO_TCL;THREADSAFE=1"
-						CompileAs="1"
-						DisableSpecificWarnings="4018;4244;4996"
-					/>
-				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="..\..\sqlite.3.3.12\vdbeaux.c"
+				RelativePath="..\..\sqlite\tokenize.c"
 				>
 				<FileConfiguration
 					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						PreprocessorDefinitions="NO_TCL;THREADSAFE=1"
-						CompileAs="1"
-						DisableSpecificWarnings="4018;4244;4996"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -3611,32 +2837,12 @@
 						DisableSpecificWarnings="4018;4244;4996"
 					/>
 				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|x64"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						PreprocessorDefinitions="NO_TCL;THREADSAFE=1"
-						CompileAs="1"
-						DisableSpecificWarnings="4018;4244;4996"
-					/>
-				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="..\..\sqlite.3.3.12\vdbefifo.c"
+				RelativePath="..\..\sqlite\trigger.c"
 				>
 				<FileConfiguration
 					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						PreprocessorDefinitions="NO_TCL;THREADSAFE=1"
-						CompileAs="1"
-						DisableSpecificWarnings="4018;4244;4996"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -3655,32 +2861,12 @@
 						DisableSpecificWarnings="4018;4244;4996"
 					/>
 				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|x64"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						PreprocessorDefinitions="NO_TCL;THREADSAFE=1"
-						CompileAs="1"
-						DisableSpecificWarnings="4018;4244;4996"
-					/>
-				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="..\..\sqlite.3.3.12\vdbemem.c"
+				RelativePath="..\..\sqlite\update.c"
 				>
 				<FileConfiguration
 					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						PreprocessorDefinitions="NO_TCL;THREADSAFE=1"
-						CompileAs="1"
-						DisableSpecificWarnings="4018;4244;4996"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -3699,32 +2885,12 @@
 						DisableSpecificWarnings="4018;4244;4996"
 					/>
 				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|x64"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						PreprocessorDefinitions="NO_TCL;THREADSAFE=1"
-						CompileAs="1"
-						DisableSpecificWarnings="4018;4244;4996"
-					/>
-				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="..\..\sqlite.3.3.12\vtab.c"
+				RelativePath="..\..\sqlite\utf.c"
 				>
 				<FileConfiguration
 					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						PreprocessorDefinitions="NO_TCL;THREADSAFE=1"
-						CompileAs="1"
-						DisableSpecificWarnings="4018;4244;4996"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -3743,32 +2909,12 @@
 						DisableSpecificWarnings="4018;4244;4996"
 					/>
 				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|x64"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						PreprocessorDefinitions="NO_TCL;THREADSAFE=1"
-						CompileAs="1"
-						DisableSpecificWarnings="4018;4244;4996"
-					/>
-				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="..\..\sqlite.3.3.12\where.c"
+				RelativePath="..\..\sqlite\util.c"
 				>
 				<FileConfiguration
 					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						PreprocessorDefinitions="NO_TCL;THREADSAFE=1"
-						CompileAs="1"
-						DisableSpecificWarnings="4018;4244;4996"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -3787,8 +2933,214 @@
 						DisableSpecificWarnings="4018;4244;4996"
 					/>
 				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\sqlite\vacuum.c"
+				>
 				<FileConfiguration
-					Name="Debug|x64"
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						PreprocessorDefinitions="NO_TCL;THREADSAFE=1"
+						CompileAs="1"
+						DisableSpecificWarnings="4018;4244;4996"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						PreprocessorDefinitions="NO_TCL;THREADSAFE=1"
+						CompileAs="1"
+						DisableSpecificWarnings="4018;4244;4996"
+					/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\sqlite\vdbe.c"
+				>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						PreprocessorDefinitions="NO_TCL;THREADSAFE=1"
+						CompileAs="1"
+						DisableSpecificWarnings="4018;4244;4996"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						PreprocessorDefinitions="NO_TCL;THREADSAFE=1"
+						CompileAs="1"
+						DisableSpecificWarnings="4018;4244;4996"
+					/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\sqlite\vdbeapi.c"
+				>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						PreprocessorDefinitions="NO_TCL;THREADSAFE=1"
+						CompileAs="1"
+						DisableSpecificWarnings="4018;4244;4996"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						PreprocessorDefinitions="NO_TCL;THREADSAFE=1"
+						CompileAs="1"
+						DisableSpecificWarnings="4018;4244;4996"
+					/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\sqlite\vdbeaux.c"
+				>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						PreprocessorDefinitions="NO_TCL;THREADSAFE=1"
+						CompileAs="1"
+						DisableSpecificWarnings="4018;4244;4996"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						PreprocessorDefinitions="NO_TCL;THREADSAFE=1"
+						CompileAs="1"
+						DisableSpecificWarnings="4018;4244;4996"
+					/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\sqlite\vdbeblob.c"
+				>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						PreprocessorDefinitions="NO_TCL;THREADSAFE=1"
+						CompileAs="1"
+						DisableSpecificWarnings="4018;4244;4996"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						PreprocessorDefinitions="NO_TCL;THREADSAFE=1"
+						CompileAs="1"
+						DisableSpecificWarnings="4018;4244;4996"
+					/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\sqlite\vdbefifo.c"
+				>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						PreprocessorDefinitions="NO_TCL;THREADSAFE=1"
+						CompileAs="1"
+						DisableSpecificWarnings="4018;4244;4996"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						PreprocessorDefinitions="NO_TCL;THREADSAFE=1"
+						CompileAs="1"
+						DisableSpecificWarnings="4018;4244;4996"
+					/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\sqlite\vdbemem.c"
+				>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						PreprocessorDefinitions="NO_TCL;THREADSAFE=1"
+						CompileAs="1"
+						DisableSpecificWarnings="4018;4244;4996"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						PreprocessorDefinitions="NO_TCL;THREADSAFE=1"
+						CompileAs="1"
+						DisableSpecificWarnings="4018;4244;4996"
+					/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\sqlite\vtab.c"
+				>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						PreprocessorDefinitions="NO_TCL;THREADSAFE=1"
+						CompileAs="1"
+						DisableSpecificWarnings="4018;4244;4996"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						PreprocessorDefinitions="NO_TCL;THREADSAFE=1"
+						CompileAs="1"
+						DisableSpecificWarnings="4018;4244;4996"
+					/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\sqlite\where.c"
+				>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						PreprocessorDefinitions="NO_TCL;THREADSAFE=1"
+						CompileAs="1"
+						DisableSpecificWarnings="4018;4244;4996"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -3821,14 +3173,14 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Release|x64"
+					Name="Debug|Win32"
 					>
 					<Tool
 						Name="VCCustomBuildTool"
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Debug|Win32"
+					Name="Release|x64"
 					>
 					<Tool
 						Name="VCCustomBuildTool"
@@ -3877,14 +3229,14 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Release|x64"
+					Name="Debug|Win32"
 					>
 					<Tool
 						Name="VCCustomBuildTool"
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Debug|Win32"
+					Name="Release|x64"
 					>
 					<Tool
 						Name="VCCustomBuildTool"
@@ -3921,14 +3273,14 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Release|x64"
+					Name="Debug|Win32"
 					>
 					<Tool
 						Name="VCCustomBuildTool"
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Debug|Win32"
+					Name="Release|x64"
 					>
 					<Tool
 						Name="VCCustomBuildTool"
@@ -3961,14 +3313,14 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Release|x64"
+					Name="Debug|Win32"
 					>
 					<Tool
 						Name="VCCustomBuildTool"
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Debug|Win32"
+					Name="Release|x64"
 					>
 					<Tool
 						Name="VCCustomBuildTool"
@@ -3997,14 +3349,14 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Release|x64"
+					Name="Debug|Win32"
 					>
 					<Tool
 						Name="VCCustomBuildTool"
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Debug|Win32"
+					Name="Release|x64"
 					>
 					<Tool
 						Name="VCCustomBuildTool"
@@ -4041,14 +3393,14 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Release|x64"
+					Name="Debug|Win32"
 					>
 					<Tool
 						Name="VCCustomBuildTool"
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Debug|Win32"
+					Name="Release|x64"
 					>
 					<Tool
 						Name="VCCustomBuildTool"
