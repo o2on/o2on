@@ -743,7 +743,7 @@ Dat2HTML(const hashT &hash, string &out)
 			else {
 				out += "<a href=\"mailto:";
 				out += token[1];
-				out += "\">";
+				out += "\"><b>";
 				out += token[0];
 				out += "</b></a>";
 			}
