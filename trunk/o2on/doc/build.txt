@@ -19,7 +19,7 @@
 Visual Studio 2005製品版を持ってなくても、フリーのExpressでコンパイル可。
 但し、Expres版でまともにコンパイルできるのはWin32 Release版のみと考えてください。
 
-http://www.microsoft.com/japan/msdn/vstudio/express/visualc/
+http://www.microsoft.com/japan/msdn/vstudio/express/past/2005/
 http://www.microsoft.com/japan/msdn/vstudio/express/maninstall/ (ISOファイル)
 
 ・インストール後、下記ファイルを書き換え
@@ -113,10 +113,9 @@ http://www.zlib.net/
  Xerces-C++ 2.8.0
 ------------------------------------------------------------------------------
 http://xml.apache.org/xerces-c/download.cgi
-xerces-c-current.tar.gz
+xerces-c-src_2_8_0.zip
 
-・xerces-c-src2_8_0\Projects\Win32\VC7.1\xerces-all\xerces-all.sln を開く
-・変換ダイアログが出たら「完了」を押す
+・xerces-c-src2_8_0\Projects\Win32\VC8\xerces-all\xerces-all.sln を開く
 
 ・ビルド→バッチビルドで以下の２つをチェックしてビルド。
     XercesLib Static Debug   Win32 Static Debug|Win32
@@ -124,8 +123,8 @@ xerces-c-current.tar.gz
 
 ・Visual Studioを起動し、パスを登録する
   xerces-c-src_2_8_0\src                             → インクルードファイルに追加
-  xerces-c-src_2_8_0\Build\Win32\VC7.1\StaticDebug   → ライブラリファイルに追加
-  xerces-c-src_2_8_0\Build\Win32\VC7.1\StaticRelease → ライブラリファイルに追加
+  xerces-c-src_2_8_0\Build\Win32\VC8\StaticDebug   → ライブラリファイルに追加
+  xerces-c-src_2_8_0\Build\Win32\VC8\StaticRelease → ライブラリファイルに追加
 
 [x64]
   ・メニュー「ビルド」→「構成マネージャ」
@@ -140,14 +139,14 @@ xerces-c-current.tar.gz
       XercesLib Static Release x64 Static Release|x64
   ・Visual Studioを起動し、パスを登録する
     xerces-c-src_2_8_0\src                           → インクルードファイルに追加
-    xerces-c-src_2_8_0\Build\x64\VC7.1\StaticDebug   → ライブラリファイルに追加
-    xerces-c-src_2_8_0\Build\x64\VC7.1\StaticRelease → ライブラリファイルに追加
+    xerces-c-src_2_8_0\Build\x64\VC8\StaticDebug   → ライブラリファイルに追加
+    xerces-c-src_2_8_0\Build\x64\VC8\StaticRelease → ライブラリファイルに追加
 
 ------------------------------------------------------------------------------
  SQLite 3.5.6
 ------------------------------------------------------------------------------
 http://www.sqlite.org/index.html
-・sqlite-source-3_5_6.zip をダウンロードして解凍。
+・sqlite-3_5_6.zip をダウンロードして解凍。
 ・ディレクトリ名を「sqlite」にして、o2onと同じ階層に移動
     +-o2on
     +-cryptopp
