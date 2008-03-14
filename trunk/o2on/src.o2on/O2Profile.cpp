@@ -579,6 +579,48 @@ MakeCacheRoot(void)
 
 
 
+/*
+ *	ClearCacheFolders()
+ *	AppendCacheFolder()
+ *	GetCacheFoldersA()
+ *	GetCacheFoldersW()
+ *
+ */
+void
+O2Profile::
+ClearCacheFolders(void)
+{
+	CacheFoldersA.clear();
+	CacheFoldersW.clear();
+}
+int
+O2Profile::
+AppendCacheFolder(const wchar_t *path)
+{
+	string pathA;
+	wstring pathW = path;
+	CacheFoldersW.push_back(path);
+	if (pathW[pathW.size()-1] == L'\\')
+		pathW.erase(pathW.size()-1);
+	if (FromUnicode(L"shift_jis", pathW, pathA))
+		CacheFoldersA.push_back(pathA);
+	return CacheFoldersW.size();
+}
+const strarray
+*O2Profile::
+GetCacheFoldersA(void) const
+{
+	return &CacheFoldersA;
+}
+const wstrarray
+*O2Profile::
+GetCacheFoldersW(void) const
+{
+	return &CacheFoldersW;
+}
+
+
+
 
 /*
  *	SetAdminRoot()
@@ -1254,6 +1296,16 @@ ExportToXML(const O2ProfileSelectCondition cond, string &out)
 		xml += L"]]></CacheRoot>"EOL;
 	}
 
+	//CacheFolder
+	if (cond.mask & PROF_XMLELM_CACHEFOLDER) {
+		wstrarray::iterator it;
+		for (it = CacheFoldersW.begin(); it != CacheFoldersW.end(); it++){
+			xml += L" <CacheFolder><![CDATA[";
+			xml += *it;
+			xml += L"]]></CacheFolder>"EOL;
+		}
+	}
+
 	//AdminRoot
 	if (cond.mask & PROF_XMLELM_ADMINROOT) {
 		xml += L" <AdminRoot><![CDATA[";
@@ -1545,6 +1597,9 @@ startElement(const XMLCh* const uri
 	else if (MATCHLNAME(L"CacheRoot")) {
 		CurElm = PROF_XMLELM_CACHEROOT;
 	}
+	else if (MATCHLNAME(L"CacheFolder")) {
+		CurElm = PROF_XMLELM_CACHEFOLDER;
+	}
 	else if (MATCHLNAME(L"AdminRoot")) {
 		CurElm = PROF_XMLELM_ADMINROOT;
 	}
@@ -1734,6 +1789,10 @@ characters(const XMLCh* const chars, const unsigned int length)
 		case PROF_XMLELM_CACHEROOT:
 			str.assign(chars, length);
 			Profile->SetCacheRoot(str.c_str());
+			break;
+		case PROF_XMLELM_CACHEFOLDER:
+			str.assign(chars, length);
+			Profile->AppendCacheFolder(str.c_str());
 			break;
 		case PROF_XMLELM_ADMINROOT:
 			str.assign(chars, length);

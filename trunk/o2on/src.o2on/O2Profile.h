@@ -41,6 +41,7 @@
 #define PROF_XMLELM_LIMIT				0x00080000
 #define PROF_XMLELM_BOOL				0x00100000
 #define PROF_XMLELM_SIZE_T				0x00200000
+#define PROF_XMLELM_CACHEFOLDER			0x00400000
 
 #define PROF_XMLELM_COMMON				0x000000ff
 #define PROF_XMLELM_ALL					0x0fffffff
@@ -104,6 +105,8 @@ private:
 	wstring		CacheRootW;
 	string		AdminRootA;
 	wstring		AdminRootW;
+	strarray	CacheFoldersA;
+	wstrarray	CacheFoldersW;
 
 	wstring		ProfileFilePath;
 	wstring		NodeFilePath;
@@ -209,6 +212,11 @@ public:
 	const wchar_t *GetCacheRootW(void) const;
 	bool MakeCacheRoot(void);
 
+	void ClearCacheFolders(void);
+	int AppendCacheFolder(const wchar_t *path);
+	const strarray *GetCacheFoldersA(void) const;
+	const wstrarray *GetCacheFoldersW(void) const;
+
 	void SetAdminRoot(const wchar_t *path);
 	const char *GetAdminRootA(void) const;
 	const wchar_t *GetAdminRootW(void) const;
@@ -308,7 +316,7 @@ public:
 
 
 //
-//	O2NodeDB_SAX2Handler
+//	O2Profile_SAX2Handler
 //
 class O2Profile_SAX2Handler
 	: public SAX2Handler
