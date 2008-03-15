@@ -684,6 +684,12 @@ public:
 			if (cur_argument && cur_argument->direction != "out")
 				cur_argument = NULL;
 		}
+		else if(wcsncmp(qname, L"NewExternalIPAddress",20) == 0){
+			cur_action = service->getAction("GetExternalIPAddress");
+			if(cur_action)
+				cur_argument = cur_action->getArgument("NewExternalIPAddress");
+			cur_action = NULL;
+		}
 	}
 
 	void endElement(const XMLCh* const uri
