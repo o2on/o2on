@@ -2006,20 +2006,29 @@ UPnPDlgProc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp)
 				case IDC_NICLIST:
 					if (HIWORD(wp) == LBN_SELCHANGE) {
 						HWND hwndList = GD(hwnd, IDC_NICLIST);
-						IP_ADAPTER_INFO *p = (IP_ADAPTER_INFO*)ListBox_GetItemData(hwndList,
-																ListBox_GetCurSel(hwndList));
-						testparam.ip = inet_addr(p->IpAddressList.IpAddress.String);
-						EnableWindow(GD(hwnd, IDC_SEARCHIGD), TRUE);
+						int index = ListBox_GetCurSel(hwndList);
+						if (index != LB_ERR) {
+							IP_ADAPTER_INFO *p = (IP_ADAPTER_INFO*)ListBox_GetItemData(hwndList, index);
+							testparam.ip = inet_addr(p->IpAddressList.IpAddress.String);
+							EnableWindow(GD(hwnd, IDC_SEARCHIGD), TRUE);
+						}
 					}
 					return TRUE;
 				case IDC_SERVICELIST:
-					if (HIWORD(wp) == LBN_SELCHANGE)
-						EnableWindow(GD(hwnd, IDOK), TRUE);
+					if (HIWORD(wp) == LBN_SELCHANGE) {
+						int index = ListBox_GetCurSel(GD(hwnd, IDC_SERVICELIST));
+						if (index != LB_ERR)
+							EnableWindow(GD(hwnd, IDOK), TRUE);
+					}
 					return TRUE;
 				case IDC_SEARCHIGD:
 					PostMessage(hwnd, UM_UPNP_START_TEST, 0, 0);
 					return TRUE;
 				case IDOK: {
+						//éñëOèåè
+						//1,ListBox_GetCurSel(GD(hwnd, IDC_NICLIST)) != LB_ERR
+						//2,ListBox_GetCurSel(GD(hwnd, IDC_SERVICELIST)) != LB_ERR
+
 						HWND hwndList = GD(hwnd, IDC_NICLIST);
 						IP_ADAPTER_INFO *p = (IP_ADAPTER_INFO*)ListBox_GetItemData(hwndList,
 																ListBox_GetCurSel(hwndList));
