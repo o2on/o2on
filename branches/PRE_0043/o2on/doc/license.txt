@@ -1,4 +1,4 @@
-Copyright (c) 2007, o2on project
+Copyright (c) 2007-2008, o2on project
 
 All rights reserved.
 
