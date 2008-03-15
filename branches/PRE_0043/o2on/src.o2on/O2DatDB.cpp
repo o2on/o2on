@@ -61,7 +61,7 @@ void
 O2DatDB::
 log(sqlite3 *db)
 {
-	Logger->AddLog(O2LT_ERROR, L"SQLite", 0, 0, sqlite3_errmsg(db));
+	Logger->AddLog(O2LT_ERROR, L"SQLite", 0, 0, "%s", sqlite3_errmsg(db));
 }
 
 
