@@ -14,6 +14,7 @@
 #include "dataconv.h"
 #include <sys/types.h>
 #include <sys/stat.h>
+#include <time.h>
 
 #define MODULE			L"IMDB"
 #define MIN_RECORDS		1
