@@ -14,6 +14,7 @@
 #include <process.h>
 #include "dataconv.h"
 #include "stopwatch.h"
+#include <time.h>
 
 #define UPDATE_THREAD_INTERVAL_S	15
 
