@@ -246,8 +246,20 @@ bool
 O2DatIO::
 GetTitle(O2DatPath &datpath)
 {
-	wstring path;
+	wstrarray paths;
+	wstring path, cachef;
+	
 	datpath.getpath(Profile->GetCacheRootW(), path);
+	if (_waccess(path.c_str(), 0) != 0)
+	{
+		paths = *Profile->GetCacheFoldersW();
+		for (wstrarray::iterator it = paths.begin();it != paths.end(); it++)
+		{
+			datpath.getpath((*it).c_str(), path);
+			if (_waccess(path.c_str(), 0) == 0)
+				break;
+		}
+	}
 
 	MappedFile mf;
 	char *p = (char*)mf.open(path.c_str(), mf.allocG(), false);
@@ -317,9 +329,21 @@ O2DatIO::
 GetSize(const O2DatPath &datpath)
 {
 	string path;
+	struct _stat st;
+	strarray paths;
+	strarray::iterator it;
+	
+	paths = *Profile->GetCacheFoldersA();
+	for (it = paths.begin();it != paths.end(); it++)
+	{
+		datpath.getpath((*it).c_str(), path);
+		if (_stat(path.c_str(), &st) != -1)
+			return (st.st_size);
+	}
+
 	datpath.getpath(Profile->GetCacheRootA(), path);
 
-	struct _stat st;
+
 	if (_stat(path.c_str(), &st) == -1)
 		return (0);
 
@@ -342,9 +366,19 @@ Load(const O2DatPath &datpath, uint64 offset, string &out)
 	struct _stat64 st;
 	FILE *fp = NULL;
 
-	string path;
+	strarray paths;
+	string path, cachef;
 	datpath.getpath(Profile->GetCacheRootA(), path);
-
+	if (_access(path.c_str(), 0) != 0)
+	{
+		paths = *Profile->GetCacheFoldersA();
+		for (strarray::iterator it = paths.begin();it != paths.end(); it++)
+		{
+			datpath.getpath((*it).c_str(), path);
+			if (_access(path.c_str(), 0) == 0)
+				break;
+		}
+	}
 	if (_stat64(path.c_str(), &st) == -1)
 		goto cleanup;
 
@@ -403,24 +437,31 @@ Delete(const hashListT &hashlist)
 	O2DatPath datpath;
 	wstring path;
 	O2DatRec rec;
+	wstrarray paths(*Profile->GetCacheFoldersW());
+	paths.push_back(Profile->GetAdminRootW());
+	wstrarray::iterator arit;
+	bool deleted;
 
 	for (it = hashlist.begin(); it != hashlist.end(); it++) {
+		deleted = false;
 		if (!DatDB->select(rec, *it))
 			continue;
 
 		datpath.set(rec.domain.c_str(), rec.bbsname.c_str(), rec.datname.c_str());
-		datpath.getpath(Profile->GetCacheRootW(), path);
+		for (arit = paths.begin(); arit != paths.end(); arit++) {
+			datpath.getpath((*arit).c_str(), path);
 #if 1
-		DWORD attr = GetFileAttributesW(path.c_str());
-		if (attr != 0xFFFFFFFF && (attr & FILE_ATTRIBUTE_READONLY)) {
-			attr ^= FILE_ATTRIBUTE_READONLY;
-			SetFileAttributesW(path.c_str(), attr);
-		}
+				DWORD attr = GetFileAttributesW(path.c_str());
+				if (attr != 0xFFFFFFFF && (attr & FILE_ATTRIBUTE_READONLY)) {
+					attr ^= FILE_ATTRIBUTE_READONLY;
+					SetFileAttributesW(path.c_str(), attr);
+				}
 #endif
-		if (!DeleteFile(path.c_str()))
-			continue;
-
-		DatDB->remove(*it);
+			if (DeleteFile(path.c_str()))
+				deleted = true;
+		}
+		if (deleted)
+			DatDB->remove(*it);
 	}
 
 	return true;
@@ -480,11 +521,18 @@ Put(O2DatPath &datpath, const char *dat, uint64 len, uint64 startpos)
 		return (0);
 
 	string path;
+	strarray paths = *Profile->GetCacheFoldersA();
+	struct _stat64 st;
+	for (strarray::iterator it = paths.begin(); it != paths.end(); it++) {
+		datpath.getpath((*it).c_str(), path);
+		if (_stat64(path.c_str(), &st) == 0) 
+			goto found;
+	}
+
 	datpath.getpath(Profile->GetCacheRootA(), path);
 	if (!datpath.makedir(Profile->GetCacheRootA()))
 		return false;
-
-	struct _stat64 st;
+found:
 	//FILE *fp;
 	strmap::const_iterator it;
 	uint64 hokan_byte = 0;
@@ -837,9 +885,13 @@ O2DatIO::
 StaticRebuildDBThread(void *data)
 {
 	O2DatIO *me = (O2DatIO*)data;
+	wstrarray cache(*me->Profile->GetCacheFoldersW());
+	cache.push_back(me->Profile->GetCacheRootW());
 
 	CoInitialize(NULL);
-	me->RebuildDBThread(me->Profile->GetCacheRootW(), 0);
+	for (wstrarray::iterator it = cache.begin(); it != cache.end(); it++) {
+		me->RebuildDBThread((*it).c_str(), 0);
+	}
 	CoUninitialize();
 
 	CloseHandle(me->RebuildDBThreadHandle);
@@ -1006,7 +1058,7 @@ void
 O2DatIO::
 EnumDatThread(const wchar_t *dir)
 {
-	ProgressInfo->SetMessage(dir+wcslen(Profile->GetCacheRootW()));
+	ProgressInfo->SetMessage(dir);
 
 	wchar_t findpath[MAX_PATH];
 	swprintf_s(findpath, MAX_PATH, L"%s\\*.*", dir);
@@ -1015,8 +1067,8 @@ EnumDatThread(const wchar_t *dir)
 	wsplit(dir+wcslen(Profile->GetCacheRootW()), L"\\", paths);
 
 	O2DatRec rec;
-	rec.domain = paths[0];
-	rec.bbsname = paths[1];
+	rec.domain = paths[paths.size() - 3];
+	rec.bbsname = paths[paths.size() - 2];
 
 	O2DatPath datpath;
 	wchar_t path[MAX_PATH];
