@@ -254,7 +254,7 @@ _tWinMain(HINSTANCE inst, HINSTANCE previnst, TCHAR *cmdline, int cmdshow)
 //bench();
 //return (0);
 
-	if (FindWindow(_T(CLASS_NAME), NULL))
+	if (!O2DEBUG && FindWindow(_T(CLASS_NAME), NULL))
 		return (0);
 
 	instance = inst;
