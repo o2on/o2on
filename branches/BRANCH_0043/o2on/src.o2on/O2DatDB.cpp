@@ -1331,6 +1331,8 @@ StopUpdateThread(void)
 		UpdateQueue.clear();
 	}
 	UpdateQueueLock.Unlock();
+
+	UpdateThreadHandle = NULL;
 }
 uint WINAPI
 O2DatDB::
