@@ -182,6 +182,10 @@ public:
 		GetFileSizeEx(hFile, (LARGE_INTEGER*)&fsize);
 		return (fsize.QuadPart);
 	}
+
+private:
+	File(const File& rhs);
+	File& operator=(const File& rhs);
 };
 
 
@@ -328,4 +332,8 @@ public:
 	{
 		return (MappedFile::AllocationGranularity);
 	}
+
+private:
+	MappedFile(const MappedFile& rhs);
+	MappedFile& operator=(const MappedFile& rhs);
 };

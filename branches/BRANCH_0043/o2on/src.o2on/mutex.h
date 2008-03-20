@@ -81,4 +81,8 @@ public:
 	{
 		ReleaseMutex(mutex_handle);
 	}
+
+private:
+	Mutex(const Mutex& rhs);
+	Mutex& operator=(const Mutex& rhs);
 };
