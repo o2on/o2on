@@ -51,4 +51,8 @@ public:
 	{
 		WaitForSingleObject(event_handle, timeout_ms);
 	}
+
+private:
+	EventObject(const EventObject& rhs);
+	EventObject& operator=(const EventObject& rhs);
 };
