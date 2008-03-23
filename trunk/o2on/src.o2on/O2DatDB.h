@@ -10,7 +10,11 @@
  */
 
 #pragma once
+#ifdef O2_DB_FIREBIRD
+#include "ibase.h"
+#else
 #include "sqlite3.h"
+#endif
 #include "sha.h"
 #include "O2Logger.h"
 
@@ -63,6 +67,16 @@ protected:
 	bool			UpdateThreadLoop;
 
 protected:
+#ifdef O2_DB_FIREBIRD
+	void log(ISC_STATUS_ARRAY &status);
+	//bool bind(sqlite3 *db, sqlite3_stmt* stmt, int index, const uint64 num);
+	//bool bind(sqlite3 *db, sqlite3_stmt* stmt, int index, const wchar_t *str);
+	//bool bind(sqlite3 *db, sqlite3_stmt* stmt, int index, const wstring &str);
+	//bool bind(sqlite3 *db, sqlite3_stmt* stmt, int index, const hashT &hash);
+	//void get_columns(sqlite3_stmt* stmt, O2DatRec &rec);
+	//void get_columns(sqlite3_stmt* stmt, wstrarray &cols);
+	//void get_column_names(sqlite3_stmt* stmt, wstrarray &cols);
+#else
 	void log(sqlite3 *db);
 	bool bind(sqlite3 *db, sqlite3_stmt* stmt, int index, const uint64 num);
 	bool bind(sqlite3 *db, sqlite3_stmt* stmt, int index, const wchar_t *str);
@@ -71,6 +85,7 @@ protected:
 	void get_columns(sqlite3_stmt* stmt, O2DatRec &rec);
 	void get_columns(sqlite3_stmt* stmt, wstrarray &cols);
 	void get_column_names(sqlite3_stmt* stmt, wstrarray &cols);
+#endif
 
 public:
 	O2DatDB(O2Logger *lgr, const wchar_t *filename);

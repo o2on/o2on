@@ -14,6 +14,7 @@
 #include <process.h>
 #include "dataconv.h"
 #include "stopwatch.h"
+#include <time.h>
 
 #define UPDATE_THREAD_INTERVAL_S	15
 
@@ -56,17 +57,34 @@ O2DatDB::
 }
 
 
-
+#ifdef O2_DB_FIREBIRD
+void
+O2DatDB::
+log(ISC_STATUS_ARRAY &status)
+{
+	string errmsg;
+	char msg[512];
+	while(isc_interprete(msg, (ISC_STATUS **)&status)){
+		errmsg += msg;
+		errmsg += " ";
+    }
+	Logger->AddLog(O2LT_ERROR, L"FireBird", 0, 0, "%s", errmsg);
+}
+#else
 void
 O2DatDB::
 log(sqlite3 *db)
 {
 	Logger->AddLog(O2LT_ERROR, L"SQLite", 0, 0, sqlite3_errmsg(db));
 }
+#endif
 
 
 
 
+#ifdef O2_DB_FIREBIRD
+
+#else
 bool
 O2DatDB::
 bind(sqlite3 *db, sqlite3_stmt* stmt, int index, const uint64 num)
@@ -168,6 +186,7 @@ get_column_names(sqlite3_stmt* stmt, wstrarray &cols)
 		cols.push_back((wchar_t*)sqlite3_column_name16(stmt, i));
 	}
 }
+#endif
 
 
 
@@ -179,7 +198,10 @@ create_table(void)
 #if TRACE_SQL_EXEC_TIME
 	stopwatch sw("create table/index and analyze");
 #endif
+#ifdef O2_DB_FIREBIRD
+	return false;
 
+#else
 	sqlite3 *db = NULL;
 	int err = sqlite3_open16(dbfilename.c_str(), &db);
 	if (err != SQLITE_OK)
@@ -232,10 +254,23 @@ error:
 	log(db);
 	if (db) sqlite3_close(db);
 	return false;
+#endif
 }
 
 
 
+
+#ifdef O2_DB_FIREBIRD
+bool
+O2DatDB::
+reindex(const char *target)
+{
+#if TRACE_SQL_EXEC_TIME
+	stopwatch sw("reindex");
+#endif
+	return true;/// noting todo
+}
+#else
 
 bool
 O2DatDB::
@@ -1271,6 +1306,7 @@ error:
 	if (db) sqlite3_close(db);
 	return false;
 }
+#endif
 
 
 
