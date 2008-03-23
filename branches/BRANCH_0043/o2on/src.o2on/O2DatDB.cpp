@@ -1312,6 +1312,7 @@ StartUpdateThread(void)
 		return;
 
 	UpdateThreadLoop = true;
+	StopSignal.Off();
 	UpdateThreadHandle = (HANDLE)_beginthreadex(
 		NULL, 0, StaticUpdateThread, (void*)this, 0, NULL);
 }
@@ -1322,6 +1323,8 @@ StopUpdateThread(void)
 	if (!UpdateThreadHandle)
 		return;
 	UpdateThreadLoop = false;
+	StopSignal.On();
+	//Join
 	WaitForSingleObject(UpdateThreadHandle, INFINITE);
 	CloseHandle(UpdateThreadHandle);
 
@@ -1366,6 +1369,6 @@ UpdateThread(void)
 			CLEAR_WORKSET;
 			//TRACEA("+++++ UPDATE +++++\n");
 		}
-		Sleep(3000);
+		StopSignal.Wait(3000);
 	}
 }
