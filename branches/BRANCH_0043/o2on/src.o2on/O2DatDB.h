@@ -13,7 +13,7 @@
 #include "sqlite3.h"
 #include "sha.h"
 #include "O2Logger.h"
-
+#include "event.h"
 
 
 
@@ -61,6 +61,7 @@ protected:
 	Mutex			UpdateQueueLock;
 	HANDLE			UpdateThreadHandle;
 	bool			UpdateThreadLoop;
+	EventObject		StopSignal;
 
 protected:
 	void log(sqlite3 *db);

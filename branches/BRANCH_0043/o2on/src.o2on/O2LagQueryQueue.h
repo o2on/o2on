@@ -27,6 +27,7 @@ protected:
 	typedef std::map<hashT,O2Key>::iterator O2KeyMapIt;
 
 	bool		Active;
+	EventObject StopSignal;
 	HANDLE		ThreadHandle;
 	O2KeyMap	queries;
 	O2Logger	*Logger;
@@ -105,6 +106,7 @@ private:
 	{
 		if (!ThreadHandle) {
 			Active = true;
+			StopSignal.Off();
 			ThreadHandle = (HANDLE)_beginthreadex(NULL, 0, StaticThread, (void*)this, 0, NULL);
 		}
 	}
@@ -113,6 +115,9 @@ private:
 	{
 		if (ThreadHandle) {
 			Active = false;
+			//note:SignalObjectAndWaitŠÖ”‚Ì•û‚ªˆ—‚ğatomic‚És‚¦‚é‚½‚ß“KØ
+			StopSignal.On();
+			//Join
 			WaitForSingleObject(ThreadHandle, INFINITE);
 			CloseHandle(ThreadHandle);
 			ThreadHandle = NULL;
@@ -163,7 +168,7 @@ private:
 				it = queries.erase(it);
 			}
 			Unlock();
-			Sleep(2500);
+			StopSignal.Wait(2500);
 		}
 	}
 };
