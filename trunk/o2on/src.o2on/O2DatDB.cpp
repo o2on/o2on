@@ -46,6 +46,24 @@ O2DatDB(O2Logger *lgr, const wchar_t *filename)
 	, UpdateThreadHandle(NULL)
 	, UpdateThreadLoop(false)
 {
+#ifdef O2_DB_FIREBIRD
+	FromUnicode(L"shift_jis", filename, dbfilenameA);
+
+	char user_name[] = "SYSDBA";
+	char user_password[] = "masterkey";
+	char *dpb, *p;
+	dpb = dpb_buff;
+	*dpb++ = isc_dpb_version1;
+	*dpb++ = isc_dpb_user_name;
+	*dpb++ = strlen(user_name);
+	for (p = user_name; *p;)
+		*dpb++ = *p++;
+	*dpb++ = isc_dpb_password;
+	*dpb++ = strlen(user_password);
+	for (p = user_password; *p;)
+		*dpb++ = *p++;
+	dpblen = dpb - dpb_buff;
+#endif
 }
 
 
@@ -64,7 +82,8 @@ log(ISC_STATUS_ARRAY &status)
 {
 	string errmsg;
 	char msg[512];
-	while(isc_interprete(msg, (ISC_STATUS **)&status)){
+	const ISC_STATUS* st = status;
+	while(fb_interpret(msg, sizeof(msg), &st)){
 		errmsg += msg;
 		errmsg += " ";
     }
@@ -199,8 +218,51 @@ create_table(void)
 	stopwatch sw("create table/index and analyze");
 #endif
 #ifdef O2_DB_FIREBIRD
-	return false;
+	isc_db_handle db = NULL;
+	isc_tr_handle tr = NULL;
+	isc_stmt_handle stmt = NULL;
+	ISC_STATUS_ARRAY status;
 
+	char create_db[512];
+	sprintf_s(create_db, 512, "CREATE DATABASE '%s' USER 'SYSDBA' PASSWORD 'masterkey';", dbfilenameA.c_str());
+	if (!isc_dsql_execute_immediate(status, &db, &tr, 0, create_db, 1, NULL))
+		isc_detach_database(status, &db);
+	
+	if (isc_attach_database(status, 0, dbfilenameA.c_str(), &db, dpblen, dpb_buff))
+		goto error;
+
+	char *sql = 
+		"EXECUTE BLOCK AS BEGIN "
+		"if (not exists(select 1 from rdb$relations where rdb$relation_name = 'DAT')) then "
+		"execute statement 'create table DAT ("
+		"    hash         CHAR(20) NOT NULL PRIMARY KEY,"//length is HASHSIZE in sha.h
+		"    domainname   VARCHAR(10),"
+		"    datname      VARCHAR(20),"
+		"    filesize     INTEGER,"
+		"    disksize     INTEGER,"
+		"    url          VARCHAR(128),"
+		"    title        VARCHAR(256),"
+		"    res          INTEGER,"
+		"    lastupdate   INTEGER,"
+		"    lastpublish  INTEGER"
+		");';"
+		"END";
+
+	if (isc_start_transaction(status, &tr, 1, &db, 0, NULL))
+		goto error;
+	if (isc_dsql_execute_immediate(status, &db, &tr, 0, sql, 1, NULL))
+		goto error;
+	if (isc_commit_transaction(status, &tr))
+		goto error;
+	if (isc_detach_database(status, &db))
+		goto error;
+	return true;
+
+error:
+	log(status);
+	if (tr) isc_rollback_transaction(status, &tr);
+	if (db) isc_detach_database(status, &db);
+	return false;
 #else
 	sqlite3 *db = NULL;
 	int err = sqlite3_open16(dbfilename.c_str(), &db);
