@@ -375,7 +375,11 @@ InitializeApp(TCHAR *cmdline, int cmdshow)
 	//	DatDB
 	//
 	wstring dbfilename(Profile->GetDBDirW());
+#ifdef O2_DB_FIREBIRD
+	dbfilename += L"\\dat.fdb";
+#else
 	dbfilename += L"\\dat.db";
+#endif
 	DatDB = new O2DatDB(Logger, dbfilename.c_str());
 	if (!DatDB->create_table()) {
 		MessageBox(NULL,
