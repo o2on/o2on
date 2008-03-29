@@ -24,6 +24,18 @@
 #define TRACE_SQL_EXEC_TIME			0
 #endif
 
+#define COLUMNSA	"  hash" \
+				", domainname" \
+				", bbsname" \
+				", datname" \
+				", filesize" \
+				", disksize" \
+				", url" \
+				", title" \
+				", res" \
+				", lastupdate" \
+				", lastpublish" \
+				" "
 #define COLUMNS	L"  hash" \
 				L", domain" \
 				L", bbsname" \
@@ -103,6 +115,101 @@ log(sqlite3 *db)
 
 #ifdef O2_DB_FIREBIRD
 
+void
+O2DatDB::
+get_columns(XSQLDA *sqlda, O2DatRec &rec)
+{
+	XSQLVAR *var = sqlda->sqlvar;
+
+	rec.hash.assign((byte*)var->sqldata, HASHSIZE); var++;
+	ascii2unicode(var->sqldata+2, var->sqllen, rec.domain); var++;
+	ascii2unicode(var->sqldata+2, var->sqllen, rec.bbsname); var++;
+	ascii2unicode(var->sqldata+2, var->sqllen, rec.datname); var++;
+	rec.size = *(long*)(var->sqldata); var++;
+	rec.disksize = *(long*)var->sqldata; var++;
+	ascii2unicode(var->sqldata+2, var->sqllen, rec.url); var++;
+	ToUnicode(L"UTF8", var->sqldata, var->sqllen, rec.title);
+	ascii2unicode(var->sqldata+2, var->sqllen, rec.title); var++;
+	rec.res = 0; var++; // always 0
+	rec.lastupdate =  *(long*)var->sqldata; var++;
+	rec.lastpublish =  *(long*)var->sqldata;
+}
+
+void
+O2DatDB::
+get_columns(isc_stmt_handle stmt, XSQLDA* sqlda, wstrarray &cols)
+{
+	int i;
+	string w_str;
+	long fetch_stat;
+	wstring tmpstr;
+	wchar_t tmp[1024];
+	XSQLVAR *var;
+	ISC_STATUS_ARRAY status;
+
+	while ((fetch_stat = isc_dsql_fetch(status, &stmt, 1, sqlda)) == 0) {
+		for (i = 0, var = sqlda->sqlvar; i < sqlda->sqld; i++, var++) {
+			switch (var->sqltype & ~1) {
+			case SQL_VARYING:
+				if ((var->sqltype & 1) && (*(var->sqlind) == -1)) {
+					cols.push_back(L"error");
+				} else {
+					ascii2unicode(var->sqldata+2, var->sqllen, tmpstr);
+					cols.push_back(tmpstr);
+				}
+				break;
+			case SQL_TEXT:
+				if ((var->sqltype & 1) && (*(var->sqlind) == -1)) {
+					cols.push_back(L"error");
+				} else {
+					ascii2unicode(var->sqldata, var->sqllen, tmpstr);
+					cols.push_back(tmpstr);
+				}
+				break;
+			case SQL_LONG:
+				if ((var->sqltype & 1) && (*(var->sqlind) == -1)) {
+					cols.push_back(L"error");
+				} else {
+					swprintf_s(tmp, 1024, L"%d", *(long*)var->sqldata);
+					cols.push_back(tmp);
+				}
+				break;
+			case SQL_SHORT:
+				if ((var->sqltype & 1) && (*(var->sqlind) == -1)) {
+					cols.push_back(L"error");
+				} else {
+					swprintf_s(tmp, 1024, L"%d", *(short*)var->sqldata);
+				}
+				break;
+			case SQL_FLOAT:
+				if ((var->sqltype & 1) && (*(var->sqlind) == -1)) {
+					cols.push_back(L"error");
+				} else {
+					swprintf_s(tmp, 1024, L"%f", *(float*)var->sqldata);
+				}
+				break;
+			case SQL_ARRAY:
+			case SQL_BLOB:
+			case SQL_DOUBLE:
+			default:
+				cols.push_back(L"error");
+				break;
+			}
+		}
+	}
+}
+
+void
+O2DatDB::
+get_column_names(XSQLDA *sqlda, wstrarray &cols)
+{
+	wstring tmpstr;
+	XSQLVAR *var = sqlda->sqlvar;
+	for (int i = 0; i < sqlda->sqln; i++, var++) {
+		ascii2unicode(var->sqlname, var->sqlname_length, tmpstr);
+		cols.push_back(tmpstr);
+	}
+}
 #else
 bool
 O2DatDB::
@@ -235,13 +342,14 @@ create_table(void)
 		"EXECUTE BLOCK AS BEGIN "
 		"if (not exists(select 1 from rdb$relations where rdb$relation_name = 'DAT')) then "
 		"execute statement 'create table DAT ("
-		"    hash         CHAR(20) NOT NULL PRIMARY KEY,"//length is HASHSIZE in sha.h
-		"    domainname   VARCHAR(10),"
-		"    datname      VARCHAR(20),"
+		"    hash         CHAR(20) CHARACTOR SET OCTETS NOT NULL PRIMARY KEY,"//length is HASHSIZE in sha.h
+		"    domainname   VARCHAR(10) CHARACTOR SET ASCII,"
+		"    bbsname      VARCHAR(10) CHARACTOR SET ASCII,"
+		"    datname      VARCHAR(20) CHARACTOR SET ASCII,"
 		"    filesize     INTEGER,"
 		"    disksize     INTEGER,"
-		"    url          VARCHAR(128),"
-		"    title        VARCHAR(256),"
+		"    url          VARCHAR(128) CHARACTOR SET ASCII,"
+		"    title        VARCHAR(256) CHARACTOR SET UTF8,"
 		"    res          INTEGER,"
 		"    lastupdate   INTEGER,"
 		"    lastpublish  INTEGER"
@@ -332,6 +440,104 @@ reindex(const char *target)
 #endif
 	return true;/// noting todo
 }
+
+
+
+
+bool
+O2DatDB::
+select(O2DatRecList &out)
+{
+#if TRACE_SQL_EXEC_TIME
+	stopwatch sw("select all");
+#endif
+
+	isc_db_handle db = NULL;
+	isc_tr_handle tr = NULL;
+	ISC_STATUS_ARRAY status;
+	isc_stmt_handle stmt = NULL;
+	O2DatRec rec;
+	XSQLDA *outda = NULL;
+	string w_str;
+	int w_row = 0;
+	long fetch_stat;
+	XSQLVAR *var;
+	int i;
+
+	if (isc_attach_database(status, 0, dbfilenameA.c_str(), &db, dpblen, dpb_buff))
+		goto error;
+	//sqlite3_busy_timeout(db, 5000);
+
+	char *sql =
+		"select"
+		COLUMNSA
+		" from dat;";
+
+	if (isc_dsql_allocate_statement(status, &db, &stmt))
+		goto error;
+	if (isc_start_transaction(status, &tr, 1, &db, 0, NULL))
+		goto error;
+	if (isc_dsql_prepare(status, &tr, &stmt, 0, sql, 1, NULL))
+		goto error;
+	outda = (XSQLDA *)new char[(XSQLDA_LENGTH(1))];
+	outda->version = SQLDA_VERSION1;
+	outda->sqln = 1;
+	if (isc_dsql_describe(status, &stmt, 1, outda))
+		goto error;
+	if (outda->sqld > outda->sqln) {
+		int n = outda->sqld;
+		delete(outda);
+		outda = (XSQLDA *)new char[XSQLDA_LENGTH(n)];
+		outda->version = SQLDA_VERSION1;
+		outda->sqln = n;
+		isc_dsql_describe(status, &stmt, 1, outda);
+	}
+	for (i = 0, var = outda->sqlvar; i < outda->sqld; i++, var++) {
+		switch (var->sqltype & ~1) {
+		case SQL_VARYING:
+			var->sqldata = (char *)new char[var->sqllen + 2];
+			break;
+		default:
+			var->sqldata = (char *)new char[var->sqllen];
+			break;
+		}
+	
+		if (var->sqltype & 1) {
+			var->sqlind = (short *)new short;
+		}
+	}
+	if (isc_dsql_execute(status, &tr, &stmt, 1, NULL))
+		goto error;
+
+	while ((fetch_stat = isc_dsql_fetch(status, &stmt, 1, outda)) == 0) {
+		get_columns(outda, rec);
+		out.push_back(rec);
+	}
+	
+	if (isc_commit_transaction(status, &tr))
+		goto error;
+
+	if (isc_dsql_free_statement(status, &stmt, 0))
+		goto error;
+	stmt = NULL;
+	if (isc_detach_database(status, &db))
+		goto error;
+
+	delete outda;
+	return true;
+
+error:
+	log(status);
+	if (outda) delete outda;
+	if (tr) isc_rollback_transaction(status, &tr);
+	if (stmt) isc_dsql_free_statement(status, &stmt, 0);
+	if (db) isc_detach_database(status, &db);
+	return false;
+}
+
+
+
+
 #else
 
 bool
