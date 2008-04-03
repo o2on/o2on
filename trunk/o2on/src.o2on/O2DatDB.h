@@ -74,14 +74,15 @@ protected:
 protected:
 #ifdef O2_DB_FIREBIRD
 	void log(ISC_STATUS_ARRAY &status);
-	bool bind(sqlite3 *db, sqlite3_stmt* stmt, int index, const uint64 num);
-	bool bind(sqlite3 *db, sqlite3_stmt* stmt, int index, const wchar_t *str);
-	bool bind(sqlite3 *db, sqlite3_stmt* stmt, int index, const wstring &str);
-	bool bind(sqlite3 *db, sqlite3_stmt* stmt, int index, const hashT &hash);
+	bool bind(XSQLDA *sqlda, int index, const uint64 num);
+	bool bind(XSQLDA *sqlda, int index, const wchar_t *str);
+	bool bind(XSQLDA *sqlda, int index, const wstring &str);
+	bool bind(XSQLDA *sqlda, int index, const hashT &hash);
 	void get_columns(XSQLDA *sqlda, O2DatRec &rec);
-	void get_columns(isc_stmt_handle stmt, XSQLDA *sqlda, wstrarray &cols);
+	void get_columns(XSQLDA *sqlda, wstrarray &cols);
 	void get_column_names(XSQLDA *sqlda, wstrarray &cols);
 	XSQLDA* prepare_xsqlda(isc_stmt_handle stmt, bool bind);
+	void free_xsqlda(XSQLDA* &sqlda);
 #else
 	void log(sqlite3 *db);
 	bool bind(sqlite3 *db, sqlite3_stmt* stmt, int index, const uint64 num);
@@ -101,24 +102,24 @@ public:
 	bool create_table(void);
 	bool reindex(const char *target);
 
-	//size_t select(const wchar_t *sql, SQLResultList &out);
+	size_t select(const wchar_t *sql, SQLResultList &out);
 	bool select(O2DatRec &out);
 	bool select(O2DatRec &out, const hashT hash);
 	//bool select(O2DatRec &out, const wchar_t *domain, const wchar_t *bbsname);
 	bool select(O2DatRecList &out);
-	//bool select(O2DatRecList &out, const wchar_t *domain, const wchar_t *bbsname);
+	bool select(O2DatRecList &out, const wchar_t *domain, const wchar_t *bbsname);
 	//bool select(O2DatRec &out, const wchar_t *domain, const wchar_t *bbsname, const wchar_t *datname);
-	//bool select(O2DatRecList &out, time_t publish_tt, size_t limit);
+	bool select(O2DatRecList &out, time_t publish_tt, size_t limit);
 	uint64 select_datcount(void);
-	//uint64 select_datcount(wstrnummap &out);
-	//uint64 select_totaldisksize(void);
-	//uint64 select_publishcount(time_t publish_tt);
+	uint64 select_datcount(wstrnummap &out);
+	uint64 select_totaldisksize(void);
+	uint64 select_publishcount(time_t publish_tt);
 
 //	bool update(O2DatRec &in, bool is_origurl);
-	//void update(O2DatRecList &in);
+	void update(O2DatRecList &in);
 //	bool update_lastpublish(const hashT &hash);
 
-	//bool remove(const hashT &hash);
+	bool remove(const hashT &hash);
 #else
 	bool create_table(void);
 	bool reindex(const char *target);
