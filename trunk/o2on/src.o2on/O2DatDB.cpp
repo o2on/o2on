@@ -108,7 +108,7 @@ log(ISC_STATUS_ARRAY &status)
 		errmsg += msg;
 		errmsg += " ";
     }
-	Logger->AddLog(O2LT_ERROR, L"Firebird", 0, 0, "%s", errmsg);
+	Logger->AddLog(O2LT_ERROR, L"Firebird", 0, 0, "%s", errmsg.c_str());
 }
 #else
 void
@@ -324,6 +324,9 @@ prepare_xsqlda(isc_stmt_handle stmt, bool bind)
 			isc_dsql_describe_bind(status, &stmt, 3, outda);
 		else
 			isc_dsql_describe(status, &stmt, 3, outda);
+	} else if (outda->sqld ==0) {
+		delete(outda);
+		return NULL;
 	}
 	int i;
 	for (var = outda->sqlvar, i=0; i < outda->sqld; i++, var++) {
@@ -354,11 +357,7 @@ free_xsqlda(XSQLDA* &sqlda)
 		return;
 	XSQLVAR* var = sqlda->sqlvar;
 	for (int i=0; i < sqlda->sqln; i++,var++){
-		if ((var->sqltype & ~1) != SQL_VARYING) {
-			if (var->sqldata) delete(var->sqldata);
-		} else {
-			delete(var->sqldata);
-		}
+		delete(var->sqldata);
 		if (var->sqltype & 1) {
 			delete(var->sqlind);
 		}
@@ -495,7 +494,7 @@ create_table(void)
 	if (isc_attach_database(status, 0, dbfilenameA.c_str(), &db, dpblen, dpb_buff))
 		goto error;
 
-	char *sql = 
+	char *sql0 = 
 		"EXECUTE BLOCK AS BEGIN "
 		"if (not exists(select 1 from rdb$relations where rdb$relation_name = 'DAT')) then "
 		"execute statement 'create table DAT ("
@@ -513,9 +512,25 @@ create_table(void)
 		");';"
 		"END";
 
+	char *sql1 =
+		"EXECUTE BLOCK AS BEGIN "
+		"if (not exists(select 1 from RDB$INDICES where RDB$INDEX_NAME = 'IDX_DAT_LASTPUBLISH')) then "
+		"execute statement 'create index idx_dat_lastpublish on dat (lastpublish);';"
+		"END";
+
+	char *sql2 =
+		"EXECUTE BLOCK AS BEGIN "
+		"if (not exists(select 1 from RDB$INDICES where RDB$INDEX_NAME = 'IDX_DAT_DOMAIN_BBSNAME_DATNAME')) then "
+		"execute statement 'create index idx_dat_domain_bbsname_datname on dat (bbsname, domainname, datname);';"
+		"END";
+
 	if (isc_start_transaction(status, &tr, 1, &db, 0, NULL))
 		goto error;
-	if (isc_dsql_execute_immediate(status, &db, &tr, 0, sql, 3, NULL))
+	if (isc_dsql_execute_immediate(status, &db, &tr, 0, sql0, 3, NULL))
+		goto error;
+	if (isc_dsql_execute_immediate(status, &db, &tr, 0, sql1, 3, NULL))
+		goto error;
+	if (isc_dsql_execute_immediate(status, &db, &tr, 0, sql2, 3, NULL))
 		goto error;
 	if (isc_commit_transaction(status, &tr))
 		goto error;
@@ -659,44 +674,54 @@ select(const wchar_t *sql, SQLResultList &out)
 		goto error;
 	if (isc_dsql_prepare(status, &tr, &stmt, 0, sqlstr.c_str(), 3, NULL))
 		goto error;
-	XSQLDA *sqlda = prepare_xsqlda(stmt, false);
+	outda = prepare_xsqlda(stmt, false);
 
-	if (isc_dsql_execute(status, &tr, &stmt, 3, NULL))
-		goto error;
-	if (isc_dsql_fetch(status, &stmt, 3, sqlda))
+	//if (outda == NULL) {
+	//	if(isc_dsql_execute(status, &tr, &stmt,3, NULL))
+	//		goto error;
+	//	goto fin;
+	//} else if (isc_dsql_execute2(status, &tr, &stmt, 3, outda))
+	//	goto error;
+	fetch = isc_dsql_execute2(status, &tr, &stmt, 3, NULL, outda);
+	if(fetch !=0 &&isc_sqlcode(status) != 100L)
 		goto error;
 
 	if (out.empty()) {
 		//ˆês–Ú
 		cols.clear();
-		get_column_names(sqlda, cols);
+		get_column_names(outda, cols);
 		out.push_back(cols);
 		cols.clear();
-		get_columns(sqlda, cols);
+		get_columns(outda, cols);
 		out.push_back(cols);
 		ct++;
 	}
-	while (fetch = isc_dsql_fetch(status, &stmt, 3, sqlda) == 0){
+	while (fetch = isc_dsql_fetch(status, &stmt, 3, outda) == 0){
 		//2s–ÚˆÈ~
 		cols.clear();
-		get_columns(sqlda, cols);
+		get_columns(outda, cols);
 		out.push_back(cols);
 		ct++;
 	}
 
+fin:
 	if (isc_commit_transaction(status, &tr))
 		goto error;
 	if (stmt) isc_dsql_free_statement(status, &stmt, DSQL_drop);
 	if (db) isc_detach_database(status, &db);
-	free_xsqlda(sqlda);
+	free_xsqlda(outda);
 	return (ct);
 
 error:
+	out.clear();
+	cols.clear();
+	cols.push_back(L"SQL error");
+	out.push_back(cols);
 	log(status);
 	if (tr) isc_rollback_transaction(status, &tr);
 	if (stmt) isc_dsql_free_statement(status, &stmt, DSQL_drop);
 	if (db) isc_detach_database(status, &db);
-	free_xsqlda(sqlda);
+	free_xsqlda(outda);
 	return (0);
 }
 
@@ -792,11 +817,10 @@ select(O2DatRec &out, hashT hash)
 	outda = prepare_xsqlda(stmt, false);
 	inda = prepare_xsqlda(stmt, true);
 
-	//inda->sqlvar->sqldata = (char*) hash.block;
-	memcpy(inda->sqlvar->sqldata, hash.data(), hash.size());
+	if(!bind(inda, 0, hash))
+		goto error;
 
-	long st = isc_dsql_execute2(status, &tr, &stmt, 3, inda, outda);
-	if (st == 0) {
+	if (!isc_dsql_execute2(status, &tr, &stmt, 3, inda, outda)) {
 		get_columns(outda, out);
 		ret = true;
 	} else if (isc_sqlcode(status) != 100L)
@@ -820,6 +844,158 @@ error:
 	return (false);
 }
 
+bool
+O2DatDB::
+select(O2DatRec &out, const wchar_t *domain, const wchar_t *bbsname)
+{
+#if TRACE_SQL_EXEC_TIME
+	stopwatch sw("select by domain bbsname");
+#endif
+
+	isc_db_handle db = NULL;
+	isc_tr_handle tr = NULL;
+	ISC_STATUS_ARRAY status;
+	isc_stmt_handle stmt = NULL;
+	XSQLDA *outda = NULL, *inda = NULL;
+	bool ret = false;
+
+	if (isc_attach_database(status, 0, dbfilenameA.c_str(), &db, dpblen, dpb_buff))
+		goto error;
+
+	char *sql =
+		"select first 1"
+		COLUMNSA
+		" from dat"
+		" where domainname = ?"
+		"   and bbsname = ?"
+		" order by rand();";
+
+	if (isc_dsql_allocate_statement(status, &db, &stmt))
+		goto error;
+	if (isc_start_transaction(status, &tr, 1, &db, 0, NULL))
+		goto error;
+	if (isc_dsql_prepare(status, &tr, &stmt, 0, sql, 3, NULL))
+		goto error;
+	outda = prepare_xsqlda(stmt, false);
+	inda = prepare_xsqlda(stmt, true);
+
+	if (!bind(inda, 0, domain))
+		goto error;
+	if (!bind(inda, 1, bbsname))
+		goto error;
+	
+	if (!isc_dsql_execute2(status, &tr, &stmt, 3, inda, outda)) {
+		get_columns(outda, out);
+		ret = true;
+	} else if (isc_sqlcode(status) != 100L)
+		goto error;
+
+	if (isc_commit_transaction(status, &tr))
+		goto error;
+	if (stmt) isc_dsql_free_statement(status, &stmt, DSQL_drop);
+	if (db) isc_detach_database(status, &db);
+	free_xsqlda(inda);
+	free_xsqlda(outda);
+	return (ret);
+
+error:
+	log(status);
+	if (tr) isc_rollback_transaction(status, &tr);
+	if (stmt) isc_dsql_free_statement(status, &stmt, DSQL_drop);
+	if (db) isc_detach_database(status, &db);
+	free_xsqlda(inda);
+	free_xsqlda(outda);
+	return (false);
+/*
+
+	wchar_t *sql =
+		L"select"
+		COLUMNS
+		L" from dat"
+		L" where domain = ?"
+		L"   and bbsname = ?"
+		L" order by random() limit 1;";
+
+*/
+}
+
+
+
+
+bool
+O2DatDB::
+select(O2DatRec &out, const wchar_t *domain, const wchar_t *bbsname, const wchar_t *datname)
+{
+#if TRACE_SQL_EXEC_TIME
+	stopwatch sw("select by domain bbsname datname");
+#endif
+
+	isc_db_handle db = NULL;
+	isc_tr_handle tr = NULL;
+	ISC_STATUS_ARRAY status;
+	isc_stmt_handle stmt = NULL;
+	XSQLDA *outda = NULL, *inda = NULL;
+	bool ret = false;
+
+	if (isc_attach_database(status, 0, dbfilenameA.c_str(), &db, dpblen, dpb_buff))
+		goto error;
+
+	char *sql =
+		"select"
+		COLUMNSA
+		" from dat"
+		" where domainname = ?"
+		"   and bbsname = ?"
+		"   and datname = ?;";
+	if (isc_dsql_allocate_statement(status, &db, &stmt))
+		goto error;
+	if (isc_start_transaction(status, &tr, 1, &db, 0, NULL))
+		goto error;
+	if (isc_dsql_prepare(status, &tr, &stmt, 0, sql, 3, NULL))
+		goto error;
+	outda = prepare_xsqlda(stmt, false);
+	inda = prepare_xsqlda(stmt, true);
+
+	if (!bind(inda, 0, domain))
+		goto error;
+	if (!bind(inda, 1, bbsname))
+		goto error;
+	if (!bind(inda, 2, datname))
+		goto error;
+	
+	if (!isc_dsql_execute2(status, &tr, &stmt, 3, inda, outda)) {
+		get_columns(outda, out);
+		ret = true;
+	} else if (isc_sqlcode(status) != 100L)
+		goto error;
+
+	if (isc_commit_transaction(status, &tr))
+		goto error;
+	if (stmt) isc_dsql_free_statement(status, &stmt, DSQL_drop);
+	if (db) isc_detach_database(status, &db);
+	free_xsqlda(inda);
+	free_xsqlda(outda);
+	return (ret);
+
+error:
+	log(status);
+	if (tr) isc_rollback_transaction(status, &tr);
+	if (stmt) isc_dsql_free_statement(status, &stmt, DSQL_drop);
+	if (db) isc_detach_database(status, &db);
+	free_xsqlda(inda);
+	free_xsqlda(outda);
+	return (false);
+/*
+
+	wchar_t *sql =
+		L"select"
+		COLUMNS
+		L" from dat"
+		L" where domain = ?"
+		L"   and bbsname = ?"
+		L"   and datname = ?;";
+*/
+}
 
 
 
@@ -1044,6 +1220,7 @@ select_datcount(void)
 	ISC_STATUS_ARRAY status;
 	isc_stmt_handle stmt = NULL;
 	isc_tr_handle tr = NULL;
+	XSQLDA *sqlda = NULL;
 
 	if (isc_attach_database(status, 0, dbfilenameA.c_str(), &db, dpblen, dpb_buff))
 		goto error;
@@ -1054,9 +1231,9 @@ select_datcount(void)
 		goto error;
 	if (isc_start_transaction(status, &tr, 1, &db, 0, NULL))
 		goto error;
-	if (isc_dsql_prepare(status, &tr, &stmt, 0, sql, 1, NULL))
+	if (isc_dsql_prepare(status, &tr, &stmt, 0, sql, 3, NULL))
 		goto error;
-	XSQLDA *sqlda = prepare_xsqlda(stmt, false);
+	sqlda = prepare_xsqlda(stmt, false);
 
 	if (isc_dsql_execute(status, &tr, &stmt, 1, NULL))
 		goto error;
@@ -1066,9 +1243,9 @@ select_datcount(void)
 
 	if (isc_commit_transaction(status, &tr))
 		goto error;
-	free_xsqlda(sqlda);
 	if (stmt) isc_dsql_free_statement(status, &stmt, DSQL_drop);
 	if (db) isc_detach_database(status, &db);
+	free_xsqlda(sqlda);
 
 	return (count);
 
@@ -1100,6 +1277,7 @@ select_datcount(wstrnummap &out)
 	uint64 total = 0;
 	long num;
 	long fetch;
+	XSQLDA *sqlda = NULL;
 
 	if (isc_attach_database(status, 0, dbfilenameA.c_str(), &db, dpblen, dpb_buff))
 		goto error;
@@ -1113,7 +1291,7 @@ select_datcount(wstrnummap &out)
 		goto error;
 	if (isc_dsql_prepare(status, &tr, &stmt, 0, sql, 3, NULL))
 		goto error;
-	XSQLDA *sqlda = prepare_xsqlda(stmt, false);
+	sqlda = prepare_xsqlda(stmt, false);
 
 	if (isc_dsql_execute(status, &tr, &stmt, 3, NULL))
 		goto error;
@@ -1166,6 +1344,7 @@ select_totaldisksize(void)
 	ISC_STATUS_ARRAY status;
 	isc_stmt_handle stmt = NULL;
 	isc_tr_handle tr = NULL;
+	XSQLDA *sqlda = NULL;
 
 	if (isc_attach_database(status, 0, dbfilenameA.c_str(), &db, dpblen, dpb_buff))
 		goto error;
@@ -1178,13 +1357,13 @@ select_totaldisksize(void)
 		goto error;
 	if (isc_dsql_prepare(status, &tr, &stmt, 0, sql, 3, NULL))
 		goto error;
-	XSQLDA *sqlda = prepare_xsqlda(stmt, false);
+	sqlda = prepare_xsqlda(stmt, false);
 
 	if (isc_dsql_execute(status, &tr, &stmt, 3, NULL))
 		goto error;
 	if (isc_dsql_fetch(status, &stmt, 1, sqlda))
 		goto error;
-	uint64 totalsize = *(uint64 *)sqlda->sqlvar[0].sqldata;//over flow?
+	uint64 totalsize = *(long *)sqlda->sqlvar[0].sqldata;//over flow?
 
 	if (isc_commit_transaction(status, &tr))
 		goto error;
@@ -1231,15 +1410,14 @@ select_publishcount(time_t publish_tt)
 		goto error;
 	outda = prepare_xsqlda(stmt, false);
 	inda = prepare_xsqlda(stmt, true);
-
-	inda->sqlvar->sqltype = SQL_INT64;
-	*(ISC_INT64*)inda->sqlvar->sqldata = publish_tt;
+	if (!bind(inda, 0, time(NULL)-publish_tt))
+		goto error;
 
 	if (!isc_dsql_execute2(status, &tr, &stmt, 3, inda, outda))
 		if (isc_sqlcode(status) == 100L)
 			goto error;
 
-	uint64 ret = *(ISC_INT64*)outda->sqlvar->sqldata;
+	uint64 ret = *(long*)outda->sqlvar->sqldata;
 	
 	if (isc_commit_transaction(status, &tr))
 		goto error;
@@ -1259,6 +1437,16 @@ error:
 	return (0);
 }
 
+
+
+
+#if 0
+bool
+O2DatDB::
+update(O2DatRec &in, bool is_origurl)
+{
+}
+#endif
 
 
 
@@ -1343,7 +1531,7 @@ update(O2DatRecList &in)
 			if (!bind(da_insert, 10, (uint64)0))
 				goto error;
 			if (isc_dsql_execute(status, &tr, &stmt_insert, 3, da_insert))
-				goto error;
+				;//goto error;
 			free_xsqlda(da_insert);
 		} else if (it->userdata = 0) {
 			da_update = prepare_xsqlda(stmt_update, true);
@@ -1386,7 +1574,7 @@ update(O2DatRecList &in)
 	return ;
 
 error:
-	log(status);
+ 	log(status);
 	if (tr) isc_rollback_transaction(status, &tr);
 	if (stmt_insert) isc_dsql_free_statement(status, &stmt_insert, DSQL_drop);
 	if (stmt_update) isc_dsql_free_statement(status, &stmt_update, DSQL_drop);
@@ -1397,6 +1585,19 @@ error:
 	free_xsqlda(da_updatepublish);
 	return;
 }
+
+
+
+
+#if 0
+bool
+O2DatDB::
+update_lastpublish(const hashT &hash)
+{
+
+}
+#endif
+
 
 
 
