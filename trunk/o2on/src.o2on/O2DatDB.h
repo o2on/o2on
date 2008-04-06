@@ -98,29 +98,7 @@ public:
 	O2DatDB(O2Logger *lgr, const wchar_t *filename);
 	~O2DatDB();
 
-#ifdef O2_DB_FIREBIRD
-	bool create_table(void);
-	bool reindex(const char *target);
 
-	size_t select(const wchar_t *sql, SQLResultList &out);
-	bool select(O2DatRec &out);
-	bool select(O2DatRec &out, const hashT hash);
-	//bool select(O2DatRec &out, const wchar_t *domain, const wchar_t *bbsname);
-	bool select(O2DatRecList &out);
-	bool select(O2DatRecList &out, const wchar_t *domain, const wchar_t *bbsname);
-	//bool select(O2DatRec &out, const wchar_t *domain, const wchar_t *bbsname, const wchar_t *datname);
-	bool select(O2DatRecList &out, time_t publish_tt, size_t limit);
-	uint64 select_datcount(void);
-	uint64 select_datcount(wstrnummap &out);
-	uint64 select_totaldisksize(void);
-	uint64 select_publishcount(time_t publish_tt);
-
-//	bool update(O2DatRec &in, bool is_origurl);
-	void update(O2DatRecList &in);
-//	bool update_lastpublish(const hashT &hash);
-
-	bool remove(const hashT &hash);
-#else
 	bool create_table(void);
 	bool reindex(const char *target);
 
@@ -142,7 +120,6 @@ public:
 //	bool update_lastpublish(const hashT &hash);
 
 	bool remove(const hashT &hash);
-#endif
 
 	void AddUpdateQueue(O2DatRec &in);
 	void AddUpdateQueue(const hashT &hash);
