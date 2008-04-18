@@ -20,6 +20,7 @@
 #include <sstream>
 #include <boost/regex.hpp>
 #include <cassert>
+#include <babel.h>
 
 const char *hex 	= "0123456789abcdef";
 const wchar_t *whex = L"0123456789abcdef";
@@ -768,6 +769,44 @@ void unicode2ascii(const wstring &w, string &a)
 {
 	unicode2ascii(w.c_str(), w.size(), a);
 }
+
+// ---------------------------------------------------------------------------
+//	sjis_or_euc 
+//	sjis2euc
+// ---------------------------------------------------------------------------
+
+bool sjis_or_euc(const string &in, string &encoding)
+{
+	babel::init_babel();
+	switch (babel::analyze_base_encoding(in)) {
+		case babel::base_encoding::sjis:
+			encoding = "shift_jis";
+			return true;
+		case babel::base_encoding::euc:
+			encoding = "euc-jp";
+			return true;
+	}
+	return false;
+}
+bool sjis_or_euc(const string &in, wstring &encoding)
+{
+	babel::init_babel();
+	switch (babel::analyze_base_encoding(in)) {
+		case babel::base_encoding::sjis:
+			encoding = L"shift_jis";
+			return true;
+		case babel::base_encoding::euc:
+			encoding = L"euc-jp";
+			return true;
+	}
+	return false;
+}
+void sjis2euc(string &inout)
+{
+	babel::init_babel();
+	inout = babel::sjis_to_euc(inout);
+}
+
 
 // ---------------------------------------------------------------------------
 //	convertGTLT 

@@ -318,6 +318,11 @@ public:
 		title = titleW;
 	}
 
+	bool is_be(void) const
+	{
+		return bbsnameA == "be";
+	}
+
 
 private:
 	bool check(const char *dom, const char *bbs, const char *dat)

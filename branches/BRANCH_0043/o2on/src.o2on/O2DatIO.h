@@ -71,7 +71,7 @@ public:
 
 	uint64 Put(O2DatPath &datpath, const char *dat, uint64 len, uint64 startpos);
 	bool ExportToXML(const wchar_t *domain, const wchar_t *bbsname, string &out);
-	bool Dat2HTML(const hashT &hash, string &out);
+	bool Dat2HTML(const hashT &hash, string &out, string &encoding);
 
 	size_t GetLocalFileKeys(O2KeyList &keylist, time_t publish_tt, size_t limit);
 

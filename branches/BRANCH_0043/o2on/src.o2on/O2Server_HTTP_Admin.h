@@ -1114,12 +1114,13 @@ public:
 	{
 		hashT hash;
 		string html;
+		string encoding;
 
 
 		strmap::iterator it = hdr->queries.find("hash");
 		if (it != hdr->queries.end()) {
 			hash.assign(it->second.c_str(), it->second.size());
-			DatIO->Dat2HTML(hash, html);
+			DatIO->Dat2HTML(hash, html, encoding);
 		}
 
 		if (html.empty())
@@ -1129,7 +1130,7 @@ public:
 		HTTPHeader header(HTTPHEADERTYPE_RESPONSE);
 		header.status = 200;
 		AddResponseHeaderFields(header, Profile);
-		AddContentFields(header, html.size(), "text/html", "shift_jis");
+		AddContentFields(header, html.size(), "text/html", encoding.c_str());
 
 		ss->Lock();
 		header.Make(ss->sbuff);
