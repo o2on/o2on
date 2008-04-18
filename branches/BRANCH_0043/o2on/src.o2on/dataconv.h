@@ -72,6 +72,10 @@ void ascii2unicode(const string &a, wstring &w);
 void unicode2ascii(const wchar_t *w, size_t len, string &a);
 void unicode2ascii(const wstring &w, string &a);
 
+extern bool sjis_or_euc(const string &in, string &encoding);
+extern bool sjis_or_euc(const string &in, wstring &encoding);
+extern void sjis2euc(string &inout);
+
 void convertGTLT(const string &in, string &out);
 void convertGTLT(const wstring &in, wstring &out);
 

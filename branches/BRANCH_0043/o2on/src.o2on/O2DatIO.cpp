@@ -285,8 +285,15 @@ GetTitle(O2DatPath &datpath)
 
 	uint pos_title = pos_gt+1;
 	string tmp(&p[pos_title], &p[pos_lf]);
+	
+	wstring encoding;
+	if (datpath.is_be())
+		sjis_or_euc(tmp, encoding);
+	if (encoding.empty())
+		encoding = L"shift_jis";
+
 	wstring title;
-	ToUnicode(L"shift_jis", tmp, title);
+	ToUnicode(encoding.c_str(), tmp, title);
 
 	//ASCIIコントロールコードが入っていたら?に置き換える
 	//0x00 - 0x1f, 0x7f
@@ -686,7 +693,7 @@ ExportToXML(const wchar_t *domain, const wchar_t *bbsname, string &out)
 
 bool
 O2DatIO::
-Dat2HTML(const hashT &hash, string &out)
+Dat2HTML(const hashT &hash, string &out, string &encoding)
 {
 	char tmp[32];
 
@@ -694,6 +701,18 @@ Dat2HTML(const hashT &hash, string &out)
 	string dat;
 	if (!Load(hash, 0, dat, datpath))
 		return false;
+
+	if (datpath.is_be())
+		sjis_or_euc(dat, encoding);
+	if (encoding.empty())
+		encoding = "shift_jis";
+
+	string colon = "：";
+	string broken = "壊れてる？";
+	if (encoding == "euc-jp"){
+		sjis2euc(colon);
+		sjis2euc(broken);
+	}
 
 	string url;
 	datpath.geturl(url);
@@ -713,7 +732,9 @@ Dat2HTML(const hashT &hash, string &out)
 		if (!firstres && token.size() == 5) {
 			out += "<html>\r\n";
 			out += "<head>\r\n";
-			out += "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=shift_jis\">\r\n";
+			out += "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=";
+			out += encoding;
+			out += "\">\r\n";
 			out += "<title>";
 			out += token[4];
 			out += "</title>\r\n";
@@ -731,7 +752,7 @@ Dat2HTML(const hashT &hash, string &out)
 		}
 
 		out += "<dt>";
-		sprintf_s(tmp, 32, "%d ：", n);
+		sprintf_s(tmp, 32, "%d %s", n, colon.c_str());
 		out += tmp;
 
 		if (token.size() >= 4) {
@@ -747,7 +768,7 @@ Dat2HTML(const hashT &hash, string &out)
 				out += token[0];
 				out += "</b></a>";
 			}
-			out += "：";
+			out += colon;
 			out += token[2];
 
 			out += "<dd>";
@@ -755,7 +776,7 @@ Dat2HTML(const hashT &hash, string &out)
 			out += "<br><br>\r\n";
 		}
 		else {
-			out += "壊れてる？";
+			out += broken;
 			out += "<dd>";
 			out += line;
 			out += "<br><br>\r\n";

@@ -60,7 +60,7 @@
 				FavorSizeOrSpeed="1"
 				OmitFramePointers="true"
 				WholeProgramOptimization="true"
-				AdditionalIncludeDirectories="..\..\sqlite;..\..\zlib"
+				AdditionalIncludeDirectories="..\..\sqlite;..\..\zlib;..\..\babel"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;PROJ_SAX2;XML_LIBRARY"
 				StringPooling="false"
 				RuntimeLibrary="0"
@@ -3424,6 +3424,14 @@
 			</File>
 			<File
 				RelativePath=".\zlib.h"
+				>
+			</File>
+		</Filter>
+		<Filter
+			Name="babel"
+			>
+			<File
+				RelativePath="..\..\babel\babel.cpp"
 				>
 			</File>
 		</Filter>
