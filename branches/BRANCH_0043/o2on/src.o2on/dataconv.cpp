@@ -810,7 +810,7 @@ void sjis2euc(string &inout)
 
 // ---------------------------------------------------------------------------
 //	convertGTLT 
-//	
+//	escapeCDATA
 // ---------------------------------------------------------------------------
 void convertGTLT(const string &in, string &out)
 {
@@ -837,6 +837,26 @@ void convertGTLT(const wstring &in, wstring &out)
 		e, L"(?1&lt;)(?2&gt;)(?3<br>)", boost::match_default | boost::format_all);
 
 	out = t.str();
+}
+void escapeCDATA(const string &in, string &out)
+{
+	out = string(in);
+
+	string from = "]]>";
+	string to = "]]]]><![CDATA[>";
+
+    for (size_t pos = 0; (pos = out.find(from, pos)) != string::npos; pos += to.size())
+		out.replace(pos, from.size(), to);
+}
+void escapeCDATA(const wstring &in, wstring &out)
+{
+	out = wstring(in);
+
+	wstring from = L"]]>";
+	wstring to = L"]]]]><![CDATA[>";
+
+    for (size_t pos = 0; (pos = out.find(from, pos)) != string::npos; pos += to.size())
+		out.replace(pos, from.size(), to);
 }
 
 
