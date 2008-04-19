@@ -166,7 +166,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\..\sqlite;..\..\zlib"
+				AdditionalIncludeDirectories="..\..\sqlite;..\..\zlib;..\..\babel"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;XML_LIBRARY"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
