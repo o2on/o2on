@@ -60,7 +60,7 @@
 #endif
 
 /* */
-#if O2DEBUG
+#if 1 //O2DEBUG
 #define CLEAR_WORKSET NULL
 #else
 #define CLEAR_WORKSET (SetProcessWorkingSetSize(GetCurrentProcess(), 0xffffffff, 0xffffffff))
