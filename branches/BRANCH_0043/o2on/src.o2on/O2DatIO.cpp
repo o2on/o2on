@@ -699,8 +699,10 @@ Dat2HTML(const hashT &hash, string &out, string &encoding)
 
 	O2DatPath datpath;
 	string dat;
-	if (!Load(hash, 0, dat, datpath))
+	if (!Load(hash, 0, dat, datpath)) {
+		encoding = "shift_jis";
 		return false;
+	}
 
 	if (datpath.is_be())
 		sjis_or_euc(dat, encoding);
