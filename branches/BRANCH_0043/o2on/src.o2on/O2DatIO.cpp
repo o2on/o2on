@@ -154,12 +154,12 @@ KakoHantei(const O2DatPath &datpath)
 	if (p == NULL)
 		return false;
 
-	return (KakoHantei(p, mf.size()));
+	return (KakoHantei(p, mf.size(), datpath.is_be()));
 }
 
 bool
 O2DatIO::
-KakoHantei(const char *dat, uint64 len)
+KakoHantei(const char *dat, uint64 len, bool is_be)
 {
 	int lf = 0;
 	const char *p[2] = {NULL};
@@ -175,25 +175,40 @@ KakoHantei(const char *dat, uint64 len)
 	p[1]++;
 	size_t linelen = p[0] - p[1];
 
+	string encoding;
+	if (is_be)
+		sjis_or_euc(string(dat), encoding);
+	if (encoding.empty())
+		encoding = "shift_jis";
+
+	string over1000 = "１００１<><>Over 1000 Thread";
+	string stop = "<>停止したよ。";
+	string rula = "<>移転";
+	if (encoding == "euc-jp"){
+		sjis2euc(over1000);
+		sjis2euc(stop);
+		sjis2euc(rula);
+	}
+
 	// -----------------------------------------------------------------------
 	//	1000: 投稿日が「Over 1000 Thread」
 	//	ex) １００１<><>Over 1000 Thread<>このスレッドは１０００を超えました。 <br> もう書けないので、新しいスレッドを立ててくださいです。。。 <>
 	// -----------------------------------------------------------------------
-	if (linelen >= 28 && strncmp(p[1], "１００１<><>Over 1000 Thread", 28) == 0)
+	if (linelen >= 28 && strncmp(p[1], over1000.c_str(), 28) == 0)
 		return true;
 	
 	// -----------------------------------------------------------------------
 	//	スレスト: 行末が「<>停止したよ。」
 	//	ex) 停止しました。。。<>停止<>停止<>真・スレッドストッパー。。。(￣ー￣)ﾆﾔﾘｯ<>停止したよ。
 	// -----------------------------------------------------------------------
-	if (linelen >= 14 && strncmp(p[0]-14, "<>停止したよ。", 14) == 0)
+	if (linelen >= 14 && strncmp(p[0]-14, stop.c_str(), 14) == 0)
 		return true;
 
 	// -----------------------------------------------------------------------
 	//	飛ばし: 行末が「<>移転」
 	//	ex) 妄想族ψψψ ★<>sage<>移転＆停止<> <br> 妄想族ψψψ ★ さんが飛ばしました。(￣ー￣)ﾆﾔﾘｯ <br> <br> BE ポイント = 4780 から 20 消費しました。<br> <>移転
 	// -----------------------------------------------------------------------
-	if (linelen >= 6 && strncmp(p[0]-6, "<>移転", 6) == 0)
+	if (linelen >= 6 && strncmp(p[0]-6, rula.c_str(), 6) == 0)
 		return true;
 
 	return false;
