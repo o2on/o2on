@@ -112,7 +112,7 @@ public:
 				// –{•¶‚Ìdatæ‚è‚İ
 				const char *rawdata = &ss.rbuff[header->length];
 				uint64 datsize = ss.rbuff.size() - header->length;
-				imported = ImportDat(DatIO, Boards, *header, rawdata, datsize,
+				imported = ImportDat(DatIO, Profile, Boards, *header, rawdata, datsize,
 					Logger, ss.ip, ss.port, QueryDB, hwndBaloonCallback, msgBaloonCallback);
 				//1ŒÂ¬Œ÷‚µ‚½‚çI‚í‚è
 			}

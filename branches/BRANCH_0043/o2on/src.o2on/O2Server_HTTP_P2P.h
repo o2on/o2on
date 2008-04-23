@@ -337,7 +337,7 @@ private:
 		if (hdr->contentlength) {
 			dat = &ss->rbuff[hdr->length];
 			datsize = ss->rbuff.size() - hdr->length;
-			bool imported = ImportDat(DatIO, Boards, *hdr, dat, datsize,
+			bool imported = ImportDat(DatIO, Profile, Boards, *hdr, dat, datsize,
 				Logger, node.ip, node.port, QueryDB, hwndBaloonCallback, msgBaloonCallback);
 			if (!imported) {
 				ss->Lock();

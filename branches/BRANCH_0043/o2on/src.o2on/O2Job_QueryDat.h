@@ -130,7 +130,7 @@ public:
 				const char *rawdata = &ss.rbuff[header->length];
 				uint64 datsize = ss.rbuff.size() - header->length;
 
-				ImportDat(DatIO, NULL, *header, rawdata, datsize,
+				ImportDat(DatIO, Profile, NULL, *header, rawdata, datsize,
 					Logger, ss.ip, ss.port, QueryDB, hwndBaloonCallback, msgBaloonCallback);
 			}
 
