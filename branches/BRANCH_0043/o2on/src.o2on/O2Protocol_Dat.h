@@ -160,6 +160,7 @@ public:
 	//	ImportDat
 	// -----------------------------------------------------------------------
 	bool ImportDat(O2DatIO *datio
+				 , const O2Profile *profile
 				 , O2Boards *boards
 				 , const HTTPHeader &header
 				 , const char *rawdata
@@ -230,7 +231,7 @@ public:
 				datpath.gethash(hash);
 				wstring title;
 				datpath.gettitle(title);
-				if (QueryDB->SetNote(hash, title.c_str(), size)) {
+				if (QueryDB->SetNote(hash, title.c_str(), size) && hwndBaloonCallback && profile->IsBaloon_Hokan()) {
 					wchar_t msg[256];
 					swprintf_s(msg, 256, L"%s\n‚ª•âŠ®‚³‚ê‚Ü‚µ‚½", title.c_str());
 					SendMessage(
