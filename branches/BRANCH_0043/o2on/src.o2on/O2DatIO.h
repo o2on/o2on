@@ -58,7 +58,7 @@ public:
 	void SetEmergencyHaltCallbackMsg(HWND hwnd, UINT msg);
 
 	bool KakoHantei(const O2DatPath &datpath);
-	bool KakoHantei(const char *dat, uint64 len);
+	bool KakoHantei(const char *dat, uint64 len, bool is_be);
 	bool CheckDat(const char *in, uint64 inlen);
 	bool GetTitle(O2DatPath &datpath);
 	uint64 GetSize(const O2DatPath &datpath);
