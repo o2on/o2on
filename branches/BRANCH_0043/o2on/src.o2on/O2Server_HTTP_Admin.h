@@ -1333,6 +1333,7 @@ public:
 				im.date = time(NULL);
 				im.key.random();
 				im.mine = true;
+				im.broadcast = true;
 				if (Job_Broadcast->Add(im))
 					BroadcastDB->AddMessage(im);
 			}
