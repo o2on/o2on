@@ -36,28 +36,26 @@ struct O2IMessage
 	hashT		key;
 	bool		mine;
 	hashListT	paths;
+	bool		broadcast;
 
 	O2IMessage(void)
 		: ip(0)
 		, port(0)
 		, date(0)
 		, mine(false)
+		, broadcast(false)
 	{
 	}
 
 	bool operator==(const O2IMessage &src)
 	{
-		//この部分のコメントアウトを解除
-		//return (key == src.key ? true : false);
-
-		//note:ブロードキャストメッセージの件の暫定対応
-		// この構造体はIMDBでも使用しているため、
-		// 修正によってメッセンジャーの方にも影響あり。
-		// メッセージ内容(IP/PORT/本文が同じ)だと一つのメッセージになる。
-		if(ip == src.ip && port == src.port && msg == src.msg)
-			return true;
-		else
-			return false;
+		if (broadcast == src.broadcast) {
+			if (broadcast)
+				return (ip == src.ip && port == src.port && msg == src.msg ? true : false);
+			else
+				return (key == src.key ? true : false);
+		}
+		return false;
 	}
 };
 typedef std::list<O2IMessage> O2IMessages;

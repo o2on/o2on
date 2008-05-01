@@ -423,6 +423,7 @@ private:
 		tmpdb.GetMessages(msg);
 
 		for (O2IMessagesIt it = msg.begin(); it != msg.end(); it++) {
+			it->broadcast = true;
 			if (Job_Broadcast->Add(*it)) {
 				it->paths.clear();
 				BroadcastDB->AddMessage(*it);
