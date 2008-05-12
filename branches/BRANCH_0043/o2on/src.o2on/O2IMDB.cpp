@@ -366,9 +366,6 @@ bool
 O2IMDB::
 Save(const wchar_t *filename, bool clear)
 {
-	if (Messages.empty())
-		return false;
-
 	O2IMSelectCondition cond(IM_XMLELM_ALL);
 	string out;
 	ExportToXML(cond, out);
