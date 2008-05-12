@@ -303,7 +303,7 @@ GetTitle(O2DatPath &datpath)
 	
 	wstring encoding;
 	if (datpath.is_be())
-		sjis_or_euc(tmp, encoding);
+		sjis_or_euc(string(p, end), encoding);
 	if (encoding.empty())
 		encoding = L"shift_jis";
 
