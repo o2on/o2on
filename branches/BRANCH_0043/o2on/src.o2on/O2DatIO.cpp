@@ -1124,6 +1124,7 @@ StaticReindexThread(void *data)
 
 	O2DatIO *me = (O2DatIO*)data;
 
+	CoInitialize(NULL);
 	me->ProgressInfo->Reset(true, false);
 	me->ProgressInfo->SetMessage(L"reindex...");
 	me->ProgressInfo->AddMax(4);
@@ -1139,6 +1140,7 @@ StaticReindexThread(void *data)
 	}
 
 	me->ProgressInfo->Reset(false, false);
+	CoUninitialize();
 
 	CloseHandle(me->ReindexThreadHandle);
 	me->ReindexThreadHandle = NULL;
