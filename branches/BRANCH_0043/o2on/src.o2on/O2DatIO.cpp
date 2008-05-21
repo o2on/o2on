@@ -1120,15 +1120,15 @@ uint WINAPI
 O2DatIO::
 StaticReindexThread(void *data)
 {
-	static char *targets[] = {"dat","idx_dat_domain_bbsname_datname","idx_dat_lastpublish"};
+	static char *targets[] = {"dat","idx_dat_domain_bbsname_datname","idx_dat_lastpublish","idx_dat_datname"};
 
 	O2DatIO *me = (O2DatIO*)data;
 
 	me->ProgressInfo->Reset(true, false);
 	me->ProgressInfo->SetMessage(L"reindex...");
-	me->ProgressInfo->AddMax(3);
+	me->ProgressInfo->AddMax(4);
 
-	for (size_t i = 0; i < 3; i++) {
+	for (size_t i = 0; i < 4; i++) {
 		wstring tmp;
 		ascii2unicode(targets[i], strlen(targets[i]), tmp);
 		tmp.insert(0, L"reindex ");
