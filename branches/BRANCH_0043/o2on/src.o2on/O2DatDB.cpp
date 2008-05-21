@@ -207,9 +207,10 @@ create_table(void)
 		");"
 		"drop index if exists idx_dat_domain;"
 		"drop index if exists idx_dat_bbsname;"
-		"drop index if exists idx_dat_datname;"
+//		"drop index if exists idx_dat_datname;"
 		"create index if not exists idx_dat_domain_bbsname_datname on dat (domain, bbsname, datname);"
 		"create index if not exists idx_dat_lastpublish on dat (lastpublish);"
+		"create index if not exists idx_dat_datname on dat (datname);";
 		"analyze;";
 	err = sqlite3_exec(db, sql, NULL, 0, 0);
 	if (err != SQLITE_OK)
