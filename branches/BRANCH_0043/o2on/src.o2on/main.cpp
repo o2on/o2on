@@ -281,6 +281,8 @@ _tWinMain(HINSTANCE inst, HINSTANCE previnst, TCHAR *cmdline, int cmdshow)
 static bool
 InitializeApp(TCHAR *cmdline, int cmdshow)
 {
+	SetProcessShutdownParameters(0x3FF, 0);
+
 	wchar_t msg[1024];
 
 	INITCOMMONCONTROLSEX icex;
