@@ -79,6 +79,7 @@ public:
 
 	bool create_table(void);
 	bool reindex(const char *target);
+	bool analyze(void);
 
 	size_t select(const wchar_t *sql, SQLResultList &out);
 	bool select(O2DatRec &out);

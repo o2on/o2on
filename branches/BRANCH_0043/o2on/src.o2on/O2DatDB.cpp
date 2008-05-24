@@ -273,6 +273,39 @@ error:
 
 
 
+bool
+O2DatDB::
+analyze(void)
+{
+#if TRACE_SQL_EXEC_TIME
+	stopwatch sw("analyze/vacuum");
+#endif
+
+	sqlite3 *db = NULL;
+	int err = sqlite3_open16(dbfilename.c_str(), &db);
+	if (err != SQLITE_OK)
+		goto error;
+
+	char sql[] = "analyze; vacuum dat;";
+
+	err = sqlite3_exec(db, sql, NULL, 0, 0);
+	if (err != SQLITE_OK)
+		goto error;
+
+	err = sqlite3_close(db);
+	if (err != SQLITE_OK)
+		goto error;
+	return true;
+
+error:
+	log(db);
+	if (db) sqlite3_close(db);
+	return false;
+}
+
+
+
+
 size_t
 O2DatDB::
 select(const wchar_t *sql, SQLResultList &out)
