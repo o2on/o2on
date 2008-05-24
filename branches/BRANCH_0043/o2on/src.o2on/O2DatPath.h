@@ -336,7 +336,7 @@ private:
 
 	bool checkdatname(const char *dat)
 	{
-		if (strlen(dat) < 13)
+		if (strlen(dat) < 13 || strlen(dat) > 15)
 			return false;
 
 		char *endptr;
