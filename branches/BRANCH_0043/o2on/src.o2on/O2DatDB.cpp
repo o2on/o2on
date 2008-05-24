@@ -281,14 +281,14 @@ select(const wchar_t *sql, SQLResultList &out)
 	stopwatch sw("select");
 #endif
 	wstrarray cols;
-
 	sqlite3 *db = NULL;
+	sqlite3_stmt *stmt = NULL;
+
 	int err = sqlite3_open16(dbfilename.c_str(), &db);
 	if (err != SQLITE_OK)
 		goto error;
 	sqlite3_busy_timeout(db, 5000);
 
-	sqlite3_stmt *stmt = NULL;
 	err = sqlite3_prepare16_v2(db, sql, wcslen(sql)*2, &stmt, NULL);
 	if (err != SQLITE_OK)
 		goto error;
@@ -337,6 +337,8 @@ select(O2DatRec &out)
 
 	bool ret = true;
 	sqlite3 *db = NULL;
+	sqlite3_stmt *stmt = NULL;
+
 	int err = sqlite3_open16(dbfilename.c_str(), &db);
 	if (err != SQLITE_OK)
 		goto error;
@@ -348,7 +350,6 @@ select(O2DatRec &out)
 		L" from dat"
 		L" order by random() limit 1;";
 
-	sqlite3_stmt *stmt = NULL;
 	err = sqlite3_prepare16_v2(db, sql, wcslen(sql)*2, &stmt, NULL);
 	if (err != SQLITE_OK)
 		goto error;
@@ -391,6 +392,8 @@ select(O2DatRec &out, hashT hash)
 
 	bool ret = true;
 	sqlite3 *db = NULL;
+	sqlite3_stmt *stmt = NULL;
+
 	int err = sqlite3_open16(dbfilename.c_str(), &db);
 	if (err != SQLITE_OK)
 		goto error;
@@ -402,7 +405,6 @@ select(O2DatRec &out, hashT hash)
 		L" from dat"
 		L" where hash = ?;";
 
-	sqlite3_stmt *stmt = NULL;
 	err = sqlite3_prepare16_v2(db, sql, wcslen(sql)*2, &stmt, NULL);
 	if (err != SQLITE_OK)
 		goto error;
@@ -444,6 +446,8 @@ select(O2DatRec &out, const wchar_t *domain, const wchar_t *bbsname)
 
 	bool ret = true;
 	sqlite3 *db = NULL;
+	sqlite3_stmt *stmt = NULL;
+
 	int err = sqlite3_open16(dbfilename.c_str(), &db);
 	if (err != SQLITE_OK)
 		goto error;
@@ -457,7 +461,6 @@ select(O2DatRec &out, const wchar_t *domain, const wchar_t *bbsname)
 		L"   and bbsname = ?"
 		L" order by random() limit 1;";
 
-	sqlite3_stmt *stmt = NULL;
 	err = sqlite3_prepare16_v2(db, sql, wcslen(sql)*2, &stmt, NULL);
 	if (err != SQLITE_OK)
 		goto error;
@@ -505,6 +508,8 @@ select(O2DatRec &out, const wchar_t *domain, const wchar_t *bbsname, const wchar
 
 	bool ret = true;
 	sqlite3 *db = NULL;
+	sqlite3_stmt *stmt = NULL;
+
 	int err = sqlite3_open16(dbfilename.c_str(), &db);
 	if (err != SQLITE_OK)
 		goto error;
@@ -518,7 +523,6 @@ select(O2DatRec &out, const wchar_t *domain, const wchar_t *bbsname, const wchar
 		L"   and bbsname = ?"
 		L"   and datname = ?;";
 
-	sqlite3_stmt *stmt = NULL;
 	err = sqlite3_prepare16_v2(db, sql, wcslen(sql)*2, &stmt, NULL);
 	if (err != SQLITE_OK)
 		goto error;
@@ -1233,6 +1237,8 @@ remove(const hashT &hash)
 #endif
 
 	sqlite3 *db = NULL;
+	sqlite3_stmt *stmt = NULL;
+
 	int err = sqlite3_open16(dbfilename.c_str(), &db);
 	if (err != SQLITE_OK)
 		goto error;
@@ -1241,7 +1247,6 @@ remove(const hashT &hash)
 	wchar_t *sql =
 		L"delete from dat where hash = ?;";
 
-	sqlite3_stmt *stmt = NULL;
 	err = sqlite3_prepare16_v2(db, sql, wcslen(sql)*2, &stmt, NULL);
 	if (err != SQLITE_OK)
 		goto error;
