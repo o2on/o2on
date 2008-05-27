@@ -66,6 +66,7 @@ BEGIN
         BEGIN
             MENUITEM "再構築(&B)",                     ID_REBUILDDB
             MENUITEM "reindex(&I)",                 ID_REINDEX
+            MENUITEM "analyze(&L)",                 ID_ANALYZE
         END
         MENUITEM SEPARATOR
         MENUITEM "バージョン情報(&A)...",              ID_ABOUT

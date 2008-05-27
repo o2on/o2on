@@ -44,6 +44,7 @@ O2DatIO(O2DatDB *db, O2Logger *lgr, O2Profile *prof, O2ProgressInfo *proginfo)
 	, ReindexThreadHandle(NULL)
 	, LoopRebuildDB(false)
 	, EnumDatThreadNum(0)
+	, AnalyzeThreadHandle(0)
 
 {
 	DWORD BytesPerSector;
@@ -878,6 +879,7 @@ StaticRebuildDBThread(void *data)
 
 	CoInitialize(NULL);
 	me->RebuildDBThread(me->Profile->GetCacheRootW(), 0);
+	me->DatDB->analyze();
 	CoUninitialize();
 
 	CloseHandle(me->RebuildDBThreadHandle);
@@ -1146,5 +1148,36 @@ StaticReindexThread(void *data)
 	me->ReindexThreadHandle = NULL;
 
 	//_endthreadex(0);
+	return (0);
+}
+
+void
+O2DatIO::
+Analyze(void)
+{
+	if (AnalyzeThreadHandle)
+		return;
+	AnalyzeThreadHandle = (HANDLE)_beginthreadex(
+		NULL, 0, StaticAnalyzeThread, (void*)this, 0, NULL);
+}
+
+uint WINAPI
+O2DatIO::
+StaticAnalyzeThread(void *data)
+{
+	O2DatIO *me = (O2DatIO*)data;
+
+	CoInitialize(NULL);
+	me->ProgressInfo->Reset(true, false);
+	me->ProgressInfo->SetMessage(L"analyze...");
+	me->ProgressInfo->AddMax(2);
+	me->ProgressInfo->pos = 1;
+	me->DatDB->analyze();
+	me->ProgressInfo->Reset(false, false);
+	CoUninitialize();
+
+	CloseHandle(me->AnalyzeThreadHandle);
+	me->AnalyzeThreadHandle = NULL;
+
 	return (0);
 }
