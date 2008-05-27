@@ -644,9 +644,9 @@ bool is_globalIP(ulong ip)
 bool ToUnicode(const wchar_t *charset, const char *in, const uint len, wstring &out)
 {
 	//IMultiLanguageê∂ê¨
-	IMultiLanguage *lang = NULL;
+	IMultiLanguage2 *lang = NULL;
 	HRESULT hr = CoCreateInstance(CLSID_CMultiLanguage, NULL,
-		CLSCTX_ALL, IID_IMultiLanguage, (LPVOID*)&lang);
+		CLSCTX_ALL, IID_IMultiLanguage2, (LPVOID*)&lang);
 
 	assert(SUCCEEDED(hr));
 	//CharsetèÓïÒéÊìæ
@@ -684,9 +684,9 @@ bool ToUnicode(const wchar_t *charset, const char *in, const uint len, wstring &
 bool FromUnicode(const wchar_t *charset, const wchar_t *in, uint len, string &out)
 {
 	//IMultiLanguageê∂ê¨
-	IMultiLanguage *lang = NULL;
+	IMultiLanguage2 *lang = NULL;
 	HRESULT hr = CoCreateInstance(CLSID_CMultiLanguage, NULL,
-		CLSCTX_ALL, IID_IMultiLanguage, (LPVOID*)&lang);
+		CLSCTX_ALL, IID_IMultiLanguage2, (LPVOID*)&lang);
 
 	assert(SUCCEEDED(hr));
 	//CharsetèÓïÒéÊìæ
