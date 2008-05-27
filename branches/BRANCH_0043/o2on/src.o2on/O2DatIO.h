@@ -36,6 +36,7 @@ protected:
 
 	HANDLE			RebuildDBThreadHandle;
 	HANDLE			ReindexThreadHandle;
+	HANDLE			AnalyzeThreadHandle;
 	bool			LoopRebuildDB;
 	uint			EnumDatThreadNum;
 	Mutex			EnumDatThreadNumLock;
@@ -83,4 +84,6 @@ public:
 
 	void Reindex(void);
 	static uint WINAPI StaticReindexThread(void *data);
+	void Analyze(void);
+	static uint WINAPI StaticAnalyzeThread(void *data);
 };

@@ -79,6 +79,7 @@
 #define ID_REBUILDDB                    40010
 #define ID_DB40013                      40013
 #define ID_REINDEX                      40014
+#define ID_ANALYZE                      40016
 
 // Next default values for new objects
 // 

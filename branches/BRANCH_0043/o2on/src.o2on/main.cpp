@@ -1070,6 +1070,12 @@ MainWindowProc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp)
 						DatIO->Reindex();
 					}
 					break;
+				case ID_ANALYZE:
+					if (!Active && !hwndProgressDlg) {
+						CreateProgressDialog(_T("analyze..."));
+						DatIO->Analyze();
+					}
+					break;
 				case ID_OPENWEBADMIN: {
 					wstring type = Profile->GetAdminBrowserType();
 					wstring path = Profile->GetAdminBrowserPath();
