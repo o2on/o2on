@@ -334,7 +334,12 @@ public:
 		string str;
 		unicode2ascii(chars, length, str);
 
-		if (wcsstr(cur_element.c_str(), L"URL")) {
+		if (wcsstr(cur_element.c_str(), L"URLBase")) {
+			if (str[str.size()-1] == '/')
+				str.erase(str.size()-1);
+			base_url = str;
+		}
+		else if (wcsstr(cur_element.c_str(), L"URL")) {
 			if (strncmp(str.c_str(), "http://", 7) != 0)
 				str = base_url + (str[0] == '/' ? "" : "/") + str;
 		}

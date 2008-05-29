@@ -92,7 +92,7 @@ public:
 		profile->GetFlags(flags);
 
 		header.AddFieldString("Connection", "close");
-		header.AddFieldString("Host", header.hostname.c_str());
+		header.AddFieldString("Host", header.host.c_str());
 		header.AddFieldString("User-Agent", profile->GetUserAgentA());
 		header.AddFieldString(X_O2_NODE_ID, hashstr.c_str());
 		header.AddFieldString(X_O2_RSAPUBLICKEY, pubkey.c_str());
