@@ -71,7 +71,7 @@ public:
 		hdr.method = "GET";
 		hdr.url = url;
 		hdr.AddFieldString("Connection", "close");
-		hdr.AddFieldString("Host", hdr.hostname.c_str());
+		hdr.AddFieldString("Host", hdr.host.c_str());
 		if (!useragent.empty())
 			hdr.AddFieldString("User-Agent", useragent.c_str());
 		if (body && bodylen)
@@ -101,7 +101,7 @@ public:
 		hdr.url = url;
 
 		hdr.AddFieldString("Connection", "close", false);
-		hdr.AddFieldString("Host", hdr.hostname.c_str(), false);
+		hdr.AddFieldString("Host", hdr.host.c_str(), false);
 		if (!useragent.empty())
 			hdr.AddFieldString("User-Agent", useragent.c_str(), false);
 		if (body && bodylen)
