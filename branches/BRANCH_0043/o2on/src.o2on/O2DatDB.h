@@ -97,6 +97,7 @@ public:
 //	bool update(O2DatRec &in, bool is_origurl);
 	void update(O2DatRecList &in);
 //	bool update_lastpublish(const hashT &hash);
+	void divide_update(O2DatRecList &in);
 
 	bool remove(const hashT &hash);
 
