@@ -7,7 +7,7 @@
 ・zlib 1.2.3
 ・Xerces-C++ 2.8.0
 ・SQLite 3.5.6
-・UPX 3.02
+・UPX 3.03
 ・MiniZip Ver0.02c
 ・バベル
 
@@ -155,12 +155,13 @@ http://www.sqlite.org/index.html
     +-sqlite
 
 ------------------------------------------------------------------------------
- UPX 3.02
+ UPX 3.03
 ------------------------------------------------------------------------------
+注: UPX圧縮は使わなくなりました。
 http://upx.sourceforge.net/#download
-upx302w.zipをダウンロード。
+upx303w.zipをダウンロード。
 
-・upx302w.zip内のupx.exeをo2onと同じ階層に移動
+・upx303w.zip内のupx.exeをo2onと同じ階層に移動
     +-o2on
     +-cryptopp
     +-zlib
