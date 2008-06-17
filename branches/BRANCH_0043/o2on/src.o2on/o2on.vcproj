@@ -1731,6 +1731,26 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath="..\..\sqlite\bitvec.c"
+				>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						CompileAs="1"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						CompileAs="1"
+					/>
+				</FileConfiguration>
+			</File>
+			<File
 				RelativePath="..\..\sqlite\btmutex.c"
 				>
 				<FileConfiguration
@@ -2379,6 +2399,26 @@
 						PreprocessorDefinitions="NO_TCL;THREADSAFE=1"
 						CompileAs="1"
 						DisableSpecificWarnings="4018;4244;4996"
+					/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\sqlite\mem5.c"
+				>
+				<FileConfiguration
+					Name="Release|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						CompileAs="1"
+					/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32"
+					>
+					<Tool
+						Name="VCCLCompilerTool"
+						CompileAs="1"
 					/>
 				</FileConfiguration>
 			</File>
