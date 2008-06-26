@@ -61,7 +61,7 @@ bool
 O2IPFilter::
 getdefault(void)
 {
-	return ((bool)DefaultFlag);
+	return (DefaultFlag != 0);
 }
 
 
