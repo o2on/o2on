@@ -47,6 +47,7 @@ O2DatDB(O2Logger *lgr, const wchar_t *filename)
 	, UpdateThreadHandle(NULL)
 	, UpdateThreadLoop(false)
 {
+	dbfilename_to_rebuild = dbfilename + L".rebuild";
 }
 
 
@@ -173,17 +174,53 @@ get_column_names(sqlite3_stmt* stmt, wstrarray &cols)
 
 
 
+bool
+O2DatDB::
+check_queue_size(O2DatRecList &reclist)
+{
+	return (reclist.size() < MAX_UPDATE_QUEUE_SIZE ? true : false);
+}
+
+
+
 
 bool
 O2DatDB::
-create_table(void)
+before_rebuild(void)
+{
+	if (!DeleteFile(dbfilename_to_rebuild.c_str()) && GetLastError() != ERROR_FILE_NOT_FOUND)
+		return false;
+	if (!create_table(true))
+		return false;
+
+	return true;
+}
+
+bool
+O2DatDB::
+after_rebuild(void)
+{
+	if (!MoveFileEx(dbfilename.c_str(), (dbfilename + L".old").c_str(), MOVEFILE_REPLACE_EXISTING | MOVEFILE_WRITE_THROUGH))
+		return false;
+	if (!MoveFileEx(dbfilename_to_rebuild.c_str(), dbfilename.c_str(), MOVEFILE_REPLACE_EXISTING | MOVEFILE_WRITE_THROUGH))
+		return false;
+
+	return true;
+}
+
+
+
+
+bool
+O2DatDB::
+create_table(bool to_rebuild)
 {
 #if TRACE_SQL_EXEC_TIME
 	stopwatch sw("create table/index and analyze");
 #endif
 
 	sqlite3 *db = NULL;
-	int err = sqlite3_open16(dbfilename.c_str(), &db);
+	int err = sqlite3_open16(to_rebuild ? dbfilename_to_rebuild.c_str() : dbfilename.c_str(), &db);
 	if (err != SQLITE_OK)
 		goto error;
 
@@ -959,6 +996,90 @@ error:
 
 
 
+void
+O2DatDB::
+insert(O2DatRecList &in, bool to_rebuild)
+{
+#if TRACE_SQL_EXEC_TIME
+	stopwatch sw("insert by reclist");
+#endif
+
+	sqlite3 *db = NULL;
+	sqlite3_stmt *stmt_insert = NULL;
+	O2DatRec org;
+
+	int err = sqlite3_open16(to_rebuild ? dbfilename_to_rebuild.c_str() : dbfilename.c_str(), &db);
+	if (err != SQLITE_OK)
+		goto error;
+	sqlite3_busy_timeout(db, 5000);
+
+	sqlite3_exec(db, "pragma synchronous = OFF;", NULL, NULL, NULL);
+
+	wchar_t *sql_insert =
+		L"insert or replace into dat ("
+		COLUMNS
+		L") values ("
+		L"?,?,?,?,?,?,?,?,?,?,?"
+		L");";
+	err = sqlite3_prepare16_v2(db, sql_insert, wcslen(sql_insert)*2, &stmt_insert, NULL);
+	if (err != SQLITE_OK)
+		goto error;
+
+	//
+	//	Loop
+	//
+	sqlite3_exec(db, "begin;", NULL, NULL, NULL);
+	for (O2DatRecListIt it = in.begin(); it != in.end(); it++) {
+		sqlite3_reset(stmt_insert);
+		if (!bind(db, stmt_insert, 1, it->hash))
+			goto error;
+		if (!bind(db, stmt_insert, 2, it->domain))
+			goto error;
+		if (!bind(db, stmt_insert, 3, it->bbsname))
+			goto error;
+		if (!bind(db, stmt_insert, 4, it->datname))
+			goto error;
+		if (!bind(db, stmt_insert, 5, it->size))
+			goto error;
+		if (!bind(db, stmt_insert, 6, it->disksize))
+			goto error;
+		if (!bind(db, stmt_insert, 7, it->url))
+			goto error;
+		if (!bind(db, stmt_insert, 8, it->title))
+			goto error;
+		if (!bind(db, stmt_insert, 9, it->res))
+			goto error;
+		if (!bind(db, stmt_insert, 10, time(NULL)))
+			goto error;
+		if (!bind(db, stmt_insert, 11, (uint64)0))
+			goto error;
+
+		err = sqlite3_step(stmt_insert);
+		if (err != SQLITE_ROW && err != SQLITE_DONE)
+			goto error;
+		Sleep(1);
+	}
+	sqlite3_exec(db, "commit;", NULL, NULL, NULL);
+
+	sqlite3_finalize(stmt_insert);
+	stmt_insert = NULL;
+
+	err = sqlite3_close(db);
+	if (err != SQLITE_OK)
+		goto error;
+
+	return;
+
+error:
+	log(db);
+	if (stmt_insert) sqlite3_finalize(stmt_insert);
+	if (db) sqlite3_close(db);
+	return;
+}
+
+
+
+
 #if 0
 bool
 O2DatDB::
@@ -1368,6 +1489,7 @@ void
 O2DatDB::
 StartUpdateThread(void)
 {
+	Logger->AddLog(O2LT_INFO, L"UpdateThread", 0, 0, L"äJén");
 	if (UpdateThreadHandle)
 		return;
 
@@ -1380,6 +1502,7 @@ void
 O2DatDB::
 StopUpdateThread(void)
 {
+	Logger->AddLog(O2LT_INFO, L"UpdateThread", 0, 0, L"í‚é~");
 	if (!UpdateThreadHandle)
 		return;
 	UpdateThreadLoop = false;

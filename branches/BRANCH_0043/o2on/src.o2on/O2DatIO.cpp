@@ -43,7 +43,6 @@ O2DatIO(O2DatDB *db, O2Logger *lgr, O2Profile *prof, O2ProgressInfo *proginfo)
 	, RebuildDBThreadHandle(NULL)
 	, ReindexThreadHandle(NULL)
 	, LoopRebuildDB(false)
-	, EnumDatThreadNum(0)
 	, AnalyzeThreadHandle(0)
 
 {
@@ -878,8 +877,24 @@ StaticRebuildDBThread(void *data)
 	O2DatIO *me = (O2DatIO*)data;
 
 	CoInitialize(NULL);
-	me->RebuildDBThread(me->Profile->GetCacheRootW(), 0);
-	me->DatDB->analyze();
+	me->DatDB->StopUpdateThread();
+	O2DatRecList reclist;
+	if (me->DatDB->before_rebuild()) {
+		me->RebuildDBThread(me->Profile->GetCacheRootW(), 0, reclist);
+		bool manualstop = !me->LoopRebuildDB;
+		// 手動で停止した場合は差し替えなどをしない
+		if (!manualstop) {
+			if (me->DatDB->after_rebuild())
+				me->DatDB->analyze();
+			else
+				me->Logger->AddLog(O2LT_ERROR, L"DB再構築", 0, 0, "再構築済みDB差し替え失敗");
+		}
+	}
+	else {
+		me->Logger->AddLog(O2LT_ERROR, L"DB再構築", 0, 0, "再構築用DB作成失敗");
+		me->ProgressInfo->Reset(false, false);
+	}
+	me->DatDB->StartUpdateThread();
 	CoUninitialize();
 
 	CloseHandle(me->RebuildDBThreadHandle);
@@ -891,10 +906,13 @@ StaticRebuildDBThread(void *data)
 
 void
 O2DatIO::
-RebuildDBThread(const wchar_t *dir, uint level)
+RebuildDBThread(const wchar_t *dir, uint level, O2DatRecList &reclist)
 {
 	if (level == 0) {
 		ProgressInfo->Reset(true, true);
+	}
+	if (level == 3) {
+		ProgressInfo->SetMessage(dir+wcslen(Profile->GetCacheRootW()));
 	}
 
 	WIN32_FIND_DATAW wfd;
@@ -913,17 +931,54 @@ RebuildDBThread(const wchar_t *dir, uint level)
 
 	do {
 		if (wfd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) {
-			if (wfd.cFileName[0] != L'.')
-				dirs.push_back(wfd.cFileName);
+			if (wfd.cFileName[0] != L'.') {
+				if (level == 3)
+					Logger->AddLog(O2LT_WARNING, L"DB再構築", 0, 0,
+						L"余計なディレクトリがあるよ(%s\\%s)", dir, wfd.cFileName);
+				else
+					dirs.push_back(wfd.cFileName);
+			}
 		}
 		else {
 			if (wcscmp(wfd.cFileName, L".index") == 0) {
 				swprintf_s(path, MAX_PATH, L"%s\\%s", dir, wfd.cFileName);
 				DeleteFile(path);
+				continue;
 			}
-			else {
+			else if (level != 3) {
 				Logger->AddLog(O2LT_WARNING, L"DB再構築", 0, 0,
 					L"変なファイルがあるよ(%s\\%s)", dir, wfd.cFileName);
+				continue;
+			}
+
+			if (level != 3) continue;
+
+			wsplit(dir+wcslen(Profile->GetCacheRootW()), L"\\", paths);
+			if (!datpath.set(paths[0].c_str(), paths[1].c_str(), wfd.cFileName)) {
+				Logger->AddLog(O2LT_WARNING, L"DB再構築", 0, 0,
+					L"datじゃないファイル？(%s\\%s)", dir, wfd.cFileName);
+				continue;
+			}
+			if (wfd.dwFileAttributes & FILE_ATTRIBUTE_READONLY) {
+				swprintf_s(path, MAX_PATH, L"%s\\%s", dir, wfd.cFileName);
+				wfd.dwFileAttributes ^= FILE_ATTRIBUTE_READONLY;
+				SetFileAttributes(path, wfd.dwFileAttributes);
+			}
+
+			datpath.gethash(rec.hash);
+			rec.domain = paths[0];
+			rec.bbsname = paths[1];
+			rec.datname = wfd.cFileName;
+			rec.size = ((uint64)wfd.nFileSizeHigh << 32) | (uint64)wfd.nFileSizeLow;
+			rec.disksize = GetDiskFileSize(rec.size);
+			datpath.geturl(rec.url);
+			GetTitle(datpath);
+			datpath.gettitle(rec.title);
+			rec.res = 0;
+			reclist.push_back(rec);
+			if (!DatDB->check_queue_size(reclist)) {
+				DatDB->insert(reclist, true);
+				reclist.clear();
 			}
 		}
 	} while (LoopRebuildDB && FindNextFileW(handle, &wfd));
@@ -983,30 +1038,7 @@ TRACEA("\n");
 				continue;
 
 			swprintf_s(path, MAX_PATH, L"%s\\%s", dir, s);
-
-			if (level == 2) {
-				while (1) {
-					EnumDatThreadNumLock.Lock();
-					if (EnumDatThreadNum < 10)  {
-						EnumDatThreadNum++;
-
-						ThreadData *param = new ThreadData;;
-						param->me = this;
-						param->dir = path;
-
-						HANDLE thandle = (HANDLE)_beginthreadex(
-							NULL, 0, StaticEnumDatThread, (void*)param, 0, NULL);
-						CloseHandle(thandle);
-						EnumDatThreadNumLock.Unlock();
-						break;
-					}
-					EnumDatThreadNumLock.Unlock();
-					Sleep(1000);
-				}
-			}
-			else {
-				RebuildDBThread(path, level+1); //再帰
-			}
+			RebuildDBThread(path, level+1, reclist); //再帰
 
 			if (level == 1)
 				ProgressInfo->AddPos(1);
@@ -1014,99 +1046,14 @@ TRACEA("\n");
 	}
 
 	if (level == 0) {
-		while (EnumDatThreadNum)
-			Sleep(1000);
+		if (LoopRebuildDB && !reclist.empty()) {
+			DatDB->insert(reclist, true);
+			reclist.clear();
+		}
 		ProgressInfo->Reset(false, true);
 		CLEAR_WORKSET;
 	}
 }
-
-uint WINAPI
-O2DatIO::
-StaticEnumDatThread(void *data)
-{
-	ThreadData *param = (ThreadData*)data;
-	O2DatIO *me = param->me;
-	wstring dir = param->dir;
-	delete param;
-
-	CoInitialize(NULL);
-	me->EnumDatThread(dir.c_str());
-	CoUninitialize();
-
-	me->EnumDatThreadNumLock.Lock();
-	me->EnumDatThreadNum--;
-	me->EnumDatThreadNumLock.Unlock();
-
-	//_endthreadex(0);
-	return (0);
-}
-
-void
-O2DatIO::
-EnumDatThread(const wchar_t *dir)
-{
-	ProgressInfo->SetMessage(dir+wcslen(Profile->GetCacheRootW()));
-
-	wchar_t findpath[MAX_PATH];
-	swprintf_s(findpath, MAX_PATH, L"%s\\*.*", dir);
-
-	wstrarray paths;
-	wsplit(dir+wcslen(Profile->GetCacheRootW()), L"\\", paths);
-
-	O2DatRec rec;
-	rec.domain = paths[0];
-	rec.bbsname = paths[1];
-
-	O2DatPath datpath;
-	wchar_t path[MAX_PATH];
-	
-	WIN32_FIND_DATAW wfd;
-	HANDLE handle = FindFirstFileW(findpath, &wfd);
-	if (handle == INVALID_HANDLE_VALUE)
-		return;
-
-	do {
-		if (wfd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) {
-			if (wfd.cFileName[0] != L'.') {
-				Logger->AddLog(O2LT_WARNING, L"DB再構築", 0, 0,
-					L"余計なディレクトリがあるよ(%s\\%s)", dir, wfd.cFileName);
-			}
-			continue;
-		}
-
-		if (wcscmp(wfd.cFileName, L".index") == 0) {
-			swprintf_s(path, MAX_PATH, L"%s\\%s", dir, wfd.cFileName);
-			DeleteFile(path);
-			continue;
-		}
-		if (!datpath.set(rec.domain.c_str(), rec.bbsname.c_str(), wfd.cFileName)) {
-			Logger->AddLog(O2LT_WARNING, L"DB再構築", 0, 0,
-				L"datじゃないファイル？(%s\\%s)", dir, wfd.cFileName);
-			continue;
-		}
-		if (wfd.dwFileAttributes & FILE_ATTRIBUTE_READONLY) {
-			swprintf_s(path, MAX_PATH, L"%s\\%s", dir, wfd.cFileName);
-			wfd.dwFileAttributes ^= FILE_ATTRIBUTE_READONLY;
-			SetFileAttributes(path, wfd.dwFileAttributes);
-		}
-
-		datpath.gethash(rec.hash);
-		rec.datname = wfd.cFileName;
-		rec.size = ((uint64)wfd.nFileSizeHigh << 32) | (uint64)wfd.nFileSizeLow;
-		rec.disksize = GetDiskFileSize(rec.size);
-		datpath.geturl(rec.url);
-		GetTitle(datpath);
-		datpath.gettitle(rec.title);
-		rec.res = 0;
-
-		DatDB->AddUpdateQueue(rec);
-	} while (LoopRebuildDB && FindNextFileW(handle, &wfd));
-	FindClose(handle);
-}
-
-
-
 
 void
 O2DatIO::

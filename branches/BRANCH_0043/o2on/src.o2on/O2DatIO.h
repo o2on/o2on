@@ -38,18 +38,9 @@ protected:
 	HANDLE			ReindexThreadHandle;
 	HANDLE			AnalyzeThreadHandle;
 	bool			LoopRebuildDB;
-	uint			EnumDatThreadNum;
-	Mutex			EnumDatThreadNumLock;
-
-	struct ThreadData {
-		O2DatIO	*me;
-		wstring dir;
-	};
 
 protected:
 	uint64 GetDiskFileSize(uint64 size);
-	static uint WINAPI StaticEnumDatThread(void *data);
-	void EnumDatThread(const wchar_t *dir);
 
 public:
 	O2DatIO(O2DatDB *db, O2Logger *lgr, O2Profile *prof, O2ProgressInfo *proginfo);
@@ -80,7 +71,7 @@ public:
 	void RebuildDB(void);
 	void StopRebuildDB(void);
 	static uint WINAPI StaticRebuildDBThread(void *data);
-	void RebuildDBThread(const wchar_t *dir, uint level);
+	void RebuildDBThread(const wchar_t *dir, uint level, O2DatRecList &reclist);
 
 	void Reindex(void);
 	static uint WINAPI StaticReindexThread(void *data);

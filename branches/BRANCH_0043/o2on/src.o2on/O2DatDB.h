@@ -56,6 +56,7 @@ class O2DatDB
 protected:
 	O2Logger		*Logger;
 	wstring			dbfilename;
+	wstring			dbfilename_to_rebuild;
 
 	O2DatRecList	UpdateQueue;
 	Mutex			UpdateQueueLock;
@@ -77,7 +78,12 @@ public:
 	O2DatDB(O2Logger *lgr, const wchar_t *filename);
 	~O2DatDB();
 
-	bool create_table(void);
+	bool check_queue_size(O2DatRecList &reclist);
+
+	bool before_rebuild(void);
+	bool after_rebuild(void);
+
+	bool create_table(bool to_rebuild);
 	bool reindex(const char *target);
 	bool analyze(void);
 
@@ -93,6 +99,8 @@ public:
 	uint64 select_datcount(wstrnummap &out);
 	uint64 select_totaldisksize(void);
 	uint64 select_publishcount(time_t publish_tt);
+
+	void insert(O2DatRecList &in, bool to_rebuild);
 
 //	bool update(O2DatRec &in, bool is_origurl);
 	void update(O2DatRecList &in);

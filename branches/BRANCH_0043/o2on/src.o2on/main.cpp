@@ -379,7 +379,7 @@ InitializeApp(TCHAR *cmdline, int cmdshow)
 	wstring dbfilename(Profile->GetDBDirW());
 	dbfilename += L"\\dat.db";
 	DatDB = new O2DatDB(Logger, dbfilename.c_str());
-	if (!DatDB->create_table()) {
+	if (!DatDB->create_table(false)) {
 		MessageBox(NULL,
 			L"DBオープンに失敗しました\n起動を中止します",
 			NULL, MB_ICONERROR | MB_OK);
@@ -1060,6 +1060,10 @@ MainWindowProc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp)
 					break;
 				case ID_REBUILDDB:
 					if (!Active && !hwndProgressDlg) {
+						if (MessageBox(hwnd,
+								_T("データベースを再構築します"),
+								_T("DB再構築"),	MB_OKCANCEL|MB_ICONINFORMATION) == IDCANCEL)
+							break;
 						CreateProgressDialog(_T("DB再構築..."));
 						DatIO->RebuildDB();
 					}
