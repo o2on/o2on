@@ -1286,8 +1286,8 @@ update(O2DatRecList &in)
 				goto error;
 			if (!bind(db, stmt_update, 5, time(NULL)))
 				goto error;
-//			if (!bind(db, stmt_update, 6, (uint64)0))
-//				goto error;
+			if (!bind(db, stmt_update, 6, it->hash))
+				goto error;
 
 			err = sqlite3_step(stmt_update);
 			if (err != SQLITE_ROW && err != SQLITE_DONE)
