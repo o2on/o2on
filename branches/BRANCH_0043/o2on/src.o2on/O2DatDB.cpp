@@ -249,7 +249,7 @@ create_table(bool to_rebuild)
 		"create index if not exists idx_dat_domain_bbsname_datname on dat (domain, bbsname, datname);"
 		"create index if not exists idx_dat_lastpublish on dat (lastpublish);"
 		"create index if not exists idx_dat_datname on dat (datname);";
-		"analyze;";
+//		"analyze;";
 	err = sqlite3_exec(db, sql, NULL, 0, 0);
 	if (err != SQLITE_OK)
 		goto error;
@@ -324,7 +324,7 @@ analyze(void)
 	if (err != SQLITE_OK)
 		goto error;
 
-	char sql[] = "analyze; vacuum dat;";
+	char sql[] = "begin;analyze;end; vacuum dat;";
 
 	err = sqlite3_exec(db, sql, NULL, 0, 0);
 	if (err != SQLITE_OK)
@@ -814,7 +814,10 @@ select_datcount(void)
 
 	sqlite3_busy_timeout(db, 5000);
 
-	wchar_t *sql = L"select count(*) from dat;";
+	wchar_t *sql = 
+		L"begin;"
+		L"select count(*) from dat;"
+		L"end;";
 
 	err = sqlite3_prepare16_v2(db, sql, wcslen(sql)*2, &stmt, NULL);
 	if (err != SQLITE_OK)
@@ -915,7 +918,10 @@ select_totaldisksize(void)
 		goto error;
 	sqlite3_busy_timeout(db, 5000);
 
-	wchar_t *sql = L"select sum(disksize) from dat;";
+	wchar_t *sql =
+		L"begin;"
+		L"select sum(disksize) from dat;"
+		L"end;";
 
 	err = sqlite3_prepare16_v2(db, sql, wcslen(sql)*2, &stmt, NULL);
 	if (err != SQLITE_OK)
