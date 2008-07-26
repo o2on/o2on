@@ -107,6 +107,7 @@ public:
 	void ClearEx(void);
 	bool AddEx(const char *url);
 	size_t GetExList(wstrarray &boards);
+	size_t GetExEnList(wstrarray &boards);
 	size_t GetExNodeList(const wchar_t *board, O2NodeKBucket::NodeListT &nodelist);
 	void RemoveExNode(const wchar_t *board, const O2Node &node);
 	void ImportNodeFromXML(const O2Node &node, const char *in, size_t len);
