@@ -420,6 +420,27 @@ GetExList(wstrarray &boards)
 
 
 // ---------------------------------------------------------------------------
+//	GetExEnList()
+//	
+// ---------------------------------------------------------------------------
+size_t
+O2Boards::
+GetExEnList(wstrarray &boards)
+{
+	ExLock.Lock();
+	for (O2BoardExMapIt exit = exmap.begin(); exit != exmap.end(); exit++) {
+		if (exit->second->collectors.count() && exit->second->enable)
+			boards.push_back(exit->first);
+	}
+	ExLock.Unlock();
+
+	return (boards.size());
+}
+
+
+
+
+// ---------------------------------------------------------------------------
 //	GetExNodeList()
 //	
 // ---------------------------------------------------------------------------

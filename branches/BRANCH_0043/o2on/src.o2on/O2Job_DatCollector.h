@@ -81,7 +81,7 @@ public:
 	{
 		// Žæ“¾‚·‚é”Â‚ðŒˆ‚ß‚é
 		wstrarray boards;
-		if (Boards->GetExList(boards) == 0)
+		if (Boards->GetExEnList(boards) == 0)
 			return;
 		CryptoPP::AutoSeededRandomPool rng;
 		wstring &board = boards[rng.GenerateWord32(0, boards.size()-1)];
