@@ -661,7 +661,7 @@ public:
 					}
 				}
 				else if (act == "deactivate") {
-					// activate saku
+					// deactivate query
 					it = hdr->queries.find("hash");
 					if (it != hdr->queries.end()) {
 						if (it->second.size() >= HASHSIZE*2) {
@@ -669,7 +669,7 @@ public:
 							hash.assign(it->second.c_str(), it->second.size());
 							if (QueryDB->SetEnable(hash,false)) {
 								msg = L"–³Œø‚É‚µ‚Ü‚µ‚½";
-								SakuDB->Save(Profile->GetSakuFilePath());
+								QueryDB->Save(Profile->GetQueryFilePath());
 							}
 						}
 					}
