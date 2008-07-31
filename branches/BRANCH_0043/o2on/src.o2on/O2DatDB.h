@@ -103,7 +103,6 @@ public:
 	void insert(O2DatRecList &in, bool to_rebuild);
 
 	void update(O2DatRecList &in);
-	void divide_update(O2DatRecList &in);
 
 	bool remove(const hashT &hash);
 

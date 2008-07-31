@@ -17,7 +17,7 @@
 #include <time.h>
 
 #define UPDATE_THREAD_INTERVAL_S	15
-#define MAX_UPDATE_QUEUE_SIZE		1000
+#define MAX_INSERT_QUEUE_SIZE		1000
 
 #if defined(_DEBUG)
 #define TRACE_SQL_EXEC_TIME			1
@@ -178,7 +178,7 @@ bool
 O2DatDB::
 check_queue_size(O2DatRecList &reclist)
 {
-	return (reclist.size() < MAX_UPDATE_QUEUE_SIZE ? true : false);
+	return (reclist.size() < MAX_INSERT_QUEUE_SIZE ? true : false);
 }
 
 
@@ -1231,31 +1231,6 @@ error:
 
 
 
-void
-O2DatDB::
-divide_update(O2DatRecList &in)
-{
-	if (in.size() > MAX_UPDATE_QUEUE_SIZE) {
-		O2DatRecListIt begin = in.begin();
-		O2DatRecListIt end = in.begin();
-		while (end != in.end()) {
-			begin = end;
-			if (std::distance(end, in.end()) < MAX_UPDATE_QUEUE_SIZE)
-				end = in.end();
-			else
-				std::advance(end, MAX_UPDATE_QUEUE_SIZE);
-
-			O2DatRecList tmp(begin, end);
-			update(tmp);
-		}
-	}
-	else
-		update(in);
-}
-
-
-
-
 bool
 O2DatDB::
 remove(const hashT &hash)
@@ -1361,7 +1336,7 @@ StopUpdateThread(void)
 
 	UpdateQueueLock.Lock();
 	if (!UpdateQueue.empty()) {
-		divide_update(UpdateQueue);
+		update(UpdateQueue);
 		UpdateQueue.clear();
 	}
 	UpdateQueueLock.Unlock();
@@ -1395,7 +1370,7 @@ UpdateThread(void)
 			UpdateQueueLock.Unlock();
 
 			if (!reclist.empty())
-				divide_update(reclist);
+				update(reclist);
 			t = time(NULL);
 			CLEAR_WORKSET;
 			//TRACEA("+++++ UPDATE +++++\n");
