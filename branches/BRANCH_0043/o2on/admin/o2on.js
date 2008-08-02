@@ -355,21 +355,48 @@ function hideEncProfForm()
 // ---------------------------------------------------------------------------
 function deleteQuery(hash)
 {
+  if (hash == "") hash = getCheckThread();
+  if (hash == "") return;
 	document.d.act.value = "delete";
-	document.d.hash.value = hash;
+  document.d.hash.value = hash;
 	document.d.submit();
 }
 function activateQuery(hash)
 {
+  if (hash == "") hash = getCheckThread();
+  if (hash == "") return;
 	document.d.act.value = "activate";
-	document.d.hash.value = hash;
+  document.d.hash.value = hash;
 	document.d.submit();
 }
 function deactivateQuery(hash)
 {
+  if (hash == "") hash = getCheckThread();
+  if (hash == "") return;
 	document.d.act.value = "deactivate";
-	document.d.hash.value = hash;
+  document.d.hash.value = hash;
 	document.d.submit();
+}
+function checkAllThread(flag)
+{
+	elms = document.getElementsByTagName("input");
+	for (i = 0; i < elms.length; i++) {
+		if (elms[i].type == "checkbox" && elms[i].name == "thread")
+			elms[i].checked = flag;
+	}
+}
+function getCheckThread()
+{
+  var hash = "";
+	elms = document.getElementsByTagName("input");
+	for (i = 0; i < elms.length; i++) {
+		if (elms[i].type == "checkbox" && elms[i].name == "thread" && elms[i].checked == true) {
+      if (hash != '') hash = hash + ',';
+      hash = hash + elms[i].value;
+    }
+	}
+  if (hash == "") alert("対象を選択してください。");
+  return hash;
 }
 
 // ---------------------------------------------------------------------------
