@@ -636,12 +636,18 @@ public:
 					// remove query
 					it = hdr->queries.find("hash");
 					if (it != hdr->queries.end()) {
-						if (it->second.size() >= HASHSIZE*2) {
-							hashT hash;
-							hash.assign(it->second.c_str(), it->second.size());
-							if (QueryDB->DeleteKey(hash)) {
-								msg = L"íœ‚µ‚Ü‚µ‚½";
-								QueryDB->Save(Profile->GetQueryFilePath());
+						strarray hasharray;
+						// comma separate
+						if (split(it->second.c_str(), ",", hasharray ) > 0) {
+							for (uint hashidx = 0; hashidx < hasharray.size(); hashidx++) {
+								if (hasharray[ hashidx ].size() >= HASHSIZE*2) {
+									hashT hash;
+									hash.assign( hasharray[ hashidx ].c_str(), hasharray[ hashidx ].size() );
+									if (QueryDB->DeleteKey(hash)) {
+										msg = L"íœ‚µ‚Ü‚µ‚½";
+										QueryDB->Save(Profile->GetQueryFilePath());
+									}
+								}
 							}
 						}
 					}
@@ -650,12 +656,18 @@ public:
 					// activate query
 					it = hdr->queries.find("hash");
 					if (it != hdr->queries.end()) {
-						if (it->second.size() >= HASHSIZE*2) {
-							hashT hash;
-							hash.assign(it->second.c_str(), it->second.size());
-							if (QueryDB->SetEnable(hash,true)) {
-								msg = L"—LŒø‚É‚µ‚Ü‚µ‚½";
-								QueryDB->Save(Profile->GetQueryFilePath());
+						strarray hasharray;
+						// comma separate
+						if (split(it->second.c_str(), ",", hasharray ) > 0) {
+							for (uint hashidx = 0; hashidx < hasharray.size(); hashidx++) {
+								if (hasharray[ hashidx ].size() >= HASHSIZE * 2) {
+									hashT hash;
+									hash.assign( hasharray[ hashidx ].c_str(), hasharray[ hashidx ].size() );
+									if (QueryDB->SetEnable(hash,true)) {
+										msg = L"—LŒø‚É‚µ‚Ü‚µ‚½";
+										QueryDB->Save(Profile->GetQueryFilePath());
+									}
+								}
 							}
 						}
 					}
@@ -664,12 +676,18 @@ public:
 					// deactivate query
 					it = hdr->queries.find("hash");
 					if (it != hdr->queries.end()) {
-						if (it->second.size() >= HASHSIZE*2) {
-							hashT hash;
-							hash.assign(it->second.c_str(), it->second.size());
-							if (QueryDB->SetEnable(hash,false)) {
-								msg = L"–³Œø‚É‚µ‚Ü‚µ‚½";
-								QueryDB->Save(Profile->GetQueryFilePath());
+						strarray hasharray;
+						// comma separate
+						if (split(it->second.c_str(), ",", hasharray ) > 0) {
+							for (uint hashidx = 0; hashidx < hasharray.size(); hashidx++) {
+								if (hasharray[ hashidx ].size() >= HASHSIZE * 2) {
+									hashT hash;
+									hash.assign( hasharray[ hashidx ].c_str(), hasharray[ hashidx ].size() );
+									if (QueryDB->SetEnable(hash,false)) {
+										msg = L"–³Œø‚É‚µ‚Ü‚µ‚½";
+										QueryDB->Save(Profile->GetQueryFilePath());
+									}
+								}
 							}
 						}
 					}
