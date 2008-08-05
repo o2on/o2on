@@ -278,6 +278,14 @@ GetTitle(O2DatPath &datpath)
 	while (pos_lf < end && p[pos_lf] != '\n')
 		pos_lf++;
 
+	if (pos_lf == 0) {
+		if (Logger) {
+			Logger->AddLog(O2LT_WARNING, MODULE, 0, 0,
+				"タイトル取得失敗:行頭にLF (%s)", path.c_str());
+		}
+		return false;
+	}
+
 	if (pos_lf == end || p[pos_lf] != '\n') {
 		if (Logger) {
 			Logger->AddLog(O2LT_WARNING, MODULE, 0, 0,
