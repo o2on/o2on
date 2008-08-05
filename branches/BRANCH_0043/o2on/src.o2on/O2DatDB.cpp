@@ -324,7 +324,7 @@ analyze(void)
 	if (err != SQLITE_OK)
 		goto error;
 
-	char sql[] = "begin;analyze;end; vacuum dat;";
+	char sql[] = "analyze; vacuum dat;";
 
 	err = sqlite3_exec(db, sql, NULL, 0, 0);
 	if (err != SQLITE_OK)
@@ -814,10 +814,7 @@ select_datcount(void)
 
 	sqlite3_busy_timeout(db, 5000);
 
-	wchar_t *sql = 
-		L"begin;"
-		L"select count(*) from dat;"
-		L"end;";
+	wchar_t *sql = L"select count(*) from dat;";
 
 	err = sqlite3_prepare16_v2(db, sql, wcslen(sql)*2, &stmt, NULL);
 	if (err != SQLITE_OK)
@@ -918,10 +915,7 @@ select_totaldisksize(void)
 		goto error;
 	sqlite3_busy_timeout(db, 5000);
 
-	wchar_t *sql =
-		L"begin;"
-		L"select sum(disksize) from dat;"
-		L"end;";
+	wchar_t *sql = L"select sum(disksize) from dat;";
 
 	err = sqlite3_prepare16_v2(db, sql, wcslen(sql)*2, &stmt, NULL);
 	if (err != SQLITE_OK)
