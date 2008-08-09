@@ -1,0 +1,84 @@
+﻿<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<link rel="stylesheet" type="text/css" href="style.css">
+	<script type="text/javascript" src="jkl-parsexml.js"></script>
+	<script type="text/javascript">
+		function onMenuMouseOver(obj)
+		{
+			if (obj.className == "menu1")
+			obj.className = "menu2";
+		}
+		function onMenuMouseOut(obj)
+		{
+			if (obj.className == "menu2")
+				obj.className = "menu1";
+		}
+		function onMenuClick(menuid)
+		{
+			var elms = document.getElementsByTagName("td");
+			for (i = 0; i < elms.length; i++) {
+				if (elms[i].id && elms[i].id != "notifymsg") {
+					elms[i].className = "menu1";
+				}
+			}
+			selmenu = menuid;
+			top.main.makeContents(menuid);
+		}
+		function cp(obj,xml, xsl)
+		{
+			obj.blur();
+			top.main.openControlPanelItem(xml, xsl);
+		}
+	</script>
+</head>
+<body>
+	<div class="menu">
+		<table>
+			<tr>
+				<td class="icon">
+					<a href="http://o2on.sourceforge.jp/" target="_blank">
+					<img src="/images/o2on.png" border="0"></a>
+				</td>
+				<td class="menu1" id="query" onMouseOver="onMenuMouseOver(this)"
+					onMouseOut="onMenuMouseOut(this)" onClick="onMenuClick(this.id)">スレッド検索</td>
+				<td class="menu1" id="thread" onMouseOver="onMenuMouseOver(this)"
+					onMouseOut="onMenuMouseOut(this)" onClick="onMenuClick(this.id)">dat収集</td>
+				<td class="menu1" id="saku" onMouseOver="onMenuMouseOver(this)"
+					onMouseOut="onMenuMouseOut(this)" onClick="onMenuClick(this.id)">削除依頼</td>
+				<td class="menu1" id="im" onMouseOver="onMenuMouseOver(this)"
+					onMouseOut="onMenuMouseOut(this)" onClick="onMenuClick(this.id)">メッセンジャー</td>
+				<td class="menu1" id="friend" onMouseOver="onMenuMouseOver(this)"
+					onMouseOut="onMenuMouseOut(this)" onClick="onMenuClick(this.id)">フレンド</td>
+				<td class="menu1" id="controlpanel" onMouseOver="onMenuMouseOver(this)"
+					onMouseOut="onMenuMouseOut(this)" onClick="onMenuClick(this.id)">管理</td>
+				<td id="notifymsg" class="notifymsg"></td>
+			</tr>
+		</table>
+	</div>
+	<div class="controlpanel">
+		<table>
+			<tr>
+				<td class="cptitle">管理メニュー</td>
+				<td><a class="cp" href="javascript:void(0)" onClick="cp(this,'report','report')">状態</a></td>
+				<td><a class="cp" href="javascript:void(0)" onClick="cp(this,'node','node')">ノード</a></td>
+				<td><a class="cp" href="javascript:void(0)" onClick="cp(this,'key','key')">datキー</a></td>
+				<td><a class="cp" href="javascript:void(0)" onClick="cp(this,'sakukey','key')">sakuキー</a></td>
+				<td><a class="cp" href="javascript:void(0)" onClick="cp(this,'sql','sql')">SQL</a></td>
+				<td class="cptitle">&nbsp;IPフィルタ</td>
+				<td><a class="cp" href="javascript:void(0)" onClick="cp(this,'ipf?type=p2p','ipf')">P2P</a></td>
+				<td><a class="cp" href="javascript:void(0)" onClick="cp(this,'ipf?type=Proxy','ipf')">Proxy</a></td>
+				<td><a class="cp" href="javascript:void(0)" onClick="cp(this,'ipf?type=Admin','ipf')">Admin</a></td>
+				<td class="cptitle">&nbsp;ログ</td>
+				<td><a class="cp" href="javascript:void(0)" onClick="cp(this,'log?type=log','log')">ログ</a></td>
+				<td><a class="cp" href="javascript:void(0)" onClick="cp(this,'log?type=net','log')">Net</a></td>
+				<td><a class="cp" href="javascript:void(0)" onClick="cp(this,'log?type=hokan','log')">補完</a></td>
+				<td><a class="cp" href="javascript:void(0)" onClick="cp(this,'log?type=ipf','log')">IPF</a></td>
+			</tr>
+		</table>
+	</div>
+	<div id="loading" class="loading">
+		<img src="/images/loading.gif">
+	</div>
+</body>
+</html>
