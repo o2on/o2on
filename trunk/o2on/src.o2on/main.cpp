@@ -254,6 +254,15 @@ _tWinMain(HINSTANCE inst, HINSTANCE previnst, TCHAR *cmdline, int cmdshow)
 //bench();
 //return (0);
 
+	HANDLE Mutex = NULL;
+	if (!O2DEBUG) {
+		Mutex = CreateMutex(NULL, FALSE, _T(CLASS_NAME));
+		if (GetLastError() == ERROR_ALREADY_EXISTS) {
+			if (Mutex) CloseHandle(Mutex);
+			return (0);
+		}
+	}
+
 	if (!O2DEBUG && FindWindow(_T(CLASS_NAME), NULL))
 		return (0);
 
@@ -268,6 +277,9 @@ _tWinMain(HINSTANCE inst, HINSTANCE previnst, TCHAR *cmdline, int cmdshow)
 			DispatchMessage(&msg);
 		}
 	}
+
+	if (Mutex) CloseHandle(Mutex);
+
 	return ((int)msg.wParam);
 }
 
