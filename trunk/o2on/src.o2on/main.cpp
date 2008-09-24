@@ -423,6 +423,7 @@ InitializeApp(TCHAR *cmdline, int cmdshow)
 	SakuKeyDB->SetLimit(O2_SAKUKEY_LIMIT);
 	QueryDB = new O2KeyDB(L"QueryDB", true, Logger);
 	QueryDB->Load(Profile->GetQueryFilePath());
+	QueryDB->SetLimit(Profile->GetQueryLimit());
 	SakuDB = new O2KeyDB(L"SakuDB", true, Logger);
 	SakuDB->Load(Profile->GetSakuFilePath());
 	IMDB = new O2IMDB(Logger);
