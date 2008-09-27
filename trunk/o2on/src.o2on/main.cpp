@@ -2728,11 +2728,30 @@ static void
 ChangeTrayIcon(UINT id)
 {
 	if (time(NULL) - Server_P2P->GetLastAcceptTime() < (5*60)) {
+		// ５分以内に受信出来ていれば、トレイアイコンの O をグレーからグリーンにする。
 		switch (id) {
 			case IDI_A:			id = IDI_B;			break;
 			case IDI_A_IN:		id = IDI_B_IN;		break;
 			case IDI_A_OUT:		id = IDI_B_OUT;		break;
 			case IDI_A_INOUT:	id = IDI_B_INOUT;	break;
+		}
+	}
+	else {
+		// Port0ではないのに５分以内に受信出来ていなければ、IPアドレスが変わった可能性がある。
+		// GetGlobalIPを再度立ち上げ、P2Pが止まっているはずなのでP2Pも再起動。
+		// ただし１０分以内に再起動していれば、無視
+		static time_t LastRestartP2P = 0;
+		if ((Profile->IsPort0() == false) &&
+			(Job_GetGlobalIP->IsActive() == false) &&
+			(time(NULL) - LastRestartP2P > (10*60) )) {
+			LastRestartP2P = time(NULL);
+
+			Profile->SetIP(0);
+			Job_GetGlobalIP->SetActive(true);
+			
+			StopP2P(false);
+			StartP2P(true);
+
 		}
 	}
 
