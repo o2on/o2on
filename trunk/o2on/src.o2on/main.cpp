@@ -82,7 +82,7 @@ static HINSTANCE				instance;
 static HWND						hwndMain;
 static HWND						hwndProgressDlg;
 static HWND						hwndUPnPDlg;
-static HANDLE					ThreadHandle;
+static HANDLE					ThreadHandle = NULL;
 static UINT						TaskbarRestartMsg;
 static int						CurrentProperyPage;
 static bool						VisibleOptionDialog;
@@ -2737,13 +2737,15 @@ ChangeTrayIcon(UINT id)
 		}
 	}
 	else {
-		// Port0ではないのに５分以内に受信出来ていなければ、IPアドレスが変わった可能性がある。
-		// GetGlobalIPを再度立ち上げ、P2Pが止まっているはずなのでP2Pも再起動。
-		// ただし１０分以内に再起動していれば、無視
+		// 終了処理中以外で、Port0ではないのに５分以内に受信出来ていなければ、
+		// IPアドレスが変わった可能性がある。
+		// ただし、１０分以内に再起動していれば、無視
 		static time_t LastRestartP2P = 0;
-		if ((Profile->IsPort0() == false) &&
+		if ((ThreadHandle == NULL) &&
+			(Profile->IsPort0() == false) &&
 			(Job_GetGlobalIP->IsActive() == false) &&
 			(time(NULL) - LastRestartP2P > (10*60) )) {
+			// GetGlobalIPを再度立ち上げ、P2Pが止まっているはずなのでP2Pも再起動。
 			LastRestartP2P = time(NULL);
 
 			Profile->SetIP(0);
