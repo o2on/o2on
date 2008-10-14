@@ -142,10 +142,22 @@ function attachXSLT(node, xmlurl, xslurl)
 		xml = document.implementation.createDocument("", "", null);
 		xsl = document.implementation.createDocument("", "", null);
 	}
-	xml.async = false;
-	xsl.async = false;
-	xml.load(xmlurl);
-	xsl.load(xslurl);
+	if ("load" in xml) {
+		xml.async = false;
+		xsl.async = false;
+		xml.load(xmlurl);
+		xsl.load(xslurl);
+	}
+	else {
+		var xhr = new XMLHttpRequest();
+		xhr.open("GET", xmlurl, false);
+		xhr.send(null);
+		xml = xhr.responseXML;
+		var xhr2 = new XMLHttpRequest();
+		xhr2.open("GET", xslurl, false);
+		xhr2.send(null);
+		xsl = xhr2.responseXML;
+	}
 
 	if (document.all && navigator.userAgent.indexOf("Opera") == -1) {
 		node.innerHTML = xml.transformNode(xsl);
