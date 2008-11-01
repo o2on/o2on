@@ -176,10 +176,11 @@ GetReport(string &out, bool pub)
 		(total_uptime == 0 ? 0 : (double)(accum_total_u+accum_total_d)/total_uptime*8));
 
 	//dat数、サイズ
-	uint64 datnum = DatDB->select_datcount();
-	uint64 datsize = DatDB->select_totaldisksize();
-	uint64 pubnum = DatDB->select_publishcount(PUBLISH_ORIGINAL_TT);
-
+	uint64 datnum = 0;
+	uint64 datsize = 0;
+	uint64 pubnum = 0;
+	DatDB->select_report(PUBLISH_ORIGINAL_TT, datnum, datsize, pubnum);
+	
 	//publish率
 	wchar_t publishper[32];
 	if (datnum == 0)
