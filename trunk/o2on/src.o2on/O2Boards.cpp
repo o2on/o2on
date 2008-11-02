@@ -173,7 +173,7 @@ Update(const wchar_t *html)
 		std::getline(ss, line);
 		
 		wstring pattern;
-		pattern = L"^<A HREF=http://([a-z0-9.:]+)/([a-z0-9.:]+)/(?: TARGET=_blank)?>([^<]+)</A>";
+		pattern = L"^<A HREF=http://([a-z0-9.:]+)/([a-zA-Z0-9.:]+)/(?: TARGET=_blank)?>([^<]+)</A>";
 		
 		boost::wregex regex(pattern);
 		boost::wsmatch m;
