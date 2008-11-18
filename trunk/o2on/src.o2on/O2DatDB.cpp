@@ -1246,11 +1246,11 @@ void
 O2DatDB::
 AddUpdateQueue(const hashT &hash)
 {
+	//note:前提条件 DBに更新対象のレコードが存在すること
 	UpdateQueueLock.Lock();
 	{
 		O2DatRec rec;
 		rec.hash = hash;
-		rec.lastpublish = time(NULL);
 		rec.userdata = 1;
 		UpdateQueue.push_back(rec);
 	}

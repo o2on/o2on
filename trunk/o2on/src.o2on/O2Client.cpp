@@ -693,6 +693,11 @@ NetIOThread(void)
 
 
 
+// ---------------------------------------------------------------------------
+//	タイムアウト付きconnect
+//
+// ---------------------------------------------------------------------------
+
 int
 O2Client::
 connect2(SOCKET s, const struct sockaddr *name, int namelen, int timeout)
