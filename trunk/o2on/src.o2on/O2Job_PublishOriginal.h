@@ -40,7 +40,7 @@ protected:
 
 	typedef std::map<O2Node,O2KeyList> O2NodeKeyMap;
 	typedef O2NodeKeyMap::iterator O2NodeKeyMapIt;
-
+	typedef hashListT::iterator hashListTIt;
 public:
 	O2Job_PublishOriginal(const wchar_t	*name
 						, time_t		interval
@@ -82,14 +82,19 @@ public:
 //stopwatch sw("[[ PublishOriginal ]]");
 		O2KeyList keylist;
 		O2KeyListIt kit;
-
+		
+		hashListT hashlist;
+		hashListTIt hit;
 		// 所有datのキーをpublish
 		if (DatIO->GetLocalFileKeys(keylist, PUBLISH_ORIGINAL_TT, PUBLISHNUM_PER_THREAD) > 0) {
-			Publish(keylist, "dat");
-			for (kit = keylist.begin(); kit != keylist.end(); kit++) {
-				DatDB->AddUpdateQueue(kit->hash); //lastpublish更新
+			Publish(keylist, "dat", hashlist);
+			//Publish関数から返却されるリストのハッシュは重複しているので一つにまとめる。
+			hashlist.sort();
+			hashlist.unique();
+			for (hit = hashlist.begin(); hit != hashlist.end(); hit++) {
+				DatDB->AddUpdateQueue(*hit); //lastpublish更新
 			}
-			keylist.clear();
+			hashlist.clear();
 		}
 
 		// 削除依頼のキーをpublish
@@ -99,15 +104,14 @@ public:
 				kit->ip = Profile->GetIP();
 				kit->port = Profile->GetP2PPort();
 			}
-			Publish(keylist, "saku");
-			for (kit = keylist.begin(); kit != keylist.end(); kit++) {
-				SakuDB->SetDate(kit->hash, time(NULL)); //date更新
+			Publish(keylist, "saku", hashlist);
+			for (hit = hashlist.begin(); hit != hashlist.end(); hit++) {
+				SakuDB->SetDate(*hit, time(NULL)); //date更新
 			}
-			keylist.clear();
+			hashlist.clear();
 		}
 	}
-
-	void Publish(O2KeyList &keylist, const char *category)
+	void Publish(O2KeyList &keylist, const char *category, hashListT &hashlist)
 	{
 		O2NodeKeyMap nkmap;
 
@@ -165,7 +169,7 @@ delete sw;
 			if (CheckResponse(&ss, header, NodeDB, node)) {
 				O2KeyListIt kit;
 				for (kit = nkit->second.begin(); kit != nkit->second.end() && IsActive(); kit++) {
-					keylist.push_back(*kit);
+					hashlist.push_back(kit->hash);
 				}
 			}
 
