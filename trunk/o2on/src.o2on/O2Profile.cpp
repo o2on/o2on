@@ -1150,7 +1150,7 @@ O2Profile::
 ExportToXML(const O2ProfileSelectCondition cond, string &out)
 {
 	wstring tmpstr;
-	wchar_t tmp[16];
+	wchar_t tmp[32];
 
 	wstring xml;
 	xml += L"<?xml version=\"1.0\" encoding=\"";
@@ -1342,7 +1342,7 @@ ExportToXML(const O2ProfileSelectCondition cond, string &out)
 		xml += tmp;
 		xml += L"</ipfloglimit>"EOL;
 
-		swprintf_s(tmp, 16, L"%I64u", QuarterSize);
+		swprintf_s(tmp, 32, L"%I64u", QuarterSize);
 		xml += L" <quartersize>";
 		xml += tmp;
 		xml += L"</quartersize>"EOL;
