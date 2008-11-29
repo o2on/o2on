@@ -588,7 +588,7 @@ O2KeyDB::
 MakeKeyElement(const O2Key &key, O2KeySelectCondition &cond, wstring &xml)
 {
 	wstring tmpstr;
-	wchar_t tmp[16];
+	wchar_t tmp[32];
 
 	xml += L"<key>"EOL;
 
@@ -622,7 +622,7 @@ MakeKeyElement(const O2Key &key, O2KeySelectCondition &cond, wstring &xml)
 
 	if (cond.mask & KEY_XMLELM_SIZE) {
 		xml += L" <size>";
-		swprintf_s(tmp, 16, L"%I64u", key.size);
+		swprintf_s(tmp, 32, L"%I64u", key.size);
 		xml += tmp;
 		xml += L"</size>"EOL;
 	}
