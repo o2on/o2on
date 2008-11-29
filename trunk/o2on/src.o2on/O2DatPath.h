@@ -250,8 +250,8 @@ public:
 
 	void geturl(string &url) const
 	{
-		char datstr[16];
-		sprintf_s(datstr, 16, "%I64u", _strtoui64(datnameA.c_str(), NULL, 10));
+		char datstr[32];
+		sprintf_s(datstr, 32, "%I64u", _strtoui64(datnameA.c_str(), NULL, 10));
 		url = "http://";
 		url += hostnameA;
 		url += "/test/read.cgi/";
@@ -263,8 +263,8 @@ public:
 
 	void geturl(wstring &url) const
 	{
-		wchar_t datstr[16];
-		swprintf_s(datstr, 16, L"%I64u", _wcstoui64(datnameW.c_str(), NULL, 10));
+		wchar_t datstr[32];
+		swprintf_s(datstr, 32, L"%I64u", _wcstoui64(datnameW.c_str(), NULL, 10));
 		url = L"http://";
 		url += hostnameW;
 		url += L"/test/read.cgi/";
@@ -276,8 +276,8 @@ public:
 
 	void get_o2_dat_path(string &path)
 	{
-		char datstr[16];
-		sprintf_s(datstr, 16, "%I64u", _strtoui64(datnameA.c_str(), NULL, 10));
+		char datstr[32];
+		sprintf_s(datstr, 32, "%I64u", _strtoui64(datnameA.c_str(), NULL, 10));
 		path += domainA;
 		path += "/";
 		path += bbsnameA;
@@ -287,8 +287,8 @@ public:
 
 	void get_o2_dat_path(wstring &path)
 	{
-		wchar_t datstr[16];
-		swprintf_s(datstr, 16, L"%I64u", _wcstoui64(datnameW.c_str(), NULL, 10));
+		wchar_t datstr[32];
+		swprintf_s(datstr, 32, L"%I64u", _wcstoui64(datnameW.c_str(), NULL, 10));
 		path += domainW;
 		path += L"/";
 		path += bbsnameW;

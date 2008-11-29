@@ -925,7 +925,7 @@ void xml_AddElement(wstring &xml, const wchar_t *tag, const wchar_t *attr, uint 
 void xml_AddElement(wstring &xml, const wchar_t *tag, const wchar_t *attr, __int64 val)
 {
 	wstring s;
-	wchar_t tmp[16];
+	wchar_t tmp[32];
 
 	xml += L'<';
 	xml += tag;
@@ -934,7 +934,7 @@ void xml_AddElement(wstring &xml, const wchar_t *tag, const wchar_t *attr, __int
 		xml += attr;
 	}
 	xml += L'>';
-	swprintf_s(tmp, 16, L"%I64d", val);
+	swprintf_s(tmp, 32, L"%I64d", val);
 	xml += tmp;
 	xml += L"</";
 	xml += tag;
@@ -944,7 +944,7 @@ void xml_AddElement(wstring &xml, const wchar_t *tag, const wchar_t *attr, __int
 void xml_AddElement(wstring &xml, const wchar_t *tag, const wchar_t *attr, uint64 val)
 {
 	wstring s;
-	wchar_t tmp[16];
+	wchar_t tmp[32];
 
 	xml += L'<';
 	xml += tag;
@@ -953,7 +953,7 @@ void xml_AddElement(wstring &xml, const wchar_t *tag, const wchar_t *attr, uint6
 		xml += attr;
 	}
 	xml += L'>';
-	swprintf_s(tmp, 16, L"%I64u", val);
+	swprintf_s(tmp, 32, L"%I64u", val);
 	xml += tmp;
 	xml += L"</";
 	xml += tag;
