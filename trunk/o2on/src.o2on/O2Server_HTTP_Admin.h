@@ -1426,7 +1426,7 @@ public:
 						else {
 							NodeDB->SetXMLMessage(L"Šù‚É’Ç‰Á‚³‚ê‚Ä‚¢‚Ü‚·", L"succeeded");
 						}
-						NodeDB->Save(Profile->GetFriendFilePath());
+						FriendDB->Save(Profile->GetFriendFilePath());
 					}
 				}
 				else if (act == "delete") {
@@ -1438,7 +1438,7 @@ public:
 							FriendDB->Delete(hash);
 						}
 					}
-					NodeDB->Save(Profile->GetFriendFilePath());
+					FriendDB->Save(Profile->GetFriendFilePath());
 				}
 			}
 		}
