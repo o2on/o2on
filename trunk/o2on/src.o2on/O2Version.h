@@ -1,5 +1,7 @@
-#define PROTOCOL_NAME			"O2"
-#define PROTOCOL_VER			0.2
+#define PROTOCOL_NAME			"O2"	// プロトコル名
+#define PROTOCOL_VER			0.2		// プロトコルバージョン
+#define ACCEPT_PROTOCOL_VER_MIN	0.2		// 受け付けるプロトコルバージョン（下限）
+#define ACCEPT_PROTOCOL_VER_MAX	0.2		// 受け付けるプロトコルバージョン（上限）
 
 #define APP_NAME				"o2on"
 #define APP_VER_MAJOR			0
