@@ -270,7 +270,9 @@ private:
 			ss->Unlock();
 			path = "ERROR";
 		}
-		else if (node.o2ver() < PROTOCOL_VER) {
+		else if (( node.o2ver() < ACCEPT_PROTOCOL_VER_MIN ) ||
+			     ( ACCEPT_PROTOCOL_VER_MAX < node.o2ver() )) {
+			// —‰ð‚Å‚«‚È‚¢ƒvƒƒgƒRƒ‹‚È‚ç‹‘”Û‚·‚é
 			ss->Lock();
 			MakeResponse_403(Profile, ss->sbuff);
 			ss->Unlock();
