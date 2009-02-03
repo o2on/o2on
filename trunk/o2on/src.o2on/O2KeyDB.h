@@ -150,6 +150,7 @@ protected:
 	O2Key		*CurKey;
 	uint		CurElm;
 	uint64		ParseNum;
+	wstring		buf;
 
 public:
 	O2KeyDB_SAX2Handler(O2Logger *lgr, O2KeyDB *kdb);

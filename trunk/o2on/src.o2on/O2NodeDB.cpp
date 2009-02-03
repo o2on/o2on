@@ -585,6 +585,34 @@ endElement(const XMLCh* const uri
 		 , const XMLCh* const localname
 		 , const XMLCh* const qname)
 {
+	string tmpstr;
+
+	switch (CurElm) {
+		case NODE_XMLELM_ID:
+			CurNode->id.assign(buf.c_str(), buf.size());
+			break;
+		case NODE_XMLELM_IP:
+			CurNode->ip = e2ip(buf.c_str(), buf.size());
+			break;
+		case NODE_XMLELM_PORT:
+			CurNode->port = (ushort)wcstoul(buf.c_str(), NULL, 10);
+			break;
+		case NODE_XMLELM_NAME:
+			if (buf.size() <= O2_MAX_NAME_LEN)
+				CurNode->name = buf;
+			break;
+		case NODE_XMLELM_PUBKEY:
+			CurNode->pubkey.assign(buf.c_str(), buf.size());
+			break;
+		case NODE_XMLELM_STR:
+			unicode2ascii(buf, tmpstr);
+			if (NodeDB->AddEncodedNode(tmpstr.c_str(), tmpstr.size()))
+				ParseNum++;
+			break;
+	}
+
+	buf = L"";
+
 	CurElm = NODE_XMLELM_NONE;
 	if (!CurNode || !MATCHLNAME(L"node"))
 		return;
@@ -600,32 +628,9 @@ void
 O2NodeDB_SAX2Handler::
 characters(const XMLCh* const chars, const unsigned int length)
 {
-	string tmpstr;
-
 	if (CurNode == NULL && CurElm != NODE_XMLELM_STR)
 		return;
 
-	switch (CurElm) {
-		case NODE_XMLELM_ID:
-			CurNode->id.assign(chars, length);
-			break;
-		case NODE_XMLELM_IP:
-			CurNode->ip = e2ip(chars, length);
-			break;
-		case NODE_XMLELM_PORT:
-			CurNode->port = (ushort)wcstoul(chars, NULL, 10);
-			break;
-		case NODE_XMLELM_NAME:
-			if (length <= O2_MAX_NAME_LEN)
-				CurNode->name.assign(chars, length);
-			break;
-		case NODE_XMLELM_PUBKEY:
-			CurNode->pubkey.assign(chars, length);
-			break;
-		case NODE_XMLELM_STR:
-			unicode2ascii(chars, length, tmpstr);
-			if (NodeDB->AddEncodedNode(tmpstr.c_str(), tmpstr.size()))
-				ParseNum++;
-			break;
-	}
+	if (CurElm != NODE_XMLELM_NONE)
+		buf.append(chars, length);
 }

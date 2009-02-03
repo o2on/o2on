@@ -906,6 +906,17 @@ endElement(const XMLCh* const uri
 		 , const XMLCh* const localname
 		 , const XMLCh* const qname)
 {
+	switch (parse_elm) {
+		case 1:
+			parse_name = buf;
+			break;
+		case 2:
+			parse_enable = buf[0] == L'0' ? false : true;
+			break;
+	}
+
+	buf = L"";
+
 	parse_elm = 0;
 	if (MATCHLNAME(L"board")) {
 		ExLock.Lock();
@@ -927,12 +938,6 @@ O2Boards::
 characters(const XMLCh* const chars
 		 , const unsigned int length)
 {
-	switch (parse_elm) {
-		case 1:
-			parse_name.assign(chars, length);
-			break;
-		case 2:
-			parse_enable = chars[0] == L'0' ? false : true;
-			break;
-	}
+	if (parse_elm != 0)
+		buf.append(chars, length);
 }
