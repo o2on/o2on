@@ -157,18 +157,6 @@ public:
 
 	size_t ExportToXML(O2IMSelectCondition &cond, string &out);
 	size_t ImportFromXML(const wchar_t *filename, const char *in, uint len);
-
-public:
-	void endDocument(void);
-	void startElement(const XMLCh* const uri
-					, const XMLCh* const localname
-					, const XMLCh* const qname
-					, const Attributes& attrs);
-	void endElement(const XMLCh* const uri
-				  , const XMLCh* const localname
-				  , const XMLCh* const qname);
-	void characters(const XMLCh* const chars
-				  , const unsigned int length);
 };
 
 
@@ -185,6 +173,7 @@ protected:
 	O2IMessage	*CurIM;
 	uint		CurElm;
 	size_t		ParseNum;
+	wstring		buf;
 
 public:
 	O2IMDB_SAX2Handler(O2Logger *lgr, O2IMDB *imdb);
