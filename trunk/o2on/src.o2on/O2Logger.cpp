@@ -365,9 +365,10 @@ InternalGet(const O2LogSelectCondition &cond, string &out)
 		}
 
 		if (cond.mask & LOG_XMLELM_MODULE) {
-			xml += L" <module><![CDATA[";
-			xml += rec.module;
-			xml += L"]]></module>"EOL;
+			makeCDATA(rec.module, tmpstr);
+			xml += L" <module>";
+			xml += tmpstr;
+			xml += L"</module>"EOL;
 		}
 
 		if (cond.mask & LOG_XMLELM_IP) {
@@ -395,9 +396,10 @@ InternalGet(const O2LogSelectCondition &cond, string &out)
 		}
 
 		if (cond.mask & LOG_XMLELM_MSG) {
-			xml += L" <msg><![CDATA[";
-			xml += rec.msg;
-			xml += L"]]></msg>"EOL;
+			makeCDATA(rec.msg, tmpstr);
+			xml += L" <msg>";
+			xml += tmpstr;
+			xml += L"</msg>"EOL;
 		}
 
 		xml += L"</log>"EOL;

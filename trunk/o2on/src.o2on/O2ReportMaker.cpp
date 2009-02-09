@@ -189,6 +189,7 @@ GetReport(string &out, bool pub)
 		swprintf(publishper, 32, L"%.1f%% (%I64u)", (double)pubnum/datnum*100.0, pubnum);
 	}
 
+	wstring tmpstr;
 	wstring xml;
 	xml += L"<?xml version=\"1.0\" encoding=\"";
 	xml += _T(DEFAULT_XML_CHARSET);
@@ -201,9 +202,10 @@ GetReport(string &out, bool pub)
 	//
 	if (pub)
 	{
-		xml += L"<name><![CDATA[";
-		xml += Profile->GetNodeNameW();
-		xml += L"]]></name>"EOL;
+		makeCDATA(Profile->GetNodeNameW(), tmpstr);
+		xml += L"<name>";
+		xml += tmpstr;
+		xml += L"</name>"EOL;
 		xml += L"<category>"EOL;
 		xml += L"<table>"EOL;
 		//
@@ -218,30 +220,34 @@ GetReport(string &out, bool pub)
 		//
 		xml += L"<tr>"EOL;
 		xml_AddElement(xml, L"td", L"type=\"h\"", L"ÉRÉÅÉìÉg");
-		xml += L" <pre><![CDATA[";
-		xml += Profile->GetComment();
-		xml += L"]]></pre>"EOL;
+		makeCDATA(Profile->GetComment(), tmpstr);
+		xml += L" <pre>";
+		xml += tmpstr;
+		xml += L"</pre>"EOL;
 		xml += L"</tr>"EOL;
 		//
 		if (Profile->IsPublicRecentDat()) {
 			xml += L"<tr>"EOL;
 			xml_AddElement(xml, L"td", L"type=\"h\"", L"â{óóóöó");
-			xml += L"<pre><![CDATA[";
+			xml += L"<pre>";
 			O2KeyList recent;
 			Server_Proxy->GetRecentDatList(recent);
+			tmpstr.erase();
 			for (O2KeyListIt it = recent.begin(); it != recent.end(); it++) {
 				wchar_t timestr[TIMESTR_BUFF_SIZE];
 				struct tm tm;
 				localtime_s(&tm, &it->date);
 				wcsftime(timestr, TIMESTR_BUFF_SIZE, L"%Y/%m/%d %H:%M:%S", &tm);
-				xml += timestr;
-				xml += L" [ ";
-				xml += it->url;
-				xml += L" ] ";
-				xml += it->title;
-				xml += L"\r\n";
+				tmpstr += timestr;
+				tmpstr += L" [ ";
+				tmpstr += it->url;
+				tmpstr += L" ] ";
+				tmpstr += it->title;
+				tmpstr += L"\r\n";
 			}
-			xml += L"]]></pre>"EOL;
+			makeCDATA(tmpstr, tmpstr);
+			xml += tmpstr;
+			xml += L"</pre>"EOL;
 			xml += L"</tr>"EOL;
 		}
 		xml += L"</table>"EOL;

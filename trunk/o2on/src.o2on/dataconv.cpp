@@ -810,7 +810,7 @@ void sjis2euc(string &inout)
 
 // ---------------------------------------------------------------------------
 //	convertGTLT 
-//	escapeCDATA
+//	makeCDATA
 // ---------------------------------------------------------------------------
 void convertGTLT(const string &in, string &out)
 {
@@ -838,25 +838,33 @@ void convertGTLT(const wstring &in, wstring &out)
 
 	out = t.str();
 }
-void escapeCDATA(const string &in, string &out)
+void makeCDATA(const string &in, string &out)
 {
-	out = string(in);
+	string tmp = in;
 
 	string from = "]]>";
 	string to = "]]]]><![CDATA[>";
 
-    for (size_t pos = 0; (pos = out.find(from, pos)) != string::npos; pos += to.size())
-		out.replace(pos, from.size(), to);
+    for (size_t pos = 0; (pos = tmp.find(from, pos)) != string::npos; pos += to.size())
+		tmp.replace(pos, from.size(), to);
+
+	out = "<![CDATA[";
+	out += tmp;
+	out += "]]>";
 }
-void escapeCDATA(const wstring &in, wstring &out)
+void makeCDATA(const wstring &in, wstring &out)
 {
-	out = wstring(in);
+	wstring tmp = in;
 
 	wstring from = L"]]>";
 	wstring to = L"]]]]><![CDATA[>";
 
-    for (size_t pos = 0; (pos = out.find(from, pos)) != string::npos; pos += to.size())
-		out.replace(pos, from.size(), to);
+    for (size_t pos = 0; (pos = tmp.find(from, pos)) != string::npos; pos += to.size())
+		tmp.replace(pos, from.size(), to);
+
+	out = L"<![CDATA[";
+	out += tmp;
+	out += L"]]>";
 }
 
 
@@ -869,6 +877,8 @@ void escapeCDATA(const wstring &in, wstring &out)
 
 void xml_AddElement(wstring &xml, const wchar_t *tag, const wchar_t *attr, const wchar_t *val, bool escape)
 {
+	wstring tmp;
+
 	xml += L'<';
 	xml += tag;
 	if (attr) {
@@ -876,9 +886,12 @@ void xml_AddElement(wstring &xml, const wchar_t *tag, const wchar_t *attr, const
 		xml += attr;
 	}
 	xml += L'>';
-	if (escape) xml += L"<![CDATA[";
-	xml += val;
-	if (escape) xml += L"]]>";
+	if (escape) {
+		makeCDATA(val, tmp);
+		xml += tmp;
+	}
+	else 
+		xml += val;
 	xml += L"</";
 	xml += tag;
 	xml += L">\r\n";

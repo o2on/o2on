@@ -351,9 +351,10 @@ MakeNodeElement(const O2Node &node, const O2NodeSelectCondition &cond, wstring &
 		xml += L"</port>"EOL;
 	}
 	if (cond.mask & NODE_XMLELM_NAME) {
-		xml += L" <name><![CDATA[";
-		xml += node.name;
-		xml += L"]]></name>"EOL;
+		makeCDATA(node.name, tmpstr);
+		xml += L" <name>";
+		xml += tmpstr;
+		xml += L"</name>"EOL;
 	}
 	if (cond.mask & NODE_XMLELM_PUBKEY) {
 		node.pubkey.to_string(tmpstr);

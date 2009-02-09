@@ -1654,13 +1654,15 @@ public:
 	void GET_xml_sql(O2SocketSession *ss)
 	{
 		wstring str;
-		wstring escaped;
+		wstring tmpstr;
 		str += L"<?str version=\"1.0\" encoding=\"";
 		str += _T(DEFAULT_XML_CHARSET);
 		str += L"\"?>";
 		str += L"<result>";
-		escapeCDATA(sql, escaped);
-		str += L"<sql><![CDATA["+ escaped +L"]]></sql>";
+		makeCDATA(sql, tmpstr);
+		str += L"<sql>";
+		str += tmpstr;
+		str += L"</sql>";
 		if (!sqlresult.empty()) {
 			wchar_t tmp[16];
 			swprintf_s(tmp, 16, L"%u", sqlresult.size()-1);
@@ -1671,11 +1673,17 @@ public:
 		for (size_t i = 0; i < sqlresult.size(); i++) {
 			str += L"<row>";
 			for (size_t j = 0; j < sqlresult[i].size(); j++) {
-				escapeCDATA(sqlresult[i][j], escaped);
-				if (i == 0)
-					str += L"<name><![CDATA[" + escaped + L"]]></name>";
-				else
-					str += L"<col><![CDATA[" + escaped + L"]]></col>";
+				makeCDATA(sqlresult[i][j], tmpstr);
+				if (i == 0) {
+					str += L"<name>";
+					str += tmpstr;
+					str += L"</name>";
+				}
+				else {
+					str += L"<col>";
+					str += tmpstr;
+					str += L"</col>";
+				}
 			}
 			str += L"</row>";
 		}
