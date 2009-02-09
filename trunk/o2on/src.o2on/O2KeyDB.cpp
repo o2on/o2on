@@ -634,15 +634,17 @@ MakeKeyElement(const O2Key &key, O2KeySelectCondition &cond, wstring &xml)
 	}
 
 	if (cond.mask & KEY_XMLELM_TITLE) {
-		xml += L" <title><![CDATA[";
-		xml += key.title;
-		xml += L"]]></title>"EOL;
+		makeCDATA(key.title, tmpstr);
+		xml += L" <title>";
+		xml += tmpstr;
+		xml += L"</title>"EOL;
 	}
 
 	if (cond.mask & KEY_XMLELM_NOTE) {
-		xml += L" <note><![CDATA[";
-		xml += key.note;
-		xml += L"]]></note>"EOL;
+		makeCDATA(key.note, tmpstr);
+		xml += L" <note>";
+		xml += tmpstr;
+		xml += L"</note>"EOL;
 	}
 
 	if (cond.mask & KEY_XMLELM_IDKEYHASH) {

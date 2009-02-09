@@ -276,9 +276,10 @@ MakeSendXML(O2Profile *profile, const wchar_t *charset, const wchar_t *msg, stri
 	xml += profile->GetNodeNameW();
 	xml += L"</name>"EOL;
 
-	xml += L" <msg><![CDATA[";
-	xml += msg;
-	xml += L"]]></msg>"EOL;
+	makeCDATA(msg, tmpstr);
+	xml += L" <msg>";
+	xml += tmpstr;
+	xml += L"</msg>"EOL;
 
 	xml	+= L"</message>"EOL;
 	xml	+= L"</messages>"EOL;
@@ -329,9 +330,10 @@ MakeSendXML(const O2IMessage &im, string &out)
 	xml += im.name;
 	xml += L"</name>"EOL;
 
-	xml += L" <msg><![CDATA[";
-	xml += im.msg;
-	xml += L"]]></msg>"EOL;
+	makeCDATA(im.msg, tmpstr);
+	xml += L" <msg>";
+	xml += tmpstr;
+	xml += L"</msg>"EOL;
 
 	im.key.to_string(tmpstr);
 	xml += L" <key>";
@@ -565,9 +567,10 @@ MakeIMElement(O2IMessage &im, O2IMSelectCondition &cond, wstring &xml)
 	}
 
 	if (cond.mask & IM_XMLELM_MSG) {
-		xml += L" <msg><![CDATA[";
-		xml += im.msg;
-		xml += L"]]></msg>"EOL;
+		makeCDATA(im.msg, tmpstr);
+		xml += L" <msg>";
+		xml += tmpstr;
+		xml += L"</msg>"EOL;
 	}
 
 	if (cond.mask & IM_XMLELM_KEY) {

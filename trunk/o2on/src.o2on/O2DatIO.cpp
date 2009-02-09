@@ -679,9 +679,10 @@ ExportToXML(const wchar_t *domain, const wchar_t *bbsname, string &out)
 		xml += L"<url>";
 		xml += it->url;
 		xml += L"</url>"EOL;
-		xml += L"<title><![CDATA[";
-		xml += it->title;
-		xml += L"]]></title>"EOL;
+		makeCDATA(it->title, tmpstr);
+		xml += L"<title>";
+		xml += tmpstr;
+		xml += L"</title>"EOL;
 		swprintf_s(tmp, 32, L"%I64u", it->size);
 		xml += L"<size>";
 		xml += tmp;

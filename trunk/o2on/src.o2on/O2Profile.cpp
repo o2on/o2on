@@ -1186,18 +1186,18 @@ ExportToXML(const O2ProfileSelectCondition cond, string &out)
 
 	//NodeName
 	if (cond.mask & PROF_XMLELM_NAME) {
-		//convertGTLT(NodeName, tmpstr);
-		xml += L" <nodename><![CDATA[";
-		xml += NodeNameW;
-		xml += L"]]></nodename>"EOL;
+		makeCDATA(NodeNameW, tmpstr);
+		xml += L" <nodename>";
+		xml += tmpstr;
+		xml += L"</nodename>"EOL;
 	}
 
 	//Comment
 	if (cond.mask & PROF_XMLELM_COMMENT) {
-		//convertGTLT(Comment, tmpstr);
-		xml += L" <comment><![CDATA[";
-		xml += Comment;
-		xml += L"]]></comment>"EOL;
+		makeCDATA(Comment, tmpstr);
+		xml += L" <comment>";
+		xml += tmpstr;
+		xml += L"</comment>"EOL;
 	}
 
 	//P2PPort
@@ -1242,23 +1242,26 @@ ExportToXML(const O2ProfileSelectCondition cond, string &out)
 
 	//DBDir
 	if (cond.mask & PROF_XMLELM_DBDIR) {
-		xml += L" <DBDir><![CDATA[";
-		xml += DBDirW;
-		xml += L"]]></DBDir>"EOL;
+		makeCDATA(DBDirW, tmpstr);
+		xml += L" <DBDir>";
+		xml += tmpstr;
+		xml += L"</DBDir>"EOL;
 	}
 
 	//CacheRoot
 	if (cond.mask & PROF_XMLELM_CACHEROOT) {
-		xml += L" <CacheRoot><![CDATA[";
-		xml += CacheRootW;
-		xml += L"]]></CacheRoot>"EOL;
+		makeCDATA(CacheRootW, tmpstr);
+		xml += L" <CacheRoot>";
+		xml += tmpstr;
+		xml += L"</CacheRoot>"EOL;
 	}
 
 	//AdminRoot
 	if (cond.mask & PROF_XMLELM_ADMINROOT) {
-		xml += L" <AdminRoot><![CDATA[";
-		xml += AdminRootW;
-		xml += L"]]></AdminRoot>"EOL;
+		makeCDATA(AdminRootW, tmpstr);
+		xml += L" <AdminRoot>";
+		xml += tmpstr;
+		xml += L"</AdminRoot>"EOL;
 	}
 
 	//AdminBrowserType
@@ -1270,33 +1273,37 @@ ExportToXML(const O2ProfileSelectCondition cond, string &out)
 
 	//AdminBrowserPath
 	if (cond.mask & PROF_XMLELM_ADMIN_BROWSER_PATH) {
-		xml += L" <AdminBrowserPath><![CDATA[";
-		xml += AdminBrowserPath;
-		xml += L"]]></AdminBrowserPath>"EOL;
+		makeCDATA(AdminBrowserPath, tmpstr);
+		xml += L" <AdminBrowserPath>";
+		xml += tmpstr;
+		xml += L"</AdminBrowserPath>"EOL;
 	}
 
 	//UPnPAdapterName
 	if (cond.mask & PROF_XMLELM_UPNP_ADAPTERNAME) {
 		ascii2unicode(UPnPAdapterName, tmpstr);
-		xml += L" <UPnPAdapterName><![CDATA[";
+		makeCDATA(tmpstr, tmpstr);
+		xml += L" <UPnPAdapterName>";
 		xml += tmpstr;
-		xml += L"]]></UPnPAdapterName>"EOL;
+		xml += L"</UPnPAdapterName>"EOL;
 	}
 
 	//UPnPLocation
 	if (cond.mask & PROF_XMLELM_UPNP_LOCATION) {
 		ascii2unicode(UPnPLocation, tmpstr);
-		xml += L" <UPnPLocation><![CDATA[";
+		makeCDATA(tmpstr, tmpstr);
+		xml += L" <UPnPLocation>";
 		xml += tmpstr;
-		xml += L"]]></UPnPLocation>"EOL;
+		xml += L"</UPnPLocation>"EOL;
 	}
 
 	//UPnPServiceId
 	if (cond.mask & PROF_XMLELM_UPNP_SERVICEID) {
 		ascii2unicode(UPnPServiceId, tmpstr);
-		xml += L" <UPnPServiceId><![CDATA[";
+		makeCDATA(tmpstr, tmpstr);
+		xml += L" <UPnPServiceId>";
 		xml += tmpstr;
-		xml += L"]]></UPnPServiceId>"EOL;
+		xml += L"</UPnPServiceId>"EOL;
 	}
 
 	//limits
