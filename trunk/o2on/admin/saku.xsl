@@ -22,7 +22,7 @@
               <td><input type="text" name="note" size="50" maxlength="32"/></td>
             </tr>
           </table>
-          <input type="submit" class="btn" style="width:80px" value="登録"/>
+          <input type="button" class="btn" style="width:80px" value="登録" onClick="this.disabled = true;document.forms[0].submit();"/>
           <input type="hidden" name="act" value="add"/>
           <input type="hidden" name="hash"/>
  				</form>

@@ -32,7 +32,7 @@
               </select>
             </td>
       	    <td class="layout" width="20%">
-              <input type="submit" style="width:100%" value="決定"/>
+              <input type="button" style="width:100%" value="決定" onClick="this.disabled = true;document.forms[0].submit();"/>
             </td>
       	    <td class="layout" width="40%" align="right">
       	      ※条件を空にすると削除できます
