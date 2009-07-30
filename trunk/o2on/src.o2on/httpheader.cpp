@@ -271,8 +271,10 @@ ParseHeaderFields(const char *in)
 	//	ex)
 	//		Host: www.foobar.com<cr><lf>
 	//		Content-Length: 12345<cr><lf>
-	//		<cr><lf>
-	//		<cr><lf>
+	//		Hoge: fuga<cr><lf>
+	//       fuga<cr><lf>
+	//      <tab>fuga<cr><lf>
+	//      <cr><lf>
 	//
 
 	//エンコード文字列は非対応
@@ -289,7 +291,9 @@ ParseHeaderFields(const char *in)
 		char *eol = strstr(p1, "\r\n");
 		size_t valpos = strspn(p1, " \t");
 		if (valpos == 0) {
+			// 新しいfield-nameになった
 			if (!name.empty()) {
+				// fieldの内容を格納
 				fields.insert(strmap::value_type(name, value));
 			}
 			name.erase();
@@ -298,6 +302,11 @@ ParseHeaderFields(const char *in)
 			//field-name
 			if ((p2 = strchr(p1, ':')) == NULL)
 				return (0);
+			if ( eol < p2 ) {
+				// 1行の中に:が無かったら異常
+				return (0);
+			}
+			// field-name名を取得
 			name.assign(p1, p2);
 			//std::transform(name.begin(), name.end(), name.begin(), tolower);
 			if (*(p2+1) == ' ')
@@ -305,12 +314,18 @@ ParseHeaderFields(const char *in)
 			else
 				p1 = p2 + 1;
 		}
-		else
+		else {
+			if (name.empty()) {
+				// いきなり空白で始まるのはおかしい
+				return (0);
+			}
+			// 前行の続き
 			p1 += valpos;
+		}
 
-		//field-value
+		//field-valueを取得（前行の続きかもしれないので結合）
 		value.append(p1, eol);
-		p1 = eol + 2;
+		p1 = eol + 2; // 次行へ
 	}
 
 	if (!name.empty() && !value.empty()) {
