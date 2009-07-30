@@ -542,7 +542,7 @@ ExportToXML(string &out)
 		}
 	}
 	ExLock.Unlock();
-	xml += L"<boards>"EOL;
+	xml += L"</boards>"EOL;
 	unicode2ascii(xml, out);
 }
 
