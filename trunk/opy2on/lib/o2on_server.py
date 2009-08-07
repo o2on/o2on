@@ -444,7 +444,7 @@ class P2PServerHandler(BaseHTTPServer.BaseHTTPRequestHandler):
         if key:
             xml_data = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n"
             xml_data += "<keys>\r\n"
-            xml_data += key.xml(self.server.glob)
+            xml_data += key.xml()
             xml_data += "</keys>\r\n"
         else:
             neighbors = self.server.glob.nodedb.neighbors_nodes(target, True)
