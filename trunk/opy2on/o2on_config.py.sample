@@ -1,0 +1,70 @@
+#!/usr/bin/python
+# -*- coding: utf-8
+
+# P2Pサーバのポート
+P2PPort = 0
+
+# プロキシのポート
+ProxyPort = 8000
+
+# Adminサーバのポート
+AdminPort = 9999
+
+# ノードをインポートするURL http, ftp, file などが使える
+Node_List_URLs = ["http://o2on.jf.land.to/node/node.xml",
+                  "http://o2on.sourceforge.jp/nodes/"]
+
+# dat保存ディレトクリ
+DatDir = "dat"
+
+# 集めるdatのリスト None にしておくと全て
+DatCollectionBoardList = []
+# DatCollectionBoardList = None
+# DatCollectionBoardList = ["2ch.net:tech", "2ch.net:unix", "2ch.net:linux"]
+
+# dat を gzip で保存するかどうか
+DatSaveAsGzip = False
+# DatSaveAsGzip = True
+
+# 接続タイムアウト (単位: 秒)
+SocketTimeout = 20
+
+# このノードの名前 今のところ日本語(ascii以外)はうまく動かない。
+NodeName = ""
+
+# 持ってない dat がプロキシにリクエストされたら取得しておくかどうか
+RequestNonExistDat = False
+# RequestNonExistDat = True
+
+# 2channel.brd のパス
+Path2channel_brd = "2channel.brd"
+
+# ping 後にふたたびpingを行なう時間  (単位: 秒)
+RePingSec = 300
+
+# メッセージの通知にD-Busを使うかどうか
+# True にしておくといくつかのメッセージがpopupされる
+UseDBus = False
+# UseDBus = True
+
+# ログを標準出力に出力するかどうか
+NoLog = False
+# NoLog = True
+
+############################
+# 以下は基本的にデバッグ用 #
+############################
+
+# pingでローカルなIPアドレスを報告されても無視する
+IgnoreLocalIP = True
+
+# プロファイルを取得する。どこで時間をとっているのかを計測します。
+RecordProfile = False
+
+# プロファイルの出力先
+ProfileDir = "profile"
+
+# エラーが起きた時に error-<時間>.txt にエラーメッセージを出力するかど
+# うか。
+OutputErrorFile = False
+# OutputError = True
