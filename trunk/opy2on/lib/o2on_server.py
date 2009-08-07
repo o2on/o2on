@@ -489,14 +489,14 @@ class P2PServerHandler(BaseHTTPServer.BaseHTTPRequestHandler):
         logger.log("P2PSERVER", "\theader was %s" % self.headers)
         header = common_header.copy()
         self.wfile.write("HTTP/1.0 400 Bad Request\r\n")
-        for h in header: self.wfile.write("%s: %s" % (h,header[h]))
+        for h in header: self.wfile.write("%s: %s\r\n" % (h,header[h]))
         self.wfile.write("\r\n")
         self.wfile.close()
     def response_404(self):
         #print "p2p server response 404 %s" % self.client_address[0]
         header = common_header.copy()
         self.wfile.write("HTTP/1.0 404 Not Found\r\n")
-        for h in header: self.wfile.write("%s: %s" % (h,header[h]))
+        for h in header: self.wfile.write("%s: %s\r\n" % (h,header[h]))
         self.wfile.write("\r\n")
         self.wfile.close()
     def get_requested_header(self):
