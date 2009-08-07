@@ -46,6 +46,8 @@ class O2ONServer(BaseHTTPServer.HTTPServer):
         self.requests.append(request)
         try:
             BaseHTTPServer.HTTPServer.finish_request(self, request, client_address)
+        except socket.timeout:
+            pass
         except Exception,inst:
             if isinstance(inst, socket.error) and inst.errno in (104, 32):
                 pass
