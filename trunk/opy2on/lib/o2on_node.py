@@ -246,7 +246,7 @@ class Node:
         if datdb and board:
             omiyage = datdb.getRandomInBoard(board)
         if(dathash):
-            headers['X-O2-Target-Key'] = dathash
+            headers['X-O2-Target-Key'] = hexlify(dathash)
         elif(board):
             headers['X-O2-Target-Board'] = board
         if omiyage:
