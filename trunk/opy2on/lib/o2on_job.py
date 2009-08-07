@@ -370,11 +370,12 @@ class DatQueryThread(JobThread):
         except socket.error, inst:
             logger.log("DATQUERY", inst)
         else:
-            logger.popup("DATQUERY", "Got queried dat %s" % dat.path())
+            if dat:
+                logger.popup("DATQUERY", "Got queried dat %s" % dat.path())
+                datdb.add_dat(dat)
+                datdb.save()
             nodedb.add_node(node)
-            datdb.add_dat(dat)
             nodedb.save()
-            datdb.save()
         self.glob.keyquery.save()
 
 # Server thread
