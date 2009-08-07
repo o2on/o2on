@@ -36,8 +36,11 @@ class O2ONServer(BaseHTTPServer.HTTPServer):
         self.requests = []
     def shutdown(self):
         for r in self.requests: 
-            r.shutdown(socket.SHUT_RDWR)
-            r.close()
+            try:
+                r.shutdown(socket.SHUT_RDWR)
+                r.close()
+            except Exception:
+                pass
         BaseHTTPServer.HTTPServer.shutdown(self)
     def finish_request(self, request, client_address):
         self.requests.append(request)
