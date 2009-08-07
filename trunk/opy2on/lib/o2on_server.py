@@ -394,14 +394,15 @@ class P2PServerHandler(BaseHTTPServer.BaseHTTPRequestHandler):
             if not category: category = 'dat'
             if category == 'dat':
                 data = self.rfile.read(l)
-                dom = xml.dom.minidom.parseString(data)
-                top = dom.getElementsByTagName("keys")
-                if len(top):
-                    for k in top[0].getElementsByTagName("key"):
-                        key = o2on_key.Key()
-                        key.from_xml_node(k)
-                        self.server.glob.keydb.add(key)
-                dom.unlink()
+                if data:
+                    dom = xml.dom.minidom.parseString(data)
+                    top = dom.getElementsByTagName("keys")
+                    if len(top):
+                        for k in top[0].getElementsByTagName("key"):
+                            key = o2on_key.Key()
+                            key.from_xml_node(k)
+                            self.server.glob.keydb.add(key)
+                    dom.unlink()
             else: self.server.glob.logger.log("P2PSERVER","Unknown Category %s" % category)
     def do_im(self, node):
         headers = common_header.copy()

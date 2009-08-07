@@ -40,11 +40,14 @@ class JobThread(threading.Thread):
     def run(self):
         try:
             if o2on_config.RecordProfile:
-                if not os.path.exists(os.path.dirname(o2on_config.ProfileDir)): 
-                    os.makedirs(os.path.dirname(o2on_config.ProfileDir))
-                    profname = os.path.join(o2on_config.ProfileDir,
-                                            "o2on_"+"_".join(self.name.split(" "))+".prof")
-                    cProfile.runctx('self.dummy()', None, {'self':self,}, profname)
+                if not os.path.exists(o2on_config.ProfileDir): 
+                    try:
+                        os.makedirs(o2on_config.ProfileDir)
+                    except OSError, inst:
+                        if inst.errno != 17: raise inst
+                profname = os.path.join(o2on_config.ProfileDir,
+                                        "o2on_"+"_".join(self.name.split(" "))+".prof")
+                cProfile.runctx('self.dummy()', None, {'self':self,}, profname)
             else: self.dummy()
         except Exception,inst:
             if o2on_config.OutputErrorFile:
