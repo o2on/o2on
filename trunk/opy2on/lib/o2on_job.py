@@ -359,11 +359,11 @@ class DatQueryThread(JobThread):
         if not node: node = o2on_node.Node(k.nodeid, k.ip, k.port)
         logger.log("DATQUERY","dat query %s to %s" % (hexlify(k.hash),hexlify(node.id)))
         try:
-            dat = node.dat(k.hash, self.glob)
+            dat = node.dat(k.hash, None, self.glob)
         except o2on_node.NodeRemovable:
             nodedb.remove(node)
             nodedb.save()
-            self.glob.keydb.remove_bynodeid(node.id)                
+            self.glob.keydb.remove_bynodeid(node.id)
             self.glob.keydb.save()
         except o2on_node.NodeRefused:
             pass

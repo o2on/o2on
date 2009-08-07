@@ -400,7 +400,10 @@ class P2PServerHandler(BaseHTTPServer.BaseHTTPRequestHandler):
             if category == 'dat':
                 data = self.rfile.read(l)
                 if data:
-                    dom = xml.dom.minidom.parseString(data)
+                    try:
+                        dom = xml.dom.minidom.parseString(data)
+                    except xml.dom.minidom.ExpatError:
+                        return
                     top = dom.getElementsByTagName("keys")
                     if len(top):
                         for k in top[0].getElementsByTagName("key"):
