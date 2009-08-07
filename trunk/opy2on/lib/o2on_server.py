@@ -18,6 +18,7 @@ import cgi
 import time
 import traceback
 import sys
+from xml.parsers.expat import ExpatError
 
 import o2on_config
 from o2on_const import regHosts, ProtocolVer, AppName
@@ -402,7 +403,7 @@ class P2PServerHandler(BaseHTTPServer.BaseHTTPRequestHandler):
                 if data:
                     try:
                         dom = xml.dom.minidom.parseString(data)
-                    except xml.dom.minidom.ExpatError:
+                    except ExpatError:
                         return
                     top = dom.getElementsByTagName("keys")
                     if len(top):
