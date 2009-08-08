@@ -136,10 +136,6 @@ glob.shutdown = threading.Event()
 o2on_node.build_common_header(glob.prof)
 o2on_server.build_common_header(glob.prof)
 
-th = threading.Thread(target=readcommand, args=(glob,))
-th.setDaemon(True)
-th.start()
-
 show_myid(None)
 show_mypubkey(None)
 
@@ -170,6 +166,10 @@ commands = {
     "nodes": (lambda x: glob.nodedb.show()),
     "stat": showstat,
 }
+
+th = threading.Thread(target=readcommand, args=(glob,))
+th.setDaemon(True)
+th.start()
 
 try:
     glob.shutdown.wait()
