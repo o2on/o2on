@@ -1,6 +1,8 @@
 #!/usr/bin/python
 # -*- coding: utf-8
 
+from __future__ import with_statement
+
 import os
 from Crypto.Cipher import AES # pycrypto
 import xml.dom.minidom
@@ -166,8 +168,11 @@ class Node:
                 raise NodeRemovable
             except socket.error, inst:
                 socket.setdefaulttimeout(None)
-                if inst.errno in (113, 111): raise NodeRemovable
-                if inst.errno in (110, 104): raise NodeRefused
+                errno = None
+                if hasattr(inst, 'errno'): errno = inst.errno
+                else: errno =  inst[0]
+                if errno in (113, 111): raise NodeRemovable
+                if errno in (110, 104): raise NodeRefused
                 else: raise inst
             except httplib.BadStatusLine: 
                 socket.setdefaulttimeout(None)
