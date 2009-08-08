@@ -45,7 +45,7 @@ def read_2channel_brd():
     res = []
     regBoard = re.compile(r'^\s+[^.]+\.'+o2on_const.regHosts+r'\s+([a-z0-9]+)\s')
     if os.path.isfile(o2on_config.Path2channel_brd):
-        f = open(o2on_config.Path2channel_brd)
+        f = open(o2on_config.Path2channel_brd,'r')
         while True:
             line = f.readline()
             if line == '':break
@@ -53,6 +53,7 @@ def read_2channel_brd():
             if m:
                 res.append(m.group(1)+":"+m.group(2))
         f.close()
+    else: glob.logger.popup("GLOBAL", "No 2channel.brd file")
     return res
 
 def show_myid(x):
@@ -107,17 +108,17 @@ def readcommand(glob):
             f = open('error-'+str(int(time.time()))+'.txt', 'w')
             traceback.print_exc(file=f)
             f.close()
-        self.glob.logger.popup("ERROR", str(inst))
+        glob.logger.popup("ERROR", str(inst))
     glob.shutdown.set()
 
-class dammy: pass
+class dummy: pass
 
 #socket.setdefaulttimeout(o2on_config.SocketTimeout)
 
 if not os.path.exists(o2on_const.DBDir):
     os.makedirs(o2on_const.DBDir)
 
-glob = dammy()
+glob = dummy()
 glob.logger = o2on_util.Logger()
 glob.prof = o2on_profile.Profile(glob.logger)
 

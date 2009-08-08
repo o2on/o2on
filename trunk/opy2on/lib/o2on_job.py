@@ -112,6 +112,7 @@ class DatCollectorThread(JobThread):
         JobThread.__init__(self,"dat collector",60,g)
     def dojob(self, nodes, logger, prof, datdb, datq):
         board = nodes.get_random_board()
+        logger.log("DATCOLLECTOR","Try to get dat in %s" % board)
         if not board: return
         for n in nodes.get_nodes_for_board(board):
             if self.finish: break
@@ -190,8 +191,7 @@ class AskNodeCollectionThread(JobThread):
                 logger.log("ASKNODECOLLECTION",
                            "\tadd collection for %s" % (hexlify(n.id)))
                 nodedb.reset_collection_for_node(n)
-                for b in colboards:                    
-                    nodedb.add_collection(b,n)
+                for b in colboards: nodedb.add_collection(b,n)
                 nodedb.add_node(n)
                 nodedb.save()
 

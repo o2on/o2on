@@ -67,4 +67,4 @@ ProfileDir = "profile"
 # エラーが起きた時に error-<時間>.txt にエラーメッセージを出力するかど
 # うか。
 OutputErrorFile = False
-# OutputError = True
+# OutputErrorFile = True
