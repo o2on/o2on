@@ -19,6 +19,8 @@ import time
 import traceback
 import sys
 from xml.parsers.expat import ExpatError
+import threading
+import select
 
 import o2on_config
 from o2on_const import regHosts, ProtocolVer, AppName
@@ -35,6 +37,32 @@ class O2ONServer(BaseHTTPServer.HTTPServer):
                                            handler)
         self.glob = g
         self.requests = []
+        self.__is_shut_down = threading.Event()
+        self.__serving = False
+    def serve_forever(self, poll_interval=0.5):
+        #hasattr(BaseHTTPServer.HTTPServer, '_handle_request_noblock'):
+        if sys.hexversion >= 0x020600f0:
+            BaseHTTPServer.HTTPServer.serve_forever(self, poll_interval) # 2.6
+        else:
+            self._serve_forever(poll_interval) # 2.5
+    def _serve_forever(self, poll_interval=0.5):
+        """Handle one request at a time until shutdown.
+
+        Polls for shutdown every poll_interval seconds. Ignores
+        self.timeout. If you need to do periodic tasks, do them in
+        another thread.
+        """
+        self.__serving = True
+        self.__is_shut_down.clear()
+        while self.__serving:
+            # XXX: Consider using another file descriptor or
+            # connecting to the socket to wake this up instead of
+            # polling. Polling reduces our responsiveness to a
+            # shutdown request and wastes cpu at all other times.
+            r, w, e = select.select([self], [], [], poll_interval)
+            if r:
+                self.handle_request()
+        self.__is_shut_down.set()
     def shutdown(self):
         for r in self.requests: 
             try:
@@ -42,7 +70,11 @@ class O2ONServer(BaseHTTPServer.HTTPServer):
                 r.close()
             except Exception:
                 pass
-        BaseHTTPServer.HTTPServer.shutdown(self)
+        if hasattr(BaseHTTPServer.HTTPServer, 'shutdown'):
+            BaseHTTPServer.HTTPServer.shutdown(self)
+        else:
+            self.__serving = False
+            self.__is_shut_down.wait()
     def finish_request(self, request, client_address):
         self.requests.append(request)
         try:
@@ -50,7 +82,11 @@ class O2ONServer(BaseHTTPServer.HTTPServer):
         except socket.timeout:
             pass
         except Exception,inst:
-            if isinstance(inst, socket.error) and inst.errno in (104, 32):
+            errno = None
+            if isinstance(inst, socket.error): # 2.6
+                if hasattr(inst, 'errno'): errno = inst.errno
+                else: errno =  inst[0]
+            if  errno in (104, 32): # 2.5
                 pass
             else:
                 if o2on_config.OutputErrorFile:

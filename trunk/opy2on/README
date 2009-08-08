@@ -8,9 +8,9 @@ opy2on (http://pc12.2ch.net/test/read.cgi/tech/1231570128/ 356さん命名)
 
 必要なもの
 
-- python 2.6
+- python 2.5 (できれば 2.6)
 - pycrypto
-- D-Bus を使うならば python-dbus
+- D-Bus を使うならば dbus-python
 
 起動
 

@@ -1,6 +1,8 @@
 #!/usr/bin/python
 # -*- coding: utf-8
 
+from __future__ import with_statement
+
 import os.path
 import re
 import cPickle
@@ -13,8 +15,6 @@ import os
 import datetime
 import hashlib
 import time
-
-import sys
 
 from o2on_const import KeyDBFile, regHosts
 import o2on_config
