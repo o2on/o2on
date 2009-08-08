@@ -397,6 +397,9 @@ class NodeDB:
     def get_nodes_for_board(self, board):
         with self.lock:
             if not board in self.boardmap: return []
+            if len(self.boardmap[board])==0: 
+                del self.boardmap[board]
+                return []
             return map(lambda x: self.nodes[x], self.boardmap[board])
     def get_random_board(self):
         with self.lock:

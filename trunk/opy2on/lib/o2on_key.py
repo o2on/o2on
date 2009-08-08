@@ -119,7 +119,9 @@ class KeyDB:
             return len(self.keys)
     def show(self):
         pager = os.environ.get('PAGER')
-        if not pager: self.glob.logger.log("KEYDB", "PAGER env must be set")
+        if not pager: 
+            self.glob.logger.log("KEYDB", "PAGER env must be set")
+            return
         proc = subprocess.Popen(pager, shell=True, stdin=subprocess.PIPE)
         pipe = proc.stdin
         try: 
