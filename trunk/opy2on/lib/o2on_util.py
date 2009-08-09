@@ -1,4 +1,5 @@
 #!/usr/bin/python
+# -*- coding: utf-8
 
 from __future__ import with_statement
 
@@ -9,6 +10,7 @@ import hashlib
 import re
 import os.path
 import cPickle
+import datetime
 
 import o2on_config
 from o2on_const import DatQueryFile, KeyQueryFile, AppName
@@ -92,10 +94,11 @@ class Query:
             with self.lock:
                 self.list = cPickle.load(pkl_file)
             pkl_file.close()
-    def add(self,x):
+    def add(self,x, front=False):
         with self.lock:
             if not x in self.list:
-                self.list.append(x)
+                if front: self.list.insert(0,x)
+                else: self.list.append(x)
                 self.semap.release()
     def pop(self):
         self.semap.acquire()
@@ -103,9 +106,45 @@ class Query:
             if len(self.list):
                 return self.list.pop(0)
 
+import o2on_key
+
 class DatQuery(Query):
+    regDatKey = re.compile("^([^/]+)/([^/]+)/(\d+)$")
     def __init__(self):
         Query.__init__(self, DatQueryFile)
+    def load(self):
+        Query.load(self)
+        with self.lock:
+            if len(self.list)>0 and isinstance(self.list[0], str):
+                copy = list(self.list)
+                self.list = []
+                for x in copy:
+                    m = self.regDatKey.match(x)
+                    key = o2on_key.Key()
+                    key.hash = datkeyhash(x)
+                    key.url = "http://xxx.%s/test/read.cgi/%s/%s/" % (m.group(1),
+                                                                      m.group(2),
+                                                                      m.group(3))
+                    self.list.append(key)
+    def add_bydatkey(self, x, url=None, title ="", front=False):
+        key = o2on_key.Key()
+        key.hash = datkeyhash(x)
+        if url: key.url = url
+        else: 
+            m = self.regDatKey.match(x)
+            key.url = "http://xxx.%s/test/read.cgi/%s/%s/" % (m.group(1),
+                                                              m.group(2),
+                                                              m.group(3))
+        key.title = title
+        self.add(key, front)
+    def datq_list(self):
+        with self.lock:
+            result = []
+            for x in self.list:
+                if x.published == 0: t = "まだ検索されてない".decode('utf-8')
+                else: t = str(datetime.datetime.fromtimestamp(int(x.published)))
+                result.append((x.url, x.title.decode('utf-8'), t))
+            return result
 class KeyQuery(Query):
     def __init__(self):
         Query.__init__(self, KeyQueryFile)

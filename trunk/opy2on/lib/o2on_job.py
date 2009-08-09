@@ -295,18 +295,18 @@ class SearchThread(JobThread):
         self.glob.datquery.semap.release()
     def dojob(self, nodedb, logger, prof, datdb, datq):
         d = datq.pop()
-        if self.finish: return
-        if datdb.has_key(d): 
+        if datdb.has_keyhash(d.hash):
             datq.save()
             return
-        kid = o2on_util.datkeyhash(d)
+        d.published = int(time.time())
         datq.add(d)
         datq.save()
+        if self.finish: return
         reckey = []
-        next = nodedb.neighbors_nodes(kid,False,5)
+        next = nodedb.neighbors_nodes(d.hash,False,5)
         sent = []
-        key = self.glob.keydb.get(kid)
-        if key: reckey.append(key)
+        keys = self.glob.keydb.get_bydatkey(d.hash)
+        if keys: reckey.extend(keys)
         while True:
             if self.finish: return
             neighbors = next
@@ -314,10 +314,10 @@ class SearchThread(JobThread):
             next = []
             for node in neighbors:
                 if self.finish: return
-                logger.log("SEARCH","findvalue to %s for %s" % (hexlify(node.id),d))
+                logger.log("SEARCH","findvalue to %s for %s" % (hexlify(node.id),d.url))
                 sent.append(node.id)
                 try:
-                    res = node.findvalue(kid)
+                    res = node.findvalue(d.hash)
                 except o2on_node.NodeRemovable:
                     nodedb.remove(node)
                     nodedb.save()
@@ -340,7 +340,7 @@ class SearchThread(JobThread):
                             logger.log("SEARCH","\tadd new key")
                             if x not in reckey: reckey.append(x)
                     nodedb.save()
-        if len(reckey) == 0: logger.log("SEARCH","\tfailed to get key for %s" % d)
+        if len(reckey) == 0: logger.log("SEARCH","\tfailed to get key for %s" % d.url)
         for key in reckey: 
             self.glob.keydb.add(key)
             self.glob.keyquery.add(key)

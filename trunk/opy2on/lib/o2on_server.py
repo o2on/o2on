@@ -29,6 +29,7 @@ import o2on_dat
 from o2on_node import ip2e, port2e, e2ip
 import o2on_key
 import o2on_im
+import o2on_util
 
 class O2ONServer(BaseHTTPServer.HTTPServer):
     def __init__(self, handler, port, g):
@@ -64,7 +65,7 @@ class O2ONServer(BaseHTTPServer.HTTPServer):
                 self.handle_request()
         self.__is_shut_down.set()
     def shutdown(self):
-        for r in self.requests: 
+        for r in []:#self.requests: 
             try:
                 r.shutdown(socket.SHUT_RDWR)
                 r.close()
@@ -186,6 +187,22 @@ class ProxyServerHandler(BaseHTTPServer.BaseHTTPRequestHandler):
         if not m: m = self.regs[self.URLTYPE_KAKO_GZ].match(self.path)
         if not m: return None
         return "/".join((m.group(1), m.group(2), m.group(3)))
+    def readcgi_url(self):
+        
+        return None
+    def dattitle(self,data):
+        first = data.split("\n",1)[0]
+        m = re.compile(r'^.*<>.*<>.*<>.*<>(.*)$').match(first)
+        if not m: return ""
+        try:
+            first = first.decode('cp932').encode('utf-8')
+        except UnicodeDecodeError, inst:
+            try:
+                first = first.decode('euc_jp').encode('utf-8')
+            except UnicodeDecodeError, inst: raise inst
+        m = re.compile(r'^.*<>.*<>.*<>.*<>(.*)$').match(first)
+        if not m: return ""
+        return m.group(1)
     def do_GET(self):
         logger = self.server.glob.logger
         logger.log("PROXY", "proxy requested %s" % self.path)
@@ -219,14 +236,15 @@ class ProxyServerHandler(BaseHTTPServer.BaseHTTPRequestHandler):
                 self.wfile.write(data)
                 self.wfile.close()
                 dk = self.datkey()
+                dkh = o2on_util.datkeyhash(dk)
                 dp = self.datpath()
                 if r.status == 200:
-                    if not self.server.glob.datdb.has_key(dk):
+                    if not self.server.glob.datdb.has_keyhash(dkh):
                         # 持ってない dat が取得された
                         logger.log("PROXY", "\tsave responsed dat for myself")
                         self.server.glob.datdb.add(dk, datdata)
                 else:
-                    if self.server.glob.datdb.has_key(dk):
+                    if self.server.glob.datdb.has_keyhash(dkh):
                         if r.status == 206:
                             # 持ってる dat の差分
                             rg = r.getheader('Content-Range')
@@ -248,7 +266,9 @@ class ProxyServerHandler(BaseHTTPServer.BaseHTTPRequestHandler):
                         if r2 and r2.status == 200:
                             data = r2.read()
                             if r.getheader("content-encoding") == "gzip":
-                                data = zlib.decompress(data)
+                                sf = StringIO.StringIO(data)
+                                dec = gzip.GzipFile(fileobj=sf)
+                                data = dec.read()
                             self.server.glob.datdb.add(dk, data)
             elif ut in (self.URLTYPE_DAT, self.URLTYPE_KAKO_DAT, self.URLTYPE_KAKO_GZ):
                 logger.log("PROXY",  "\ttry to read dat from cache")
@@ -290,14 +310,33 @@ class ProxyServerHandler(BaseHTTPServer.BaseHTTPRequestHandler):
                         f.close()
                         os.remove(dp)
                 else:
-                    logger.popup("PROXY", "no cached dat. query for the dat.\n%s" % self.datkey())
+                    logger.popup("PROXY", "no cached dat. query for the dat.\n%s" % \
+                                     self.datkey())
+                    data = r.read()
                     self.wfile.write("HTTP/%d.%d %d %s\r\n" % 
                                      (r.version/10,r.version%10,r.status,r.reason))
                     self.wfile.write(self.msg(r))
                     self.wfile.write("\r\n")
-                    self.wfile.write(r.read())
+                    self.wfile.write(data)
                     self.wfile.close()
-                    self.server.glob.datquery.add(self.datkey())
+                    try:
+                        conn = self.get_connection(['If-Modified-Since', 'Range', 
+                                                    'User-Agent'])
+                        r2= conn.getresponse()
+                        conn.close()
+                    except socket.timeout:
+                        r2 = None
+                    if r2 and r2.status == 203:
+                        data = r2.read()
+                        if r2.getheader("content-encoding") == "gzip":
+                            sf = StringIO.StringIO(data)
+                            dec = gzip.GzipFile(fileobj=sf)
+                            data = dec.read()
+                        title = self.dattitle(data)
+                    else: title = ""
+                    self.server.glob.datquery.add_bydatkey(self.datkey(),
+                                                           None, title, True)
+                    self.server.glob.datquery.save()
 
 common_header = {}
 def build_common_header(prof):
@@ -476,11 +515,11 @@ class P2PServerHandler(BaseHTTPServer.BaseHTTPRequestHandler):
                                     "\tfindvalue from %s for %s" % (hexlify(node.id), target))
         target = unhexlify(target)
         xml_data = None
-        key = self.server.glob.keydb.get(target)
-        if key:
+        keys = self.server.glob.keydb.get_bydatkey(target)
+        if keys:
             xml_data = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n"
             xml_data += "<keys>\r\n"
-            xml_data += key.xml()
+            for key in keys: xml_data += key.xml()
             xml_data += "</keys>\r\n"
         else:
             neighbors = self.server.glob.nodedb.neighbors_nodes(target, True)
@@ -668,6 +707,27 @@ background: blue;
         self.end_headers()
         self.wfile.write(self.html_header % (AppName, curname))
         self.send_nav(cur)
+    def datq(self, args):
+        datq = self.server.glob.datquery
+        self.send_common("im", "Searching Dats")
+        self.wfile.write("""\
+<div class='section'>
+ <h2 class='section_title'>検索中dat</h2>
+ <div class='section_body'>
+  <p>検索中dat数 %d</p>
+  <table>
+   <tr><th>URL</th><th>Title</th><th>最終検索日時</th></tr>
+""" % (len(datq)))
+        for x in datq.datq_list():
+            self.wfile.write(
+                ("<tr><td><a href='%s'>%s</a></td><td>%s</td><td>%s</td></tr>\n" \
+                     % (x[0],x[0],x[1],x[2])).encode('utf-8'))
+        self.wfile.write("""\
+  </table>
+ </div>
+</div>
+""")
+        self.wfile.write(self.html_footer)
     def im_send(self,args):
         if not re.compile(r'^[0-9a-f]{40}$').match(args[1]) or \
                 not re.compile(r'^[0-9a-f]{8}$').match(args[2]) or \
@@ -761,11 +821,11 @@ background: blue;
         for x in imdb.im_list():
             if x[0]:
                 self.wfile.write(("<tr class=\"mine\"><td>%s</td><td>"\
-                                      "<a href='/im/send/%s/%s/%d'>%s</a></td>"\
+                                      "<a href='/im/send/%s/%s/%d'>%s</a></td>\n"\
                                       "<td>%s</td></tr>" % x[1:]).encode('utf-8'))
             else:
                 self.wfile.write(("<tr class=\"other\"><td>%s</td><td>"\
-                                      "<a href='/im/send/%s/%s/%d'>%s</a></td>"\
+                                      "<a href='/im/send/%s/%s/%d'>%s</a></td>\n"\
                                       "<td>%s</td></tr>" % x[1:]).encode('utf-8'))
         self.wfile.write("""\
   </table>
@@ -812,7 +872,7 @@ background: blue;
         for x in nodedb.node_list():
             self.wfile.write(
                 ("<tr><td>%d</td><td><a href='/im/send/%s/%s/%d'>%s</a></td><td>%s</td>"\
-                     "<td>%s</td><td>%d</td><td>%s</td><td>%s</td></tr>" % x).encode('utf-8'))
+                     "<td>%s</td><td>%d</td><td>%s</td><td>%s</td></tr>\n" % x).encode('utf-8'))
         self.wfile.write("""\
   </table>
  </div>

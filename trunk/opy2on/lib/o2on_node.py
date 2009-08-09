@@ -429,7 +429,10 @@ class NodeDB:
                     del self.boardmap[board][0]
                     self.boardmap[board].append(n.id)
                 else:
-                    r = nt.ping()
+                    try:
+                        r = nt.ping()
+                    except NodeRemovable, NodeRefused:
+                        r = False
                     if r:
                         self.boardmap[board].append(self.boardmap[board][0])
                         del self.boardmap[board][0]
@@ -502,7 +505,10 @@ class NodeDB:
                 self.nodes[node.id] = node
             else:
                 n = self.nodes[self.KBuckets[bitlen][0]]        
-                r = n.ping()
+                try:
+                    r = n.ping()
+                except NodeRemovable, NodeRefused:
+                    r = False
                 if r:
                     del self.KBuckets[bitlen][0]
                     self.KBuckets[bitlen].append(n.id)
