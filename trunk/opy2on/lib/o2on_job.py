@@ -15,6 +15,7 @@ import os
 import httplib
 import traceback
 import sys
+import errno
 
 import o2on_server
 import o2on_config
@@ -44,7 +45,7 @@ class JobThread(threading.Thread):
                     try:
                         os.makedirs(o2on_config.ProfileDir)
                     except OSError, inst:
-                        if inst.errno != 17: raise inst
+                        if inst.errno != errno.EEXIST: raise inst
                 profname = os.path.join(o2on_config.ProfileDir,
                                         "o2on_"+"_".join(self.name.split(" "))+".prof")
                 cProfile.runctx('self.dummy()', None, {'self':self,}, profname)

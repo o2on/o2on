@@ -15,6 +15,7 @@ import os
 import datetime
 import hashlib
 import time
+import errno
 
 from o2on_const import KeyDBFile, regHosts
 import o2on_config
@@ -145,7 +146,7 @@ class KeyDB:
                 pipe.close()
                 proc.wait()
         except IOError, inst:
-            if inst.errno == 32:pass # Broken pipe
+            if inst.errno == errno.EPIPE:pass # Broken pipe
             else: raise inst
         self.glob.logger.log("KEYDB", "Finished to show keys")
     def key_list(self):
