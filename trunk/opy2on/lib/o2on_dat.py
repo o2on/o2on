@@ -160,9 +160,9 @@ class DatDB:
     def get(self,x):
         with self.lock:
             return self.hashmap.get(x)
-    def has_key(self,key):
+    def has_keyhash(self,key):
         with self.lock:
-            return o2on_util.datkeyhash(key) in self.hashmap
+            return key in self.hashmap
     def add_dat(self, dat):
         with self.lock:
             befdat = self.hashmap.get(dat.hash())

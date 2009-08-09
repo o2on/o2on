@@ -37,7 +37,9 @@ class Key:
     def __cmp__(self,x):
         return cmp(self.idkeyhash(), x.idkeyhash())
     def idkeyhash(self):
-        if not self.ikhash: self.ikhash = hashlib.sha1(self.hash + self.nodeid).digest()
+        if not self.ikhash: 
+            if self.nodeid: self.ikhash = hashlib.sha1(self.hash + self.nodeid).digest()
+            else: self.ikhash = self.hash
         return self.ikhash
     def from_key(self, key):
         if self.idkeyhash() == key.idkeyhash():
@@ -112,6 +114,7 @@ class KeyDB:
             self.keys = {}
             self.lenmap = {}
             self.publishmap = {}
+            self.datkeymap = {}
         self.glob = g
         self.load()
     def __len__(self):
@@ -174,9 +177,9 @@ class KeyDB:
             key.published = publish_time
             if publish_time not in self.publishmap: self.publishmap[publish_time]=[]
             self.publishmap[publish_time].append(idkeyhash)
-    def get(self, target):
+    def get_bydatkey(self, target):
         with self.lock:
-            return self.keys.get(target)
+            return map(lambda x: self.keys.get(x), self.datkeymap.get(target,[]))
     def remove_bynodeid(self, nid):
         if len(nid) != 20:raise Exception
         removes = []
@@ -191,9 +194,11 @@ class KeyDB:
             l = hash_xor_bitlength(self.glob.prof.mynode.id, k.hash)
             self.lenmap[l].remove(k.idkeyhash())
             self.publishmap[k.published].remove(k.idkeyhash())
+            self.datkeymap[k.hash].remove(k.idkeyhash())
             if len(self.lenmap[l]) == 0: del self.lenmap[l]
             if len(self.publishmap[k.published])==0: del self.publishmap[k.published]
-    def add(self, k):        
+            if len(self.datkeymap[k.hash])==0: del self.datkeymap[k.hash]
+    def add(self, k):
         if not k.valid(): return
         k.published = int(time.time())
         if k.idkeyhash() in self.keys:
@@ -214,6 +219,9 @@ class KeyDB:
                     self.publishmap[maxkey.published].remove(maxkey.idkeyhash())
                     if len(self.publishmap[maxkey.published]) == 0:
                         del self.publishmap[maxkey.published]
+                    self.datkeymap[maxkey.hash].remove(maxkey.idkeyhash())
+                    if len(self.datkeymap[maxkey.hash]) == 0:
+                        del self.datkeymap[maxkey.hash]
                 else: return
             self.keys[k.idkeyhash()] = k
             if bl not in self.lenmap: self.lenmap[bl] = []
@@ -221,12 +229,16 @@ class KeyDB:
             if k.published not in self.publishmap: 
                 self.publishmap[k.published] = []
             self.publishmap[k.published].append(k.idkeyhash())
+            if k.hash not in self.datkeymap:
+                self.datkeymap[k.hash] = []
+            self.datkeymap[k.hash].append(k.idkeyhash())
     def save(self):
         f = open(KeyDBFile,'wb')
         with self.lock:
             cPickle.dump(self.keys, f, -1)
             cPickle.dump(self.lenmap, f, -1)
             cPickle.dump(self.publishmap,f,-1)
+            cPickle.dump(self.datkeymap,f,-1)
         f.close()
     def load(self):
         if os.path.isfile(KeyDBFile):
@@ -235,4 +247,15 @@ class KeyDB:
                 self.keys = cPickle.load(f)
                 self.lenmap = cPickle.load(f)
                 self.publishmap = cPickle.load(f)
+                try:
+                    self.datkeymap = cPickle.load(f)
+                except EOFError:
+                    rebuild = True
+                else: rebuild = False
             f.close()
+            if rebuild:
+                keys = self.keys.values()
+                self.keys.clear()
+                self.lenmap.clear()
+                self.publishmap.clear()
+                for k in keys: self.add(k)
