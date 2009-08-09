@@ -196,7 +196,7 @@ class ProxyServerHandler(BaseHTTPServer.BaseHTTPRequestHandler):
         m = re.compile(r'^.*<>.*<>.*<>.*<>(.*)$').match(first)
         if not m: return ""
         try:
-            first = first.decode('cp932').encode('utf-8')
+            first = first.replace("\x86\xa6", "\x81E").decode('cp932').encode('utf-8')
         except UnicodeDecodeError, inst:
             try:
                 first = first.decode('euc_jp').encode('utf-8')
