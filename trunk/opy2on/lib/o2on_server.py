@@ -68,7 +68,7 @@ class O2ONServer(BaseHTTPServer.HTTPServer):
     def shutdown(self):
         for r in self.requests: 
             try:
-                r.shutdown(socket.SHUT_RDWR)
+                #r.shutdown(socket.SHUT_RDWR)
                 r.close()
             except Exception:
                 pass
@@ -215,13 +215,13 @@ class ProxyServerHandler(BaseHTTPServer.BaseHTTPRequestHandler):
             conn = self.get_connection()
             r= conn.getresponse()
             conn.close()
-        except socket.timeout:
+        except (socket.timeout, socket.gaierror, socket.error):
             r = None
         data = None
         header = None
-        if r:
+        if True:
             logger.log("PROXY", "\tresponse %s" % r.status)
-            if ut != self.URLTYPE_OFFLAW and r.status in (200,206,304):
+            if r and ut != self.URLTYPE_OFFLAW and r.status in (200,206,304):
                 logger.log("PROXY", "\tgot response from server")
                 data = r.read()
                 if r.getheader("content-encoding") == "gzip":
@@ -313,13 +313,14 @@ class ProxyServerHandler(BaseHTTPServer.BaseHTTPRequestHandler):
                 else:
                     logger.popup("PROXY", "no cached dat. query for the dat.\n%s" % \
                                      self.datkey())
-                    data = r.read()
-                    self.wfile.write("HTTP/%d.%d %d %s\r\n" % 
-                                     (r.version/10,r.version%10,r.status,r.reason))
-                    self.wfile.write(self.msg(r))
-                    self.wfile.write("\r\n")
-                    self.wfile.write(data)
-                    self.wfile.close()
+                    if r:
+                        data = r.read()
+                        self.wfile.write("HTTP/%d.%d %d %s\r\n" % 
+                                         (r.version/10,r.version%10,r.status,r.reason))
+                        self.wfile.write(self.msg(r))
+                        self.wfile.write("\r\n")
+                        self.wfile.write(data)
+                        self.wfile.close()
                     try:
                         conn = self.get_connection(['If-Modified-Since', 'Range', 
                                                     'User-Agent'])

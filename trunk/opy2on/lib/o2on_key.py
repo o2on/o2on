@@ -64,9 +64,6 @@ class Key:
                 raise Exception("Couldn't decode first line %s" % dat.datpath())
         m = re.compile(r'^.*<>.*<>.*<>.*<>(.*)$').match(first)
         if m: self.title = m.group(1)
-        #reg = re.compile(r'^(?:2ch\.net|machibbs\.com)/(?:cyugoku|hokkaidou|k(?:an(?:a|to)|inki|(?:ousinet|yusy)u)|o(?:(?:kinaw|sak)a)|sikoku|t(?:a(?:(?:m|war)a)|o(?:kyo|u(?:hoku|kai))))')
-        #if re.compile("^\s*$").match(self.title) and \
-        #        not reg.match(dat.path()): print dat.datpath()
         self.url = "http://xxx.%s/test/read.cgi/%s/%s/" % (dat.domain,
                                                            dat.board,
                                                            dat.datnum)
@@ -111,7 +108,7 @@ class Key:
 
 class KeyDB:
     def __init__(self, g):
-        self.lock = threading.Lock()
+        self.lock = threading.RLock()
         with self.lock:
             self.keys = {}
             self.lenmap = {}
@@ -188,8 +185,8 @@ class KeyDB:
         with self.lock:
             for k in self.keys.values():
                 if k.nodeid == nid: removes.append(k)
-        for k in removes:
-            self.remove(k)
+            for k in removes:
+                self.remove(k)
     def remove(self,k):
         with self.lock:
             del self.keys[k.idkeyhash()]
