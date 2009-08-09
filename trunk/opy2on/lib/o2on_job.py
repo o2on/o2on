@@ -295,6 +295,7 @@ class SearchThread(JobThread):
         self.glob.datquery.semap.release()
     def dojob(self, nodedb, logger, prof, datdb, datq):
         d = datq.pop()
+        if not d: return
         if datdb.has_keyhash(d.hash):
             datq.save()
             return
@@ -354,7 +355,7 @@ class DatQueryThread(JobThread):
         self.glob.keyquery.semap.release()
     def dojob(self, nodedb, logger, prof, datdb, datq):
         k = self.glob.keyquery.pop()
-        if self.finish: return
+        if not k: return
         node = nodedb[k.nodeid]
         if not node: node = o2on_node.Node(k.nodeid, k.ip, k.port)
         logger.log("DATQUERY","dat query %s to %s" % (hexlify(k.hash),hexlify(node.id)))
