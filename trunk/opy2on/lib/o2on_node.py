@@ -157,9 +157,10 @@ class Node:
         with self.lock:
             conn = httplib.HTTPConnection(self.ip, self.port)
             try:
-                socket.setdefaulttimeout(o2on_config.SocketTimeout)
+                socket.setdefaulttimeout(15)
                 conn.connect()
                 socket.setdefaulttimeout(None)
+                conn.sock.settimeout(o2on_config.SocketTimeout)
                 conn.request(method,path,body, headers)                
                 r = conn.getresponse()
                 conn.close()
@@ -432,7 +433,7 @@ class NodeDB:
                 else:
                     try:
                         r = nt.ping()
-                    except NodeRemovable, NodeRefused:
+                    except (NodeRemovable, NodeRefused):
                         r = False
                     if r:
                         self.boardmap[board].append(self.boardmap[board][0])
@@ -508,7 +509,7 @@ class NodeDB:
                 n = self.nodes[self.KBuckets[bitlen][0]]        
                 try:
                     r = n.ping()
-                except NodeRemovable, NodeRefused:
+                except (NodeRemovable, NodeRefused):
                     r = False
                 if r:
                     del self.KBuckets[bitlen][0]
