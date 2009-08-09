@@ -21,6 +21,7 @@ import sys
 from xml.parsers.expat import ExpatError
 import threading
 import select
+from errno import ECONNRESET, EPIPE, ETIMEDOUT
 
 import o2on_config
 from o2on_const import regHosts, ProtocolVer, AppName
@@ -65,7 +66,7 @@ class O2ONServer(BaseHTTPServer.HTTPServer):
                 self.handle_request()
         self.__is_shut_down.set()
     def shutdown(self):
-        for r in []:#self.requests: 
+        for r in self.requests: 
             try:
                 r.shutdown(socket.SHUT_RDWR)
                 r.close()
@@ -87,7 +88,7 @@ class O2ONServer(BaseHTTPServer.HTTPServer):
             if isinstance(inst, socket.error):
                 if hasattr(inst, 'errno'): errno = inst.errno  # 2.6
                 else: errno =  inst[0]  # 2.5
-            if  errno in (104, 32, 110, 54):
+            if  errno in (ECONNRESET, EPIPE, ETIMEDOUT):
                 pass
             else:
                 if o2on_config.OutputErrorFile:
@@ -709,7 +710,7 @@ background: blue;
         self.send_nav(cur)
     def datq(self, args):
         datq = self.server.glob.datquery
-        self.send_common("im", "Searching Dats")
+        self.send_common("datq", "Searching Dats")
         self.wfile.write("""\
 <div class='section'>
  <h2 class='section_title'>検索中dat</h2>

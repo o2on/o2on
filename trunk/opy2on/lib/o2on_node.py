@@ -16,6 +16,7 @@ import socket
 import threading
 import random
 import time
+from errno import EHOSTUNREACH, ECONNREFUSED, ETIMEDOUT, ECONNRESET
 
 import o2on_config
 from o2on_util import hash_xor_bitlength
@@ -171,8 +172,8 @@ class Node:
                 errno = None
                 if hasattr(inst, 'errno'): errno = inst.errno
                 else: errno =  inst[0]
-                if errno in (113, 111): raise NodeRemovable
-                if errno in (110, 104): raise NodeRefused
+                if errno in (EHOSTUNREACH, ETIMEDOUT): raise NodeRemovable
+                if errno in (ECONNREFUSED, ECONNRESET): raise NodeRefused
                 else: raise inst
             except httplib.BadStatusLine: 
                 socket.setdefaulttimeout(None)
