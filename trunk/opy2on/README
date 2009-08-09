@@ -23,7 +23,7 @@ opy2on (http://pc12.2ch.net/test/read.cgi/tech/1231570128/ 356さん命名)
   - 重いぞ!という方は RecordProfile を True にしてください。ProfileDir
     下にプロファイルが出力されます。
 - ポートを開けたり閉めたりする。
-- ./opy2on で起動。
+- ./opy2on.py で起動。
 
 操作
 
