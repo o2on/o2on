@@ -87,7 +87,7 @@ class O2ONServer(BaseHTTPServer.HTTPServer):
             if isinstance(inst, socket.error):
                 if hasattr(inst, 'errno'): errno = inst.errno  # 2.6
                 else: errno =  inst[0]  # 2.5
-            if  errno in (104, 32, 110):
+            if  errno in (104, 32, 110, 54):
                 pass
             else:
                 if o2on_config.OutputErrorFile:
