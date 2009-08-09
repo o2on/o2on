@@ -59,7 +59,8 @@ class Key:
         except UnicodeDecodeError, inst:
             try:
                 first = first.decode('euc_jp').encode('utf-8')
-            except UnicodeDecodeError, inst: raise inst
+            except UnicodeDecodeError, inst: 
+                raise Exception("Couldn't decode first line %s" % dat.datpath())
         m = re.compile(r'^.*<>.*<>.*<>.*<>(.*)$').match(first)
         if m: self.title = m.group(1)
         #reg = re.compile(r'^(?:2ch\.net|machibbs\.com)/(?:cyugoku|hokkaidou|k(?:an(?:a|to)|inki|(?:ousinet|yusy)u)|o(?:(?:kinaw|sak)a)|sikoku|t(?:a(?:(?:m|war)a)|o(?:kyo|u(?:hoku|kai))))')
