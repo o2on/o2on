@@ -167,7 +167,7 @@ class ProxyServerHandler(BaseHTTPServer.BaseHTTPRequestHandler):
             conn = self.get_connection()
             r= conn.getresponse()
             conn.close()
-        except socket.timeout:
+        except (socket.timeout, socket.error, socket.gaierror):
             return
         self.wfile.write("HTTP/%d.%d %d %s\r\n" % 
                          (r.version/10,r.version%10,r.status,r.reason))
