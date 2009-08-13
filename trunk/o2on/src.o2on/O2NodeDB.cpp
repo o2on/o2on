@@ -53,12 +53,15 @@ bool
 O2NodeDB::
 touch_preprocessor(O2Node &node)
 {
-	// O2/0.2 (o2on/0.02.0027; Win32)
-	if (node.ua.size() > 13) {
-		wstring node_ver = node.ua.substr(13, 9);
-		if (wcscmp(node_ver.c_str(), ver) > 0)
+ 	if (wcscmp(node.app_name.c_str(), _T(APP_NAME)) == 0) {
+		// 同じアプリならバージョン番号を比較
+		wchar_t tmpW[64];
+		swprintf_s(tmpW, 64, L"%1d.%02d.%04d", APP_VER_MAJOR, APP_VER_MINOR, APP_BUILDNO);
+
+		if (wcscmp(node.app_ver.c_str(), tmpW) > 0)
 			NewVerDetectionFlag = true;
 	}
+
 	if (node.port == 0) {
 		AddPort0Node(node);
 		return false;
