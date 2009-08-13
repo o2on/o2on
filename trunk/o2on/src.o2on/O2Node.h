@@ -41,6 +41,9 @@ struct O2Node
 	pubT		pubkey;
 	//local
 	wstring		ua;
+	wstring		proto_ver;
+	wstring		app_name;
+	wstring		app_ver;
 	uint		status;
 	wstring		flags;
 	time_t		lastlink;
