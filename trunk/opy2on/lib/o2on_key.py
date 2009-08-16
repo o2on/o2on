@@ -16,12 +16,21 @@ import datetime
 import hashlib
 import time
 import errno
+import codecs
 
 from o2on_const import KeyDBFile, regHosts
 import o2on_config
 from o2on_util import hash_xor_bitlength
 import o2on_dat
 import o2on_node
+
+def my_replace_handler(inst):
+    return ((u"\u30fb", inst.start+2))
+
+try: 
+    codecs.lookup_error('opy2on_replace')
+except LookupError:
+    codecs.register_error('opy2on_replace', my_replace_handler) 
 
 class Key:
     def __init__(self):
@@ -56,12 +65,12 @@ class Key:
         self.size = len(data)
         first = data.split("\n",1)[0]
         try:
-            first = first.replace("\x86\xa6", "\x81E").decode('cp932').encode('utf-8')
+            first = first.decode('cp932').encode('utf-8')
         except UnicodeDecodeError, inst:
             try:
                 first = first.decode('euc_jp').encode('utf-8')
             except UnicodeDecodeError, inst: 
-                raise Exception("Couldn't decode first line %s" % dat.datpath())
+                first = first.decode('cp932','opy2on_replace').encode('utf-8')
         m = re.compile(r'^.*<>.*<>.*<>.*<>(.*)$').match(first)
         if m: self.title = m.group(1)
         self.url = "http://xxx.%s/test/read.cgi/%s/%s/" % (dat.domain,
