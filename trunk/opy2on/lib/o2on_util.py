@@ -44,11 +44,14 @@ class Logger:
                     print l
     def popup(self, categ, s):
         if o2on_config.UseDBus:
-            if not self.bus: self.bus = dbus.SessionBus()
-            obj = self.bus.get_object("org.freedesktop.Notifications",
-                                      "/org/freedesktop/Notifications")
-            obj.Notify(AppName, 0, '', AppName+" "+categ,s, [], {}, -1,
-                       dbus_interface="org.freedesktop.Notifications")
+            try:
+                if not self.bus: self.bus = dbus.SessionBus()
+                obj = self.bus.get_object("org.freedesktop.Notifications",
+                                          "/org/freedesktop/Notifications")
+                obj.Notify(AppName, 0, '', AppName+" "+categ,s, [], {}, -1,
+                           dbus_interface="org.freedesktop.Notifications")
+            except dbus.exceptions.DBusException:
+                self.log(categ,s)
         else:
             self.log(categ, s)
 
