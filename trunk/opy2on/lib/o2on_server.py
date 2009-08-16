@@ -22,6 +22,7 @@ from xml.parsers.expat import ExpatError
 import threading
 import select
 from errno import ECONNRESET, EPIPE, ETIMEDOUT
+import codecs
 
 import o2on_config
 from o2on_const import regHosts, ProtocolVer, AppName
@@ -31,6 +32,14 @@ from o2on_node import ip2e, port2e, e2ip
 import o2on_key
 import o2on_im
 import o2on_util
+
+def my_replace_handler(inst):
+    return ((u"\u30fb", inst.start+2))
+
+try: 
+    codecs.lookup_error('opy2on_replace')
+except LookupError:
+    codecs.register_error('opy2on_replace', my_replace_handler) 
 
 class O2ONServer(BaseHTTPServer.HTTPServer):
     def __init__(self, handler, port, g):
@@ -68,7 +77,7 @@ class O2ONServer(BaseHTTPServer.HTTPServer):
     def shutdown(self):
         for r in self.requests: 
             try:
-                #r.shutdown(socket.SHUT_RDWR)
+                r.shutdown(socket.SHUT_RDWR)
                 r.close()
             except Exception:
                 pass
@@ -196,11 +205,12 @@ class ProxyServerHandler(BaseHTTPServer.BaseHTTPRequestHandler):
         m = re.compile(r'^.*<>.*<>.*<>.*<>(.*)$').match(first)
         if not m: return ""
         try:
-            first = first.replace("\x86\xa6", "\x81E").decode('cp932').encode('utf-8')
+            first = first.decode('cp932').encode('utf-8')
         except UnicodeDecodeError, inst:
             try:
                 first = first.decode('euc_jp').encode('utf-8')
-            except UnicodeDecodeError, inst: raise inst
+            except UnicodeDecodeError, inst: 
+                first = first.decode('cp932','opy2on_replace').encode('utf-8')
         m = re.compile(r'^.*<>.*<>.*<>.*<>(.*)$').match(first)
         if not m: return ""
         return m.group(1)
