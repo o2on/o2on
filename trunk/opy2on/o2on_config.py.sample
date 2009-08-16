@@ -27,7 +27,7 @@ DatSaveAsGzip = False
 # DatSaveAsGzip = True
 
 # 接続タイムアウト (単位: 秒)
-SocketTimeout = 20
+SocketTimeout = 300
 
 # このノードの名前 今のところ日本語(ascii以外)はうまく動かない。
 NodeName = ""
