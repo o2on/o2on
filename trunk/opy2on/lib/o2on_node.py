@@ -340,7 +340,7 @@ class NodeDB:
         self.glob = glob
         self.KBuckets = []
         self.port0nodes = []
-        self.lock = threading.Lock()
+        self.lock = threading.RLock()
         for x in range(0,160): self.KBuckets.append([])
         self.nodes = dict()
         self.boardmap = dict()
@@ -402,7 +402,11 @@ class NodeDB:
             if len(self.boardmap[board])==0: 
                 del self.boardmap[board]
                 return []
-            return map(lambda x: self.nodes[x], self.boardmap[board])
+            res = []
+            for x in self.boardmap[board]:
+                n = self.nodes.get(x)
+                if n: res.append(n)
+        return res
     def get_random_board(self):
         with self.lock:
             if len(self.boardmap) == 0: return None
@@ -421,13 +425,12 @@ class NodeDB:
         r = None
         with self.lock:
             if not board in self.boardmap:
-                self.boardmap[board] = [n.id]
+                self.boardmap[board] = [n.id, ]
             elif len(self.boardmap[board])<10:
                 self.boardmap[board].append(n.id)
             else:
                 nt = self.nodes.get(self.boardmap[board][0])
                 if not nt:
-                    raise Exception
                     del self.boardmap[board][0]
                     self.boardmap[board].append(n.id)
                 else:
