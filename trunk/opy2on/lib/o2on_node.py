@@ -403,9 +403,14 @@ class NodeDB:
                 del self.boardmap[board]
                 return []
             res = []
+            rem = []
             for x in self.boardmap[board]:
                 n = self.nodes.get(x)
                 if n: res.append(n)
+                else: rem.append(x)
+            for x in rem:
+                self.boardmap[board].remove(x)
+                if len(self.boardmap[board]) == 0: del self.boardmap[board]
         return res
     def get_random_board(self):
         with self.lock:
