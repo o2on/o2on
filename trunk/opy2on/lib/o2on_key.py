@@ -201,9 +201,9 @@ class KeyDB:
             del self.keys[k.idkeyhash()]
             l = hash_xor_bitlength(self.glob.prof.mynode.id, k.hash)
             self.lenmap[l].remove(k.idkeyhash())
-            if self.publishmap[k.published].get(k.idkeyhash()): 
+            if k.idkeyhash() in self.publishmap[k.published]: 
                 self.publishmap[k.published].remove(k.idkeyhash())
-            if self.datkeymap[k.hash].get(k.idkeyhash()): 
+            if k.idkeyhash() in self.datkeymap[k.hash]: 
                 self.datkeymap[k.hash].remove(k.idkeyhash())
             if len(self.lenmap[l]) == 0: del self.lenmap[l]
             if len(self.publishmap[k.published])==0: del self.publishmap[k.published]
