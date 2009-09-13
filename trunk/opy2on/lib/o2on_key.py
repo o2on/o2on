@@ -64,6 +64,9 @@ class Key:
         data = dat.data()
         self.size = len(data)
         first = data.split("\n",1)[0]
+        m = re.compile(r'^.*<>.*<>.*<>.*<>(.*)$').match(first)
+        if m: first = m.group(1)
+        else: self.title = None
         try:
             first = first.decode('cp932').encode('utf-8')
         except UnicodeDecodeError, inst:
@@ -71,8 +74,7 @@ class Key:
                 first = first.decode('euc_jp').encode('utf-8')
             except UnicodeDecodeError, inst: 
                 first = first.decode('cp932','opy2on_replace').encode('utf-8')
-        m = re.compile(r'^.*<>.*<>.*<>.*<>(.*)$').match(first)
-        if m: self.title = m.group(1)
+        self.title = first
         self.url = "http://xxx.%s/test/read.cgi/%s/%s/" % (dat.domain,
                                                            dat.board,
                                                            dat.datnum)
@@ -174,7 +176,8 @@ class KeyDB:
         res = []
         for x in sorted(self.publishmap.keys()):
             for y in self.publishmap[x]:
-                res.append(self.keys[y])
+                tmp = self.keys.get(y)
+                if tmp: res.append(tmp)
         return res
     def published(self, idkeyhash, publish_time):
         if len(idkeyhash) != 20: raise Exception
