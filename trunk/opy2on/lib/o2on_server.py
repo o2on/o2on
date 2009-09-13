@@ -386,8 +386,6 @@ class P2PServerHandler(BaseHTTPServer.BaseHTTPRequestHandler):
                     if ".." in datpath: return self.response_400("datpath include ..")
                     if not dat.setpath(datpath): return self.response_400("invalid datpath")
             if not dat.save(data): 
-                logger.log("P2PSERVER",
-                           "I don't like this omiyage dat %s" % self.client_address[0])
                 return self.response_400("invalid omiyage")
             else:
                 self.server.glob.datdb.add_dat(dat)
@@ -573,7 +571,7 @@ class P2PServerHandler(BaseHTTPServer.BaseHTTPRequestHandler):
     def response_400(self, reason=""):
         logger = self.server.glob.logger
         logger.log("P2PSERVER",
-                   "response 400 %s (%s)" % (self.client_address[0], reason))
+                   "response 400 %s (%s)" % (hexlify(self.client_address[0]), reason))
         logger.log("P2PSERVER", "\tpath was %s" % self.path)
         logger.log("P2PSERVER", "\theader was %s" % self.headers)
         header = common_header.copy()
@@ -582,7 +580,6 @@ class P2PServerHandler(BaseHTTPServer.BaseHTTPRequestHandler):
         self.wfile.write("\r\n")
         self.wfile.close()
     def response_404(self):
-        #print "p2p server response 404 %s" % self.client_address[0]
         header = common_header.copy()
         self.wfile.write("HTTP/1.0 404 Not Found\r\n")
         for h in header: self.wfile.write("%s: %s\r\n" % (h,header[h]))
@@ -598,6 +595,8 @@ class P2PServerHandler(BaseHTTPServer.BaseHTTPRequestHandler):
     def do_POST(self):
         self.do_GET()
     def do_GET(self):
+        if not self.client_address: return self.response_404()
+
         self.server.glob.logger.log("P2PSERVER", "connection came %s" % (self.path))
 
         nid = self.headers.getheader('X-O2-Node-ID')
