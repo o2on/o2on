@@ -100,6 +100,7 @@ class Node:
         self.flag_running = False
         self.flag_history = False
         self.flag_dat = False
+        self.connection = None
     def __getstate__(self):
         return (self.id, self.ip,self.port, self.name, self.pubkey,self.ua,self.flag)
     def __setstate__(self,x):
@@ -110,6 +111,10 @@ class Node:
         self.removable = False
     def __cmp__(self,x):
         return cmp(self.id, x.id)
+    def shutdown(self):
+        if self.connection:
+            self.connection.shutdown(socket.SHUT_RDWR)
+            self.connection.close()
     def from_node(self, n):
         if self.id == n.id:
             self.ip = n.ip
@@ -161,9 +166,11 @@ class Node:
                 conn.connect()
                 socket.setdefaulttimeout(None)
                 conn.sock.settimeout(o2on_config.SocketTimeout)
+                self.connection = conn.sock
                 conn.request(method,path,body, headers)                
                 r = conn.getresponse()
                 conn.close()
+                self.connection = None
             except socket.timeout:
                 socket.setdefaulttimeout(None)
                 self.removable = True
