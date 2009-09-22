@@ -34,6 +34,10 @@ class JobThread(threading.Thread):
         self.name = name
         self.glob = g
         self.sec = s
+        self.node = None
+    def shutdown(self):
+        if self.node: self.node.shutdown()
+        self.node = None
     def stop(self):
         self.finish = True
     def wakeup(self):
@@ -61,8 +65,10 @@ class JobThread(threading.Thread):
         self.glob.logger.log("JOBMANAGER", "job %s started" % self.name)
         while not self.finish:
             #t = time.time()
+            self.node = None
             self.dojob(self.glob.nodedb, self.glob.logger, self.glob.prof, self.glob.datdb,
                        self.glob.datquery)
+            self.node = None
             if self.finish: break
             diff = int(self.sec) #int(self.sec - (time.time()-t))
             if 0<diff: 
@@ -88,7 +94,9 @@ class NodeCollectorThread(JobThread):
             if self.finish: break
             logger.log("NODECOLLECTOR", "findnode to %s" % (hexlify(x.id)))
             try:
+                self.node = x
                 newnodes = x.findnode(target)
+                self.node = None
             except o2on_node.NodeRemovable:
                 nodes.remove(x)
                 nodes.save()
@@ -119,7 +127,9 @@ class DatCollectorThread(JobThread):
             if self.finish: break
             logger.log("DATCOLLECTOR","dat (%s) to %s" % (board,hexlify(n.id)))
             try:
+                self.node = n
                 dat = n.dat(None, board, datdb)
+                self.node = None
             except o2on_node.NodeRemovable:
                 nodes.remove(n)
                 nodes.save()
@@ -148,7 +158,9 @@ class GetIPThread(JobThread):
             if self.finish: break
             logger.log("GETIP","getIP to %s" % hexlify(n.id))
             try:
+                self.node = n
                 r = n.ping(True)
+                self.node = None
             except o2on_node.NodeRemovable:
                 nodes.remove(n)
                 nodes.save()
@@ -164,7 +176,10 @@ class GetIPThread(JobThread):
                         ip = o2on_node.e2ip(r[:8])
                         if not regLocalIP.match(ip):
                             prof.mynode.ip = ip
-                            self.finish = True
+                            if o2on_config.ReCheckIP == None:
+                                self.finish = True
+                            else:
+                                self.sec = o2on_config.ReCheckIP * 60
                             logger.popup("GETIP","Got Global IP %s" % ip)
                             nodes.add_node(n)
                             break
@@ -178,7 +193,9 @@ class AskNodeCollectionThread(JobThread):
             if self.finish: break
             logger.log("ASKNODECOLLECTION", "node collection to %s" % (hexlify(n.id)))
             try:
+                self.node = n
                 colboards = n.collection(self.glob)
+                self.node = None
             except o2on_node.NodeRemovable:
                 nodedb.remove(n)
                 nodedb.save()
@@ -224,7 +241,9 @@ class PublishOrigThread(JobThread):
             if not node: continue
             logger.log("PUBLISHORIGINAL","publish original to %s" % (hexlify(n)))
             try:
+                self.node = node
                 node.store("dat", publish_nodes[n])
+                self.node = None
             except o2on_node.NodeRemovable:
                 nodedb.remove(node)
                 nodedb.save()
@@ -268,7 +287,9 @@ class PublishKeyThread(JobThread):
             if not node: continue
             logger.log("PUBLISHKEY","publish key to %s" % (hexlify(n)))
             try:
+                self.node = node
                 node.store("dat", publish_nodes[n])
+                self.node = None
             except o2on_node.NodeRemovable:
                 nodedb.remove(node)
                 nodedb.save()
@@ -319,7 +340,9 @@ class SearchThread(JobThread):
                 logger.log("SEARCH","findvalue to %s for %s" % (hexlify(node.id),d.url))
                 sent.append(node.id)
                 try:
+                    self.node = node
                     res = node.findvalue(d.hash)
+                    self.node = None
                 except o2on_node.NodeRemovable:
                     nodedb.remove(node)
                     nodedb.save()
@@ -361,7 +384,9 @@ class DatQueryThread(JobThread):
         if not node: node = o2on_node.Node(k.nodeid, k.ip, k.port)
         logger.log("DATQUERY","dat query %s to %s" % (hexlify(k.hash),hexlify(node.id)))
         try:
+            self.node = node
             dat = node.dat(k.hash, None, self.glob)
+            self.node = None
         except o2on_node.NodeRemovable:
             nodedb.remove(node)
             nodedb.save()

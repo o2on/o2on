@@ -189,9 +189,15 @@ n = len(jobs)
 c = 0
 for j in jobs:
     j.join(1)
+    shutcount = 0
     while j.isAlive():
         glob.logger.popup("GLOBAL", "Waiting for %s" % j.name)
-        j.join(7)
+        j.join(8)
+        shutcount += 1
+        if o2on_config.ForceShutdown != None and \
+                o2on_config.ForceShutdown / 8 < shutcount: 
+            glob.logger.popup("GLOBAL", "Force Shutdown")
+            j.shutdown()
     c += 1
     glob.logger.log("GLOBAL", "Finished %d/%d" % (c, n))
 glob.imdb.save()

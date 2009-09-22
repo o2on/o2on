@@ -42,6 +42,11 @@ Path2channel_brd = "2channel.brd"
 # ping 後にふたたびpingを行なう時間  (単位: 秒)
 RePingSec = 300
 
+# IP確定後に再度IPを確認するまでの時間 (単位: 分)
+# None ならば再確認しない
+ReCheckIP = None
+# ReCheckIP = 15
+
 # メッセージの通知にD-Busを使うかどうか
 # True にしておくといくつかのメッセージがpopupされる
 UseDBus = False
@@ -50,6 +55,12 @@ UseDBus = False
 # ログを標準出力に出力するかどうか
 NoLog = False
 # NoLog = True
+
+# job の終了を待っている時に、ネットの接続待ちでここで設定した以上の秒
+# 数が経過すると強制的に接続を切断する。 None なら接続が終了するまで切
+# 断せずに待つ。
+ForceShutdown = None
+# ForceShutdown = 60
 
 ############################
 # 以下は基本的にデバッグ用 #
