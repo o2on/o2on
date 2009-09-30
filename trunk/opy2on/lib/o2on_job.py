@@ -172,18 +172,17 @@ class GetIPThread(JobThread):
                 self.glob.logger.log("GETIP", inst)
             else:
                 if r:
-                    if not prof.mynode.ip:
-                        ip = o2on_node.e2ip(r[:8])
-                        if not regLocalIP.match(ip):
-                            prof.mynode.ip = ip
-                            if o2on_config.ReCheckIP == None:
-                                self.finish = True
-                            else:
-                                self.sec = o2on_config.ReCheckIP * 60
+                    ip = o2on_node.e2ip(r[:8])
+                    if not regLocalIP.match(ip):
+                        if o2on_config.ReCheckIP == None:
+                            self.finish = True
+                        else:
+                            self.sec = o2on_config.ReCheckIP * 60
+                        if prof.mynode.ip != ip:
                             logger.popup("GETIP","Got Global IP %s" % ip)
-                            nodes.add_node(n)
-                            break
-                    else: break
+                            prof.mynode.ip = ip
+                    nodes.add_node(n)
+                    break
 
 class AskNodeCollectionThread(JobThread):
     def __init__(self, g):
