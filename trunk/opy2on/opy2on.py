@@ -196,7 +196,7 @@ for j in jobs:
         shutcount += 1
         if o2on_config.ForceShutdown != None and \
                 o2on_config.ForceShutdown / 8 < shutcount: 
-            glob.logger.popup("GLOBAL", "Force Shutdown")
+            glob.logger.popup("GLOBAL", "Force Shutdown %s" % j.name)
             j.shutdown()
     c += 1
     glob.logger.log("GLOBAL", "Finished %d/%d" % (c, n))

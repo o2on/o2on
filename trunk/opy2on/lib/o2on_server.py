@@ -162,7 +162,7 @@ class ProxyServerHandler(BaseHTTPServer.BaseHTTPRequestHandler):
         for r in remove:
             if r in hr: del hr[r]
         conn = httplib.HTTPConnection(loc)
-        conn.request("GET",p.path, None, hr)
+        conn.request(self.command, p.path, self.rfile.read(), hr)
         return conn
     def msg(self,r):
         res = ''
@@ -215,13 +215,17 @@ class ProxyServerHandler(BaseHTTPServer.BaseHTTPRequestHandler):
         m = re.compile(r'^.*<>.*<>.*<>.*<>(.*)$').match(first)
         if not m: return ""
         return m.group(1)
+    def do_POST(self):
+        self.do_GET()
     def do_GET(self):
         logger = self.server.glob.logger
         logger.log("PROXY", "proxy requested %s" % self.path)
         ut = self.urltype()
         if ut in (self.URLTYPE_UNKNOWN, self.URLTYPE_NORMAL, self.URLTYPE_MACHI):
+            # 普通のプロキシとして動作
             self.normal_proxy()
             return
+        # datがリクエストされた
         try:
             conn = self.get_connection()
             r= conn.getresponse()
@@ -235,6 +239,7 @@ class ProxyServerHandler(BaseHTTPServer.BaseHTTPRequestHandler):
             if r and ut != self.URLTYPE_OFFLAW and r.status in (200,206,304):
                 logger.log("PROXY", "\tgot response from server")
                 data = r.read()
+                # gzipをdecode
                 if r.getheader("content-encoding") == "gzip":
                     sf = StringIO.StringIO(data)
                     dec = gzip.GzipFile(fileobj=sf)
@@ -891,6 +896,50 @@ background: blue;
 </div>
 """)
         self.wfile.write(self.html_footer)
+    def dats(self, args):
+        self.send_common("dats", "Dat")
+        if len(args)==0:
+            regBoard = re.compile(r'^\t[^\t.]+\.([^\t]+)\t([^\t]+)\t([^\t]+)$')
+            inul = False
+            f=open(o2on_config.Path2channel_brd)
+            for line in f:
+                m = regBoard.match(line)
+                if m:
+                    boardname = m.group(3).decode('cp932').encode('utf-8')
+                    if os.path.exists(os.path.join(o2on_config.DatDir, 
+                                                   m.group(1), m.group(2))):
+                        self.wfile.write("<li><a href=\"/dats/%s/%s\">%s</a></li>\n" % \
+                                             (m.group(1), m.group(2), boardname))
+                    else:
+                        self.wfile.write("<li>%s</li>\n" % boardname)
+                else:
+                    pos = line.find("\t")
+                    if pos == -1: continue
+                    if inul: self.wfile.write("</ul>\n")
+                    else: self.wfile.write("<ul>\n")
+                    inul = True
+                    self.wfile.write("<li>%s<ul>\n" % \
+                                         (line[:pos].decode("cp932").encode('utf-8')))
+            f.close()
+            self.wfile.write("</ul>\n")
+            self.wfile.write(self.html_footer)
+        elif len(args)==2:
+            regdat = re.compile('^(\d+)\.dat(?:\.gz)?$')
+            self.wfile.write("<table><tr><th>スレタイ</th><th>URL</th></tr>")
+            for root,dirs,files in os.walk(os.path.join(o2on_config.DatDir,
+                                                        args[0],
+                                                        args[1])):
+                for f in files:
+                    m=regdat.match(f)
+                    path = args[0]+"/"+args[1]+"/"+m.group(1)
+                    dkhash = o2on_util.datkeyhash(path)
+                    dat = self.server.glob.datdb.get(dkhash)
+                    if dat:
+                        self.wfile.write("<tr><td>%s</td><td>http://xxx.%s/test/read.cgi/%s/%s/</td>\n" % \
+                                             (dat.title() or "Unknown Title",
+                                              args[0], args[1], m.group(1)))
+            self.wfile.write("</table>\n")
+            self.wfile.write(self.html_footer)
     def status(self,args):
         self.send_common("status", "Status Summary")
         glob = self.server.glob
