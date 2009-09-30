@@ -52,6 +52,27 @@ class Dat:
             return os.path.join(o2on_config.DatDir, self.domain, self.board, 
                                 self.datnum[:4],self.datnum+".dat")
         raise Exception
+    def title(self):
+        dp = self.datpath()
+        if os.path.exists(dp):         f=open(dp)
+        elif os.path.exists(dp+".gz"): f=gzip.GzipFile(dp+".gz")
+        else: f=None
+        if f:
+            first=f.readline()
+            f.close()
+            m = re.compile(r'^.*<>.*<>.*<>.*<>(.*)$').match(first)
+            if not m: return None
+            try:
+                first = first.decode('cp932').encode('utf-8')
+            except UnicodeDecodeError, inst:
+                try:
+                    first = first.decode('euc_jp').encode('utf-8')
+                except UnicodeDecodeError, inst: 
+                    first = first.decode('cp932','opy2on_replace').encode('utf-8')
+            m = re.compile(r'^.*<>.*<>.*<>.*<>(.*)$').match(first)
+            if not m: return None
+            return m.group(1)
+        return None
     def data(self):
         dp = self.datpath()
         if os.path.exists(dp):         f=open(dp)
