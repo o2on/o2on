@@ -162,7 +162,9 @@ class ProxyServerHandler(BaseHTTPServer.BaseHTTPRequestHandler):
         for r in remove:
             if r in hr: del hr[r]
         conn = httplib.HTTPConnection(loc)
-        conn.request(self.command, p.path, self.rfile.read(), hr)
+        if self.command == "GET": body = None
+        else: body=self.rfile.read()
+        conn.request(self.command, p.path, body, hr)
         return conn
     def msg(self,r):
         res = ''
