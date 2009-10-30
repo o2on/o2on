@@ -9,7 +9,7 @@ import xml.dom.minidom
 import re
 import urllib2
 import cPickle
-from struct import unpack, pack
+from struct import unpack, pack, calcsize
 from binascii import unhexlify, hexlify
 import httplib
 import socket
@@ -56,16 +56,22 @@ def ip2e(ip):
     regIP = re.compile(r'(\d+)\.(\d+)\.(\d+)\.(\d+)')
     m = regIP.match(ip)
     if not m: raise Exception
-    return hexlify(aesobj.encrypt(pack("B", int(m.group(1)))+
-                                  pack("B", int(m.group(2)))+
-                                  pack("B", int(m.group(3)))+
-                                  pack("B", int(m.group(4)))+"\x00"*12)[:4])
+    return hexlify(aesobj.encrypt(pack("4B", int(m.group(1)), 
+                                       int(m.group(2)), int(m.group(3)),
+                                       int(m.group(4)))+"\x00"*12)[:4])
 
 def hash_xor(a,b):
     res = ""
-    for i in range(0,len(a)):
-        res += chr(ord(a[i]) ^ ord(b[i]))
-    return res
+    if(len(a) != 20 or len(b) != 20): raise Exception()
+    if calcsize("L") == 8 and calcsize("I") == 4:
+        resa = unpack("2LI", a)
+        resb = unpack("2LI", b)
+        return pack("2LI", resa[0] ^ resb[0], resa[1] ^ resb[1], resa[2] ^ resb[2])
+    elif calcsize("Q") == 8 and calcsize("L") == 4:
+        resa = unpack("2QL", a)
+        resb = unpack("2QL", b)
+        return pack("2QL", resa[0] ^ resb[0], resa[1] ^ resb[1], resa[2] ^ resb[2])
+    else: raise Exception()
 
 def hash_bittest(x, pos):
     return (((ord(x[pos/8]) >> (pos%8)) & 0x01 != 0))

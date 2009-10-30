@@ -25,6 +25,8 @@ import o2on_dat
 import o2on_node
 
 def my_replace_handler(inst):
+    if inst.end-inst.start == 1:
+        return ((u"\u0000", inst.start+1))
     return ((u"\u30fb", inst.start+2))
 
 try: 
