@@ -162,15 +162,23 @@ class DatDB:
             self.hashmap = {}
             self.boardmap = {}
             self.publishmap = {}
+            self.need_rebuild = False
         self.load()
         if len(self.hashmap) == 0:
-            g.logger.log("DATDB", "Generating DatDB")
-            self.generate()
-            self.save()
-            g.logger.log("DATDB","Generated DatDB")
+            self.need_rebuild = True
     def __len__(self):
         with self.lock:
             return len(self.hashmap)
+    def checkrebuild(self):
+        with self.lock:
+            tmp = self.need_rebuild
+        if tmp:
+            self.glob.logger.log("DATDB", "Generating DatDB")
+            self.generate()
+            self.save()
+            self.glob.logger.log("DATDB","Generated DatDB")
+            with self.lock:
+                self.need_rebuild = False
     def getRandomInBoard(self,board):
         if board in self.boardmap:
             h = random.choice(self.boardmap[board])

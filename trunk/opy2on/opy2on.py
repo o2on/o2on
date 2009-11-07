@@ -151,6 +151,7 @@ jobs = (
     o2on_job.SearchThread(glob),
     o2on_job.DatQueryThread(glob),
     o2on_job.P2PServerThread(glob),
+    o2on_job.RebuildDatDBThread(glob),
     )
 
 for j in jobs: j.start()
