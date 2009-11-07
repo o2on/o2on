@@ -404,6 +404,13 @@ class DatQueryThread(JobThread):
             nodedb.save()
         self.glob.keyquery.save()
 
+class RebuildDatDBThread(JobThread):
+    def __init__(self, g):
+        JobThread.__init__(self,"rebuild dat DB",60,g)
+    def dojob(self, nodes, logger, prof, datdb, datq):
+        datdb.checkrebuild()
+        self.finish = True
+
 # Server thread
 
 class ProxyServerThread(JobThread):
