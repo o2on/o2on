@@ -246,7 +246,7 @@ class Node:
                 data = r.read(l)
             elif r.status == 404: pass
             else: raise Exception("status error %d" % r.status)
-        except socket.error:
+        except socket.error, httplib.IncompleteRead:
             pass
         else:
             if data:
@@ -279,8 +279,11 @@ class Node:
             r = self.request("POST","/dat", data,headers)
         else:
             r = self.request("GET","/dat",None,headers)
-        stat = r.status
-        data = r.read()
+        try:
+            stat = r.status
+            data = r.read()
+        except socket.error, httplib.IncompleteRead:
+            return None
         if stat == 200:
             path = None
             path = r.getheader("X-O2-Original-DAT-URL")
@@ -303,7 +306,10 @@ class Node:
             l = r.getheader('Content-Length')
             if l: l = int(l)
             else: return False
-            return r.read(l)
+            try:
+                return r.read(l)
+            except socket.error, httplib.IncompleteRead:
+                return False
         else: raise Exception("ping status %d" % r.status)
         return False
     def collection(self, glob):
@@ -313,7 +319,10 @@ class Node:
         r = self.request("POST","/collection",board_xml,headers)
         result = []
         if r.status == 200:
-            data = r.read()
+            try:
+                data = r.read()
+            except socket.error, httplib.IncompleteRead:
+                return result
             # 本家o2on の bug 対策
             if data.rfind("</boards>") == -1:
                 index = data.rfind("<boards>")
@@ -330,9 +339,13 @@ class Node:
     def findvalue(self, kid):
         headers = {"X-O2-Target-Key":hexlify(kid)}
         r = self.request("GET","/findvalue",None,headers)
+        try:
+            data = r.read()
+        except socket.error, httplib.IncompleteRead:
+            return []
         if r.status == 200:
             res = []
-            dom = xml.dom.minidom.parseString(r.read())
+            dom = xml.dom.minidom.parseString(data)
             nodes = dom.getElementsByTagName("nodes")
             keys = dom.getElementsByTagName("keys")
             if len(nodes):
