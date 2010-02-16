@@ -250,7 +250,8 @@ class Node:
             pass
         else:
             if data:
-                dom = xml.dom.minidom.parseString(data)
+                try: dom = xml.dom.minidom.parseString(data)
+                except: return result
                 nn = dom.getElementsByTagName("nodes")
                 if len(nn):
                     for n in nn[0].getElementsByTagName("node"):
