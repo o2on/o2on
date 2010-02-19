@@ -9,6 +9,8 @@ import re
 import gzip
 import random
 import time
+import sqlite3
+from binascii import unhexlify, hexlify
 
 from o2on_const import regHosts, DatQueryFile, DatDBFile
 import o2on_config
@@ -159,16 +161,15 @@ class DatDB:
         self.glob = g
         self.lock = threading.Lock()
         with self.lock:
-            self.hashmap = {}
-            self.boardmap = {}
-            self.publishmap = {}
             self.need_rebuild = False
-        self.load()
-        if len(self.hashmap) == 0:
+        if len(self)==0:
             self.need_rebuild = True
     def __len__(self):
+        if(not os.path.isfile(DatDBFile)): return 0
         with self.lock:
-            return len(self.hashmap)
+            sqlite_conn = sqlite3.connect(DatDBFile)
+            c = sqlite_conn.execute('SELECT COUNT(*) FROM dattbl')
+            return c.fetchone()[0]
     def checkrebuild(self):
         with self.lock:
             tmp = self.need_rebuild
@@ -179,90 +180,108 @@ class DatDB:
             self.glob.logger.log("DATDB","Generated DatDB")
             with self.lock:
                 self.need_rebuild = False
-    def getRandomInBoard(self,board):
-        if board in self.boardmap:
-            h = random.choice(self.boardmap[board])
-            return self.hashmap[h]
+    def makeDat(self, col):
+        if col:
+            dat = Dat(col[0])
+            dat.published = col[1]
+            return dat
         return None
+    def getRandomInBoard(self,board):
+        with self.lock:
+            sqlite_conn = sqlite3.connect(DatDBFile)
+            c = sqlite_conn.execute('SELECT datpath, published FROM dattbl WHERE board = ? ORDER BY RANDOM() LIMIT 1', (board,))
+            return self.makeDat(c.fetchone())
     def choice(self):
-        return self.hashmap[random.choice(self.hashmap.keys())]
+        with self.lock:
+            sqlite_conn = sqlite3.connect(DatDBFile)
+            c = sqlite_conn.execute('SELECT datpath,published FROM dattbl ORDER BY RANDOM() LIMIT 1')
+            return self.makeDat(c.fetchone())
     def get(self,x):
         with self.lock:
-            return self.hashmap.get(x)
+            sqlite_conn = sqlite3.connect(DatDBFile)
+            c = sqlite_conn.execute('SELECT datpath, published FROM dattbl WHERE hash = ?', (hexlify(x),))
+            return self.makeDat(c.fetchone())
     def has_keyhash(self,key):
         with self.lock:
-            return key in self.hashmap
+            sqlite_conn = sqlite3.connect(DatDBFile)
+            c = sqlite_conn.execute('SELECT COUNT(*) FROM dattbl WHERE hash = ?', (key,))
+            return c.fetchone()[0]==1
     def add_dat(self, dat):
         with self.lock:
-            befdat = self.hashmap.get(dat.hash())
-            self.hashmap[dat.hash()] = dat
-            if not dat.fullboard() in self.boardmap:
-                self.boardmap[dat.fullboard()] = []
-            self.boardmap[dat.fullboard()].append(dat.hash())
-            if not befdat:
-                dat.published = int(time.time())
-                if dat.published not in self.publishmap: 
-                    self.publishmap[dat.published]=[]
-                self.publishmap[dat.published].append(dat.hash())
-            else:
-                dat.published = befdat.published
-    def add(self, path, data, start=0):
+            sqlite_conn = sqlite3.connect(DatDBFile)
+            c = sqlite_conn.cursor()
+            c.execute('SELECT datpath, published FROM dattbl WHERE hash = ?', 
+                      (hexlify(dat.hash()),))
+            befdat = self.makeDat(c.fetchone())
+            if not befdat: dat.published = int(time.time())
+            else: dat.published = befdat.published
+            c.execute('REPLACE INTO dattbl  VALUES(?, ?, ?, ?)',
+                      (dat.path(), hexlify(dat.hash()), dat.fullboard(), dat.published))
+            try: c.execute('COMMIT')
+            except sqlite3.OperationalError: pass
+    def add(self, path, data, start=0):        
         dat = Dat(path)
         if dat.save(data, start): self.add_dat(dat)
     def published(self, datid, publish_time):
         if len(datid) != 20: raise Exception
         with self.lock:
-            if datid not in self.hashmap: raise Exception
-            dat = self.hashmap[datid]
-            self.publishmap[dat.published].remove(datid)
+            sqlite_conn = sqlite3.connect(DatDBFile)
+            c = sqlite_conn.cursor()
+            c.execute('SELECT datpath, published FROM dattbl WHERE hash = ?', (hexlify(datid),))
+            dat = self.makeDat(c.fetchone())
+            if not dat: raise Exception
             dat.published = publish_time
-            if publish_time not in self.publishmap: self.publishmap[publish_time]=[]
-            self.publishmap[publish_time].append(datid)
+            c.execute('UPDATE dattbl SET published = ? WHERE hash = ?', (publish_time,hexlify(datid),))
+            try: c.execute('COMMIT')
+            except sqlite3.OperationalError: pass
     def dat_to_publish(self, last_published_before, limit):
         res = []
         if limit == 0: return res
-        for x in sorted(self.publishmap.keys()):
-            for y in self.publishmap[x]:
-                res.append(self.hashmap[y])
-                limit -= 1
-                if limit == 0: return res
-        return res
+        with self.lock:
+            sqlite_conn = sqlite3.connect(DatDBFile)
+            c=sqlite_conn.execute('SELECT datpath, published FROM dattbl '+
+                                  'WHERE published < ? ORDER BY published DESC LIMIT ?', 
+                                  (last_published_before,limit))
+            while True:
+                dat = self.makeDat(c.fetchone())
+                if not dat: return res
+                res.append(dat)
+            return res
     def generate(self):
+        reghost = re.compile(regHosts+'$')
+        regnumdir = re.compile('^\d{4}$')
         regdat = re.compile('^(\d+)\.dat(?:\.gz)?$')
-        sep = re.escape(os.sep)
-        regdatdir = re.compile(regHosts+sep+'(.+)'+sep+'\d{4}$')
         with self.lock:
-            self.hashmap = {}
-            self.boardmap = {}
-            self.publishmap = {0:[]}
-        for root, dirs, files in os.walk(o2on_config.DatDir):
-            for f in files:
-                m1 = regdat.match(f)
-                if not m1: continue
-                m2 = regdatdir.search(root)
-                if not m2: continue
-                path = m2.group(1)+"/"+m2.group(2)+"/"+m1.group(1)
-                d = Dat(path)
+            sqlite_conn = sqlite3.connect(DatDBFile)
+            c = sqlite_conn.cursor()
+            try: c.execute('DROP TABLE dattbl')
+            except sqlite3.OperationalError: pass
+            c.execute('CREATE TABLE dattbl(datpath, hash PRIMARY KEY, board, published)')
+        for h in os.listdir(o2on_config.DatDir):
+            if not reghost.match(h): continue
+            for b in os.listdir(os.path.join(o2on_config.DatDir, h)):
                 with self.lock:
-                    self.hashmap[d.hash()] = d
-                    if not d.fullboard() in self.boardmap:
-                        self.boardmap[d.fullboard()] = []
-                    self.boardmap[d.fullboard()].append(d.hash())
-                    self.publishmap[0].append(d.hash())
-                self.glob.logger.log("DATDB", "added %s" % path)
+                    for d in os.listdir(os.path.join(o2on_config.DatDir, h, b)):
+                        if not regnumdir.match(d): continue
+                        for f in os.listdir(os.path.join(o2on_config.DatDir, h, b, d)):
+                            m = regdat.match(f)
+                            if not m: continue
+                            path = h+"/"+b+"/"+m.group(1)
+                            dat = Dat(path)
+                            try:
+                                c.execute('INSERT OR IGNORE INTO dattbl VALUES(?, ?, ?, ?)', 
+                                          (path, hexlify(dat.hash()), dat.fullboard(), 0))
+                            except sqlite3.IntegrityError:
+                                raise Exception("dup hash %s %s" % (hexlify(dat.hash()), path))
+                            self.glob.logger.log("DATDB", "added %s" % path)
+                    try: c.execute('COMMIT')
+                    except sqlite3.OperationalError: pass
     def load(self):
-        if(os.path.isfile(DatDBFile)):
-            pkl_file = open(DatDBFile,"rb")
-            with self.lock:
-                self.hashmap = cPickle.load(pkl_file)
-                self.boardmap =  cPickle.load(pkl_file)
-                self.publishmap =  cPickle.load(pkl_file)
-            pkl_file.close()
+        pass
     def save(self):
-        pkl_file = open(DatDBFile,"wb")
         with self.lock:
-            cPickle.dump(self.hashmap, pkl_file,-1)
-            cPickle.dump(self.boardmap, pkl_file,-1)
-            cPickle.dump(self.publishmap, pkl_file,-1)
-        pkl_file.close()
+            sqlite_conn = sqlite3.connect(DatDBFile)
+            try: sqlite_conn.execute('COMMIT')
+            except sqlite3.OperationalError: pass
+                
 

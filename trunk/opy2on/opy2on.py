@@ -25,11 +25,12 @@ import o2on_job
 import o2on_im
 
 def showstat(args):
+    n = (len(glob.nodedb), len(glob.datquery), len(glob.datdb), len(glob.keydb))
     glob.logger.begin()
-    glob.logger.log("GLOBAL", "nodes %d" % len(glob.nodedb))
-    glob.logger.log("GLOBAL", "datquery %d" % len(glob.datquery))
-    glob.logger.log("GLOBAL", "dat %d" % len(glob.datdb))
-    glob.logger.log("GLOBAL", "key %d" % len(glob.keydb))
+    glob.logger.log("GLOBAL", "nodes %d" % n[0])
+    glob.logger.log("GLOBAL", "datquery %d" % n[1])
+    glob.logger.log("GLOBAL", "dat %d" % n[2])
+    glob.logger.log("GLOBAL", "key %d" % n[3])
     glob.logger.end()
 
 def showmynode(args):
