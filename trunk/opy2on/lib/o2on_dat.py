@@ -204,7 +204,7 @@ class DatDB:
     def has_keyhash(self,key):
         with self.lock:
             sqlite_conn = sqlite3.connect(DatDBFile)
-            c = sqlite_conn.execute('SELECT COUNT(*) FROM dattbl WHERE hash = ?', (key,))
+            c = sqlite_conn.execute('SELECT COUNT(*) FROM dattbl WHERE hash = ?', (hexlify(key),))
             return c.fetchone()[0]==1
     def add_dat(self, dat):
         with self.lock:
