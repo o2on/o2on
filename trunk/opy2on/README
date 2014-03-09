@@ -1,0 +1,110 @@
+これはなに?
+
+o2on(http://o2on.sourceforge.jp/) の Python での(不完全な)クローン
+opy2on (http://pc12.2ch.net/test/read.cgi/tech/1231570128/ 356さん命名)
+
+※ 本家 o2on の動作と完全に一致するわけではないです。詳しくは「特徴」の
+   部分を読んでください。
+
+必要なもの
+
+- python 2.5 (できれば 2.6)
+- pycrypto
+- D-Bus を使うならば dbus-python
+
+起動
+
+- o2on_config.py.sample を見ながら好みにあわせて修正し、 o2on_config.py
+  を作る。
+  - debug に協力してくださる方は、 OutputErrorFile を True にしてくださ
+    い。エラー時に大変役に立ちます。
+  - Xが動いている時に起動するつもりの方は、 UseDBus = True の時の動きを
+    使用WindowManagerとともに教えてください。 
+  - 重いぞ!という方は RecordProfile を True にしてください。ProfileDir
+    下にプロファイルが出力されます。
+- ポートを開けたり閉めたりする。
+- ./opy2on.py で起動。
+
+操作
+
+- 以下のコマンドを認識します。
+ - datq		検索中のdat一覧表示
+ - exit		プログラムの終了
+ - exportnode	ノードをexportnodes.xmlに出力
+ - help		ヘルプを表示
+ - keys		datキーを表示
+   - PAGER を設定しておいてください
+ - myid		自ノードのIDを表示
+ - mynode	自ノードのハッシュを表示
+ - mypubkey	自ノードの公開鍵を表示
+ - nodes	ノード情報を表示
+ - stat		ノード数、検索中dat数、所有dat数、datキー数を表示
+- 全ての表示はUTF-8で出力されます。
+- adminサーバも動いています。
+  - http://<admin サーバ>/shutdown/really でも終了します。
+
+特徴 (というかほとんど直すべきとこの列挙)
+
+- dat を gzip で保存可能
+- Ping をしなおす時間を設定できる
+- プロキシに dat をリクエストした時の反応が違う -> 下記参照
+- ping にたいして localなIPを返してくるノードがいたのでそのIPは無視している
+- ノードリストが0になると Web などのノードリストから再読みこみします。
+- D-Bus を使ってポップアップします。
+- 処理されないエラーがおきると自動的に終了します。
+
+- ●は対応してないです
+- プロキシで range が指定されてもキャッシュから読んだ時は全体で返答
+  - 複数台からプロキシに接続することをかんがえてないような気がします…。
+- オリジナルの url を記憶していないので dat をあげる時にはいつも
+  DAT-Path で送信します
+- フラグを解釈していないです
+- 大量な dat を持った環境でのテストができていない (メモリ食いすぎるかも)
+  - sqlite化とかするべきなのだろうな…
+- GUI が動いてないです。
+- saku キーに対応してないです
+- ノード名に日本語をうまく使えないです
+  - 一応エラーが出ないようにはなったけれど POST した時に日本語部分が消えます
+- UPnP は対応してないです
+- IPフィルタがないです
+  - IPフィルタとかは iptables なんかを使えばいいと思ってます。
+  - 帯域制限も iproute とか使えばいいと思います。
+
+対応状況
+
+- P2P client
+  - dat		o
+  - collection	o
+  - im		o
+  - broadcast	x
+  - profile	x
+  - ping	o
+  - store	o
+  - findnode	o
+  - findvalue	o
+
+- P2P server
+  - dat		o
+  - collection	o
+  - im		o
+  - broadcast	x
+  - profile	x
+  - ping	o
+  - store	o
+  - findnode	o
+  - findvalue	o
+
+proxy server キャッシュへの保存の方法
+- 持ってない dat 全体が取得された -> キャッシュに保存
+- 持ってる dat の差分が取得された -> キャッシュに追記
+- 持ってない dat がリクエストされた
+  - RequestNonExistDat が True の時はこっそり取得 
+  - こっそり取得するから巡回してるとこなら dat をインポートしなくてもいいかも
+
+FIXME
+
+- HTTPヘッダは大文字・小文字区別しない -> 本家 o2on が区別してるから困る…
+  - とりあえずうけつける分だけでも区別しないようにしよう。
+- リロードバーボンにならないように 2chへの接続は適度に遅延をつけよう。 (navi2ch を参考に)
+- エンコードまわりうまくいってるのだろうか…?
+- CPU食いすぎな気がする
