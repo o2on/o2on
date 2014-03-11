@@ -1,0 +1,297 @@
+@charset "utf-8";
+/*
+ * body
+ */
+body {
+	font-family		: Arial;
+	border			: 0px;
+	margin			: 0px;
+	padding			: 0px;
+	background-color: #efefef;
+}
+/*
+ * table
+ */
+table {
+	border-collapse	: collapse;
+	empty-cells		: show;
+}
+table.report {
+	margin-bottom	: 5px;
+}
+td {
+	font-family		: Arial;
+	padding			: 0px 4px;
+	font-size		: 75%;
+	border			: 1px solid #aeacab;
+	white-space		: nowrap;
+	background-color: #efefef;
+}
+td.menu1 {
+	text-align		: center;
+	white-space		: nowrap;
+	border			: 1px solid #efefef;
+	padding			: 2px 20px;
+	background-color: transparent;
+	color			: #999999;
+	cursor			: pointer;
+}
+td.menu2 {
+	text-align		: center;
+	white-space		: nowrap;
+	border			: 1px solid #efefef;
+	padding			: 2px 20px;
+	background-color: transparent;
+	color			: #0000ff;
+	cursor			: pointer;
+}
+td.menu3 {
+	text-align		: center;
+	white-space		: nowrap;
+	border			: 1px solid #efefef;
+	padding			: 2px 20px;
+	background-color: #628dd4;
+	color			: #ffffff;
+	cursor			: pointer;
+}
+td.notify {
+	text-align		: center;
+	white-space		: nowrap;
+	border			: 1px solid #efefef;
+	padding			: 2px 10px;
+	background-color: #00aa00;
+	color			: #ffffff;
+	cursor			: pointer;
+}
+td.notifymsg {
+	text-align		: left;
+	white-space		: nowrap;
+	border			: 0px;
+	padding			: 2px 2px;
+	background-color: transparent;
+	color			: #ff0000;
+}
+td.icon {
+	border			: 0px;
+	width			: 16px;
+	background-color: transparent;
+}
+td.L {
+	text-align		: left;
+}
+td.C {
+	text-align		: center;
+}
+td.R {
+	text-align		: right;
+}
+td.N {
+	text-align		: right;
+}
+td.layout {
+	border			: 0px;
+	background-color: transparent;
+}
+td.cptitle {
+	color			: #000000;
+	border			: 0px;
+	background-color: transparent;
+}
+th {
+	font-family		: Arial;
+	padding			: 0px 4px;
+	font-size		: 75%;
+	font-weight		: bold;
+	text-align		: center;
+	background-color: #cecece;
+	border			: 1px solid #aeacab;
+	white-space		: nowrap;
+}
+th.sort {
+	cursor			: pointer;
+}
+th.sortL {
+	cursor			: pointer;
+	text-align		: left;
+}
+/*
+ *
+ */
+a {
+	color			: blue;
+	text-decoration	: none;
+}
+a.im {
+	color			: #000000;
+	text-decoration	: none;
+}
+a.im:hover {
+	color			: #0000ff;
+	text-decoration	: underline;
+}
+a.cp {
+	text-decoration	: none;
+	color			: #000000;
+	padding			: 0px 8px;
+	line-height		: 140%;
+}
+a.cp:hover {
+	color			: #0000ff;
+	text-decoration	: none;
+}
+pre {
+	margin			: 0px;
+	font-family		: Arial;
+}
+/*
+ *
+ */
+.h {
+	display			: none;
+}
+.menu {
+	background-color: #ffffff;
+	background-image: url(/images/toolbg.png); 
+}
+.controlpanel {
+	background-color: #cecece;
+	padding			: 2px 1px;
+}
+.xmldiv {
+	position		: relative;
+}
+.loading {
+	position		: absolute;
+	left			: 1px;
+	top				: 2px;
+	display			: none;
+}
+.floatform {
+	position		: absolute;
+	background-color: #cecece;
+	border			: 3px solid #7cc8c1;
+	padding			: 5px;
+	display			: none;
+	white-space		: nowrap;
+}
+.body {
+	margin			: 5px 0px;
+}
+.broadcast {
+	font-size		: 75%;
+	white-space		: nowrap;
+	border			: 1px solid #aeacab;
+}
+.marginbody {
+	margin			: 5px 5px;
+}
+.infomessage {
+	margin			: 0px 5px;
+	height			: 16px;
+}
+.caption {
+	text-align		: left;
+	margin-bottom	: 5px;
+}
+.category {
+	margin			: 0px 0px;
+	margin-bottom	: 10px;
+	padding			: 8px 8px;
+	background-color: #ccddee;
+}
+.kb {
+	height			: 10px;
+	padding			: 0px;
+	border			: 0px;
+}
+.info {
+	color			: #000000;
+}
+.warning {
+	color			: #808000;
+}
+.error {
+	color			: #ff0000;
+}
+.neterr {
+	color			: #ff0000;
+}
+.fatal {
+	color			: #ff0000;
+	font-weight		: bold;
+}
+.im {
+	color			: #0000ff;
+}
+.linked {
+	color			: #00aa00;
+	font-weight		: bold;
+}
+.past {
+	color			: #aaaaaa;
+}
+.unknown {
+	color			: #ff0000;
+	font-weight		: bold;
+}
+.succeeded {
+	color			: #0000ff;
+}
+.active {
+	text-align		: center;
+	font-weight		: bold;
+	color			: #00aa00;
+}
+.deactive {
+	text-align		: center;
+	font-weight		: bold;
+	color			: #ff0000;
+}
+.enable {
+	background-color: #bbffbb;
+}
+.wait {
+	text-align		: center;
+	color			: #000080;
+}
+.grayed {
+	color			: #888888;
+}
+.mine {
+	background-color: #bbffbb;
+}
+.monospace {
+	font-family		: monospace;
+}
+/*
+ *	form
+ */
+form {
+	margin			: 0px;
+	padding			: 0px;
+}
+input {
+	margin			: 0px;
+	padding			: 0px;
+	font-family		: Arial;
+}
+input.btn {
+	padding-left	: 10px;
+	padding-right	: 10px;
+}
+input.btn0 {
+	font-size		: 7pt;
+}
+input.checkbox {
+	width			: 15px;
+	height			: 15px;
+}
+input.bcmsg {
+	border			: 1px solid #aeacab;
+}
+input.lim {
+	width			: 50px;
+}
+input.R {
+	text-align		: right;
+}
