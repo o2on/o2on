@@ -78,8 +78,8 @@ extern void sjis2euc(string &inout);
 
 void convertGTLT(const string &in, string &out);
 void convertGTLT(const wstring &in, wstring &out);
-extern void makeCDATA(const string &in, string &out);
-extern void makeCDATA(const wstring &in, wstring &out);
+extern void escapeCDATA(const string &in, string &out);
+extern void escapeCDATA(const wstring &in, wstring &out);
 
 extern void xml_AddElement(wstring &xml, const wchar_t *tag, const wchar_t *attr, const wchar_t *val, bool escape = false);
 extern void xml_AddElement(wstring &xml, const wchar_t *tag, const wchar_t *attr, int val);

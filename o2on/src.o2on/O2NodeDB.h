@@ -117,7 +117,6 @@ protected:
 	O2Node				*CurNode;
 	uint				CurElm;
 	size_t				ParseNum;
-	wstring				buf;
 
 public:
 	O2NodeDB_SAX2Handler(O2Logger *lgr, O2NodeDB *ndb, O2NodeDB::NodeListT *rlist);

@@ -115,7 +115,6 @@ protected:
 	O2IPFilterRecord	*CurRecord;
 	uint				CurElm;
 	uint64				ParseNum;
-	wstring				buf;
 
 public:
 	O2IPFilter_SAX2Handler(const wchar_t *nm, O2Logger *lgr, O2IPFilter *ipf);

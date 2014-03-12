@@ -588,7 +588,7 @@ O2KeyDB::
 MakeKeyElement(const O2Key &key, O2KeySelectCondition &cond, wstring &xml)
 {
 	wstring tmpstr;
-	wchar_t tmp[32];
+	wchar_t tmp[16];
 
 	xml += L"<key>"EOL;
 
@@ -622,7 +622,7 @@ MakeKeyElement(const O2Key &key, O2KeySelectCondition &cond, wstring &xml)
 
 	if (cond.mask & KEY_XMLELM_SIZE) {
 		xml += L" <size>";
-		swprintf_s(tmp, 32, L"%I64u", key.size);
+		swprintf_s(tmp, 16, L"%I64u", key.size);
 		xml += tmp;
 		xml += L"</size>"EOL;
 	}
@@ -634,17 +634,15 @@ MakeKeyElement(const O2Key &key, O2KeySelectCondition &cond, wstring &xml)
 	}
 
 	if (cond.mask & KEY_XMLELM_TITLE) {
-		makeCDATA(key.title, tmpstr);
-		xml += L" <title>";
-		xml += tmpstr;
-		xml += L"</title>"EOL;
+		xml += L" <title><![CDATA[";
+		xml += key.title;
+		xml += L"]]></title>"EOL;
 	}
 
 	if (cond.mask & KEY_XMLELM_NOTE) {
-		makeCDATA(key.note, tmpstr);
-		xml += L" <note>";
-		xml += tmpstr;
-		xml += L"</note>"EOL;
+		xml += L" <note><![CDATA[";
+		xml += key.note;
+		xml += L"]]></note>"EOL;
 	}
 
 	if (cond.mask & KEY_XMLELM_IDKEYHASH) {
@@ -833,43 +831,6 @@ endElement(const XMLCh* const uri
 		 , const XMLCh* const localname
 		 , const XMLCh* const qname)
 {
-	switch (CurElm) {
-		case KEY_XMLELM_HASH:
-			CurKey->hash.assign(buf.c_str(), buf.size());
-			break;
-		case KEY_XMLELM_NODEID:
-			CurKey->nodeid.assign(buf.c_str(), buf.size());
-			break;
-		case KEY_XMLELM_IP:
-			CurKey->ip = e2ip(buf.c_str(), buf.size());
-			break;
-		case KEY_XMLELM_PORT:
-			CurKey->port = (ushort)wcstoul(buf.c_str(), NULL, 10);
-			break;
-		case KEY_XMLELM_SIZE:
-			CurKey->size = wcstoul(buf.c_str(), NULL, 10);
-			break;
-		case KEY_XMLELM_URL:
-			CurKey->url = buf;
-			break;
-		case KEY_XMLELM_TITLE:
-			if (buf.size() <= O2_MAX_KEY_TITLE_LEN)
-				CurKey->title = buf;
-			break;
-		case KEY_XMLELM_NOTE:
-			if (buf.size() <= O2_MAX_KEY_NOTE_LEN)
-				CurKey->note = buf;
-			break;
-		case KEY_XMLELM_DATE:
-			CurKey->date = datetime2time_t(buf.c_str(), buf.size());
-			break;
-		case KEY_XMLELM_ENABLE:
-			CurKey->enable = buf[0] == L'e' ? true : false;
-			break;
-	}
-
-	buf = L"";
-
 	CurElm = KEY_XMLELM_NONE;
 	if (!CurKey || !MATCHLNAME(L"key"))
 		return;
@@ -885,6 +846,38 @@ characters(const XMLCh* const chars, const unsigned int length)
 	if (CurKey == NULL)
 		return;
 
-	if (CurElm != KEY_XMLELM_NONE)
-		buf.append(chars, length);
+	switch (CurElm) {
+		case KEY_XMLELM_HASH:
+			CurKey->hash.assign(chars, length);
+			break;
+		case KEY_XMLELM_NODEID:
+			CurKey->nodeid.assign(chars, length);
+			break;
+		case KEY_XMLELM_IP:
+			CurKey->ip = e2ip(chars, length);
+			break;
+		case KEY_XMLELM_PORT:
+			CurKey->port = (ushort)wcstoul(chars, NULL, 10);
+			break;
+		case KEY_XMLELM_SIZE:
+			CurKey->size = wcstoul(chars, NULL, 10);
+			break;
+		case KEY_XMLELM_URL:
+			CurKey->url.assign(chars, length);
+			break;
+		case KEY_XMLELM_TITLE:
+			if (length <= O2_MAX_KEY_TITLE_LEN)
+				CurKey->title.assign(chars, length);
+			break;
+		case KEY_XMLELM_NOTE:
+			if (length <= O2_MAX_KEY_NOTE_LEN)
+				CurKey->note.assign(chars, length);
+			break;
+		case KEY_XMLELM_DATE:
+			CurKey->date = datetime2time_t(chars, length);
+			break;
+		case KEY_XMLELM_ENABLE:
+			CurKey->enable = chars[0] == L'e' ? true : false;
+			break;
+	}
 }

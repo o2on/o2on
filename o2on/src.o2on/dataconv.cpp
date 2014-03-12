@@ -810,7 +810,7 @@ void sjis2euc(string &inout)
 
 // ---------------------------------------------------------------------------
 //	convertGTLT 
-//	makeCDATA
+//	escapeCDATA
 // ---------------------------------------------------------------------------
 void convertGTLT(const string &in, string &out)
 {
@@ -838,33 +838,25 @@ void convertGTLT(const wstring &in, wstring &out)
 
 	out = t.str();
 }
-void makeCDATA(const string &in, string &out)
+void escapeCDATA(const string &in, string &out)
 {
-	string tmp = in;
+	out = string(in);
 
 	string from = "]]>";
 	string to = "]]]]><![CDATA[>";
 
-    for (size_t pos = 0; (pos = tmp.find(from, pos)) != string::npos; pos += to.size())
-		tmp.replace(pos, from.size(), to);
-
-	out = "<![CDATA[";
-	out += tmp;
-	out += "]]>";
+    for (size_t pos = 0; (pos = out.find(from, pos)) != string::npos; pos += to.size())
+		out.replace(pos, from.size(), to);
 }
-void makeCDATA(const wstring &in, wstring &out)
+void escapeCDATA(const wstring &in, wstring &out)
 {
-	wstring tmp = in;
+	out = wstring(in);
 
 	wstring from = L"]]>";
 	wstring to = L"]]]]><![CDATA[>";
 
-    for (size_t pos = 0; (pos = tmp.find(from, pos)) != string::npos; pos += to.size())
-		tmp.replace(pos, from.size(), to);
-
-	out = L"<![CDATA[";
-	out += tmp;
-	out += L"]]>";
+    for (size_t pos = 0; (pos = out.find(from, pos)) != string::npos; pos += to.size())
+		out.replace(pos, from.size(), to);
 }
 
 
@@ -877,8 +869,6 @@ void makeCDATA(const wstring &in, wstring &out)
 
 void xml_AddElement(wstring &xml, const wchar_t *tag, const wchar_t *attr, const wchar_t *val, bool escape)
 {
-	wstring tmp;
-
 	xml += L'<';
 	xml += tag;
 	if (attr) {
@@ -886,12 +876,9 @@ void xml_AddElement(wstring &xml, const wchar_t *tag, const wchar_t *attr, const
 		xml += attr;
 	}
 	xml += L'>';
-	if (escape) {
-		makeCDATA(val, tmp);
-		xml += tmp;
-	}
-	else 
-		xml += val;
+	if (escape) xml += L"<![CDATA[";
+	xml += val;
+	if (escape) xml += L"]]>";
 	xml += L"</";
 	xml += tag;
 	xml += L">\r\n";
@@ -938,7 +925,7 @@ void xml_AddElement(wstring &xml, const wchar_t *tag, const wchar_t *attr, uint 
 void xml_AddElement(wstring &xml, const wchar_t *tag, const wchar_t *attr, __int64 val)
 {
 	wstring s;
-	wchar_t tmp[32];
+	wchar_t tmp[16];
 
 	xml += L'<';
 	xml += tag;
@@ -947,7 +934,7 @@ void xml_AddElement(wstring &xml, const wchar_t *tag, const wchar_t *attr, __int
 		xml += attr;
 	}
 	xml += L'>';
-	swprintf_s(tmp, 32, L"%I64d", val);
+	swprintf_s(tmp, 16, L"%I64d", val);
 	xml += tmp;
 	xml += L"</";
 	xml += tag;
@@ -957,7 +944,7 @@ void xml_AddElement(wstring &xml, const wchar_t *tag, const wchar_t *attr, __int
 void xml_AddElement(wstring &xml, const wchar_t *tag, const wchar_t *attr, uint64 val)
 {
 	wstring s;
-	wchar_t tmp[32];
+	wchar_t tmp[16];
 
 	xml += L'<';
 	xml += tag;
@@ -966,7 +953,7 @@ void xml_AddElement(wstring &xml, const wchar_t *tag, const wchar_t *attr, uint6
 		xml += attr;
 	}
 	xml += L'>';
-	swprintf_s(tmp, 32, L"%I64u", val);
+	swprintf_s(tmp, 16, L"%I64u", val);
 	xml += tmp;
 	xml += L"</";
 	xml += tag;

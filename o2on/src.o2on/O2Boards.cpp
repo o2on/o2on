@@ -173,7 +173,7 @@ Update(const wchar_t *html)
 		std::getline(ss, line);
 		
 		wstring pattern;
-		pattern = L"^<A HREF=http://([a-z0-9.:]+)/([a-zA-Z0-9.:]+)/(?: TARGET=_blank)?>([^<]+)</A>";
+		pattern = L"^<A HREF=http://([a-z0-9.:]+)/([a-z0-9.:]+)/(?: TARGET=_blank)?>([^<]+)</A>";
 		
 		boost::wregex regex(pattern);
 		boost::wsmatch m;
@@ -542,7 +542,7 @@ ExportToXML(string &out)
 		}
 	}
 	ExLock.Unlock();
-	xml += L"</boards>"EOL;
+	xml += L"<boards>"EOL;
 	unicode2ascii(xml, out);
 }
 
@@ -906,17 +906,6 @@ endElement(const XMLCh* const uri
 		 , const XMLCh* const localname
 		 , const XMLCh* const qname)
 {
-	switch (parse_elm) {
-		case 1:
-			parse_name = buf;
-			break;
-		case 2:
-			parse_enable = buf[0] == L'0' ? false : true;
-			break;
-	}
-
-	buf = L"";
-
 	parse_elm = 0;
 	if (MATCHLNAME(L"board")) {
 		ExLock.Lock();
@@ -938,6 +927,12 @@ O2Boards::
 characters(const XMLCh* const chars
 		 , const unsigned int length)
 {
-	if (parse_elm != 0)
-		buf.append(chars, length);
+	switch (parse_elm) {
+		case 1:
+			parse_name.assign(chars, length);
+			break;
+		case 2:
+			parse_enable = chars[0] == L'0' ? false : true;
+			break;
+	}
 }

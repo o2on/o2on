@@ -133,121 +133,6 @@
 			/>
 		</Configuration>
 		<Configuration
-			Name="Release|x64"
-			OutputDirectory="..\build\$(PlatformName).$(ConfigurationName)"
-			IntermediateDirectory="..\build\$(PlatformName).$(ConfigurationName)\obj.$(ProjectName)"
-			ConfigurationType="1"
-			UseOfMFC="0"
-			ATLMinimizesCRunTimeLibraryUsage="false"
-			CharacterSet="1"
-			WholeProgramOptimization="0"
-			>
-			<Tool
-				Name="VCPreBuildEventTool"
-				CommandLine=""
-			/>
-			<Tool
-				Name="VCCustomBuildTool"
-				CommandLine="cd ..&#x0D;&#x0A;rmdir /s /q stage\$(PlatformName)&#x0D;&#x0A;mkdir stage&#x0D;&#x0A;mkdir stage\$(PlatformName)&#x0D;&#x0A;mkdir stage\$(PlatformName)\admin&#x0D;&#x0A;mkdir stage\$(PlatformName)\conf&#x0D;&#x0A;mkdir archives&#x0D;&#x0A;copy build\$(PlatformName).$(ConfigurationName)\o2on.exe stage\$(PlatformName)&#x0D;&#x0A;REM ..\upx stage\$(PlatformName)\$(TargetFileName)&#x0D;&#x0A;copy doc\readme.txt stage\$(PlatformName)&#x0D;&#x0A;copy doc\license.txt stage\$(PlatformName)&#x0D;&#x0A;xcopy admin stage\$(PlatformName)\admin /s /e&#x0D;&#x0A;copy conf\2channel.brd stage\$(PlatformName)\conf\2channel.brd.default&#x0D;&#x0A;cd stage\$(PlatformName)&#x0D;&#x0A;del ..\..\archives\$(TargetName)_$(PlatformName).zip&#x0D;&#x0A;..\..\..\mzp.exe -r ..\..\archives\$(TargetName)_$(PlatformName).zip *.*&#x0D;&#x0A;cd ..\..&#x0D;&#x0A;rmdir /s /q stage\src&#x0D;&#x0A;mkdir stage\src&#x0D;&#x0A;mkdir stage\src\src.o2on&#x0D;&#x0A;mkdir stage\src\admin&#x0D;&#x0A;mkdir stage\src\resource&#x0D;&#x0A;mkdir stage\src\doc&#x0D;&#x0A;copy $(SolutionFileName) stage\src&#x0D;&#x0A;copy $(ProjectDir)\*.vcproj stage\src\src.$(ProjectName)&#x0D;&#x0A;copy $(ProjectDir)\*.cpp stage\src\src.$(ProjectName)&#x0D;&#x0A;copy $(ProjectDir)\*.h stage\src\src.$(ProjectName)&#x0D;&#x0A;copy $(ProjectDir)\*.rc stage\src\src.$(ProjectName)&#x0D;&#x0A;copy $(ProjectDir)\*.manifest stage\src\src.$(ProjectName)&#x0D;&#x0A;xcopy admin stage\src\admin /s /e&#x0D;&#x0A;xcopy resource stage\src\resource /s /e&#x0D;&#x0A;xcopy doc stage\src\doc /s /e&#x0D;&#x0A;cd stage\src&#x0D;&#x0A;del ..\..\archives\$(TargetName)-src.zip&#x0D;&#x0A;..\..\..\mzp.exe -r ..\..\archives\$(TargetName)-src.zip *.*"
-				AdditionalDependencies=""
-				Outputs="..\stage\$(PlatformName)\$(TargetFileName)"
-			/>
-			<Tool
-				Name="VCXMLDataGeneratorTool"
-			/>
-			<Tool
-				Name="VCWebServiceProxyGeneratorTool"
-			/>
-			<Tool
-				Name="VCMIDLTool"
-				PreprocessorDefinitions="NDEBUG"
-				MkTypLibCompatible="true"
-				SuppressStartupBanner="true"
-				TargetEnvironment="3"
-				TypeLibraryName=".\build\Release/o2on.tlb"
-				HeaderFileName=""
-			/>
-			<Tool
-				Name="VCCLCompilerTool"
-				Optimization="3"
-				InlineFunctionExpansion="2"
-				EnableIntrinsicFunctions="true"
-				FavorSizeOrSpeed="1"
-				OmitFramePointers="true"
-				WholeProgramOptimization="true"
-				AdditionalIncludeDirectories="..\..\sqlite;..\..\zlib;..\..\babel"
-				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;PROJ_SAX2;XML_LIBRARY"
-				StringPooling="false"
-				RuntimeLibrary="0"
-				EnableFunctionLevelLinking="false"
-				DisableLanguageExtensions="false"
-				UsePrecompiledHeader="0"
-				PrecompiledHeaderThrough=""
-				PrecompiledHeaderFile="$(IntDir)\$(TargetName).pch"
-				AssemblerListingLocation=""
-				ObjectFile="$(IntDir)\"
-				ProgramDataBaseFileName="$(IntDir)\vc80.pdb"
-				WarningLevel="3"
-				SuppressStartupBanner="true"
-				Detect64BitPortabilityProblems="true"
-				CompileAs="2"
-			/>
-			<Tool
-				Name="VCManagedResourceCompilerTool"
-			/>
-			<Tool
-				Name="VCResourceCompilerTool"
-				PreprocessorDefinitions="_UNICODE;UNICODE"
-				Culture="0"
-			/>
-			<Tool
-				Name="VCPreLinkEventTool"
-			/>
-			<Tool
-				Name="VCLinkerTool"
-				AdditionalDependencies="comctl32.lib ws2_32.lib pdh.lib iphlpapi.lib cryptlib.lib Xerces-c_static_2.lib comdlg32.lib ole32.lib shell32.lib"
-				OutputFile="$(OutDir)\$(ProjectName).exe"
-				LinkIncremental="1"
-				SuppressStartupBanner="true"
-				AdditionalLibraryDirectories="..\..\cryptopp\x64\output\Release"
-				GenerateDebugInformation="true"
-				ProgramDatabaseFile="$(TargetDir)$(TargetName).pdb"
-				SubSystem="2"
-				OptimizeReferences="2"
-				EnableCOMDATFolding="2"
-				LinkTimeCodeGeneration="1"
-				TargetMachine="17"
-			/>
-			<Tool
-				Name="VCALinkTool"
-			/>
-			<Tool
-				Name="VCManifestTool"
-				AdditionalManifestFiles="o2on.manifest"
-			/>
-			<Tool
-				Name="VCXDCMakeTool"
-			/>
-			<Tool
-				Name="VCBscMakeTool"
-				SuppressStartupBanner="true"
-				OutputFile="$(OutDir)/$(ProjectName).bsc"
-			/>
-			<Tool
-				Name="VCFxCopTool"
-			/>
-			<Tool
-				Name="VCAppVerifierTool"
-			/>
-			<Tool
-				Name="VCWebDeploymentTool"
-			/>
-			<Tool
-				Name="VCPostBuildEventTool"
-				CommandLine=""
-			/>
-		</Configuration>
-		<Configuration
 			Name="Debug|Win32"
 			OutputDirectory="..\build\$(PlatformName).$(ConfigurationName)"
 			IntermediateDirectory="..\build\$(PlatformName).$(ConfigurationName)\obj.$(ProjectName)"
@@ -352,6 +237,121 @@
 			/>
 		</Configuration>
 		<Configuration
+			Name="Release|x64"
+			OutputDirectory="..\build\$(PlatformName).$(ConfigurationName)"
+			IntermediateDirectory="..\build\$(PlatformName).$(ConfigurationName)\obj.$(ProjectName)"
+			ConfigurationType="1"
+			UseOfMFC="0"
+			ATLMinimizesCRunTimeLibraryUsage="false"
+			CharacterSet="1"
+			WholeProgramOptimization="0"
+			>
+			<Tool
+				Name="VCPreBuildEventTool"
+				CommandLine=""
+			/>
+			<Tool
+				Name="VCCustomBuildTool"
+				CommandLine="cd ..&#x0D;&#x0A;rmdir /s /q stage\$(PlatformName)&#x0D;&#x0A;mkdir stage&#x0D;&#x0A;mkdir stage\$(PlatformName)&#x0D;&#x0A;mkdir stage\$(PlatformName)\admin&#x0D;&#x0A;mkdir stage\$(PlatformName)\conf&#x0D;&#x0A;copy build\$(PlatformName).$(ConfigurationName)\o2on.exe stage\$(PlatformName)&#x0D;&#x0A;copy build\$(PlatformName).$(ConfigurationName)\browser.exe stage\$(PlatformName)&#x0D;&#x0A;d:\bin\upx203w\upx -9 stage\$(PlatformName)\$(TargetFileName)&#x0D;&#x0A;d:\bin\upx203w\upx -9 stage\$(PlatformName)\browser.exe&#x0D;&#x0A;copy doc\readme.txt stage\$(PlatformName)&#x0D;&#x0A;copy doc\license.txt stage\$(PlatformName)&#x0D;&#x0A;xcopy admin stage\$(PlatformName)\admin /s /e&#x0D;&#x0A;copy conf\2channel.brd stage\$(PlatformName)\conf\2channel.brd.default&#x0D;&#x0A;cd stage\$(PlatformName)&#x0D;&#x0A;del ..\..\archives\$(TargetName)_$(PlatformName).zip&#x0D;&#x0A;d:\bin\zip\mzp.exe -r ..\..\archives\$(TargetName)_$(PlatformName).zip *.*&#x0D;&#x0A;cd ..\..&#x0D;&#x0A;rmdir /s /q stage\src&#x0D;&#x0A;mkdir stage\src&#x0D;&#x0A;mkdir stage\src\src.o2on&#x0D;&#x0A;mkdir stage\src\src.browser&#x0D;&#x0A;mkdir stage\src\admin&#x0D;&#x0A;mkdir stage\src\resource&#x0D;&#x0A;mkdir stage\src\doc&#x0D;&#x0A;copy $(SolutionFileName) stage\src&#x0D;&#x0A;copy $(ProjectDir)\*.vcproj stage\src\src.$(ProjectName)&#x0D;&#x0A;copy $(ProjectDir)\*.cpp stage\src\src.$(ProjectName)&#x0D;&#x0A;copy $(ProjectDir)\*.h stage\src\src.$(ProjectName)&#x0D;&#x0A;copy $(ProjectDir)\*.rc stage\src\src.$(ProjectName)&#x0D;&#x0A;copy $(ProjectDir)\*.manifest stage\src\src.$(ProjectName)&#x0D;&#x0A;copy src.browser\*.vcproj stage\src\src.browser&#x0D;&#x0A;copy src.browser\*.cpp stage\src\src.browser&#x0D;&#x0A;copy src.browser\*.h stage\src\src.browser&#x0D;&#x0A;copy src.browser\*.rc stage\src\src.browser&#x0D;&#x0A;copy src.browser\*.manifest stage\src\src.browser&#x0D;&#x0A;xcopy admin stage\src\admin /s /e&#x0D;&#x0A;xcopy resource stage\src\resource /s /e&#x0D;&#x0A;xcopy doc stage\src\doc /s /e&#x0D;&#x0A;cd stage\src&#x0D;&#x0A;del ..\..\archives\$(TargetName)-src.zip&#x0D;&#x0A;d:\bin\zip\mzp.exe -r ..\..\archives\$(TargetName)-src.zip *.*&#x0D;&#x0A;"
+				AdditionalDependencies=""
+				Outputs="..\stage\$(PlatformName)\$(TargetFileName)"
+			/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"
+			/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"
+			/>
+			<Tool
+				Name="VCMIDLTool"
+				PreprocessorDefinitions="NDEBUG"
+				MkTypLibCompatible="true"
+				SuppressStartupBanner="true"
+				TargetEnvironment="3"
+				TypeLibraryName=".\build\Release/o2on.tlb"
+				HeaderFileName=""
+			/>
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="2"
+				InlineFunctionExpansion="2"
+				EnableIntrinsicFunctions="true"
+				FavorSizeOrSpeed="1"
+				OmitFramePointers="true"
+				WholeProgramOptimization="true"
+				AdditionalIncludeDirectories="..\..\sqlite.3.3.12"
+				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;PROJ_SAX2;XML_LIBRARY"
+				StringPooling="false"
+				RuntimeLibrary="0"
+				EnableFunctionLevelLinking="false"
+				DisableLanguageExtensions="false"
+				UsePrecompiledHeader="0"
+				PrecompiledHeaderThrough=""
+				PrecompiledHeaderFile="$(IntDir)\$(TargetName).pch"
+				AssemblerListingLocation=""
+				ObjectFile="$(IntDir)\"
+				ProgramDataBaseFileName="$(IntDir)\vc80.pdb"
+				WarningLevel="3"
+				SuppressStartupBanner="true"
+				Detect64BitPortabilityProblems="true"
+				CompileAs="2"
+			/>
+			<Tool
+				Name="VCManagedResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCResourceCompilerTool"
+				PreprocessorDefinitions="_UNICODE;UNICODE"
+				Culture="0"
+			/>
+			<Tool
+				Name="VCPreLinkEventTool"
+			/>
+			<Tool
+				Name="VCLinkerTool"
+				AdditionalDependencies="comctl32.lib ws2_32.lib pdh.lib iphlpapi.lib cryptlib.lib Xerces-c_static_2.lib"
+				OutputFile="$(OutDir)\$(ProjectName).exe"
+				LinkIncremental="1"
+				SuppressStartupBanner="true"
+				AdditionalLibraryDirectories="..\..\cryptopp\x64\output\Release"
+				GenerateDebugInformation="true"
+				ProgramDatabaseFile="$(TargetDir)$(TargetName).pdb"
+				SubSystem="2"
+				OptimizeReferences="2"
+				EnableCOMDATFolding="2"
+				LinkTimeCodeGeneration="1"
+				TargetMachine="17"
+			/>
+			<Tool
+				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCManifestTool"
+				AdditionalManifestFiles="o2on.manifest"
+			/>
+			<Tool
+				Name="VCXDCMakeTool"
+			/>
+			<Tool
+				Name="VCBscMakeTool"
+				SuppressStartupBanner="true"
+				OutputFile="$(OutDir)/$(ProjectName).bsc"
+			/>
+			<Tool
+				Name="VCFxCopTool"
+			/>
+			<Tool
+				Name="VCAppVerifierTool"
+			/>
+			<Tool
+				Name="VCWebDeploymentTool"
+			/>
+			<Tool
+				Name="VCPostBuildEventTool"
+				CommandLine=""
+			/>
+		</Configuration>
+		<Configuration
 			Name="Debug|x64"
 			OutputDirectory="..\build\$(PlatformName).$(ConfigurationName)"
 			IntermediateDirectory="..\build\$(PlatformName).$(ConfigurationName)\obj.$(ProjectName)"
@@ -385,7 +385,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\..\sqlite;..\..\zlib;..\..\babel"
+				AdditionalIncludeDirectories="..\..\sqlite.3.3.12"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;XML_LIBRARY"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -417,7 +417,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="comctl32.lib ws2_32.lib pdh.lib iphlpapi.lib cryptlib.lib Xerces-c_static_2D.lib comdlg32.lib ole32.lib shell32.lib"
+				AdditionalDependencies="comctl32.lib ws2_32.lib pdh.lib iphlpapi.lib cryptlib.lib Xerces-c_static_2D.lib"
 				OutputFile="$(OutDir)\$(ProjectName).exe"
 				LinkIncremental="2"
 				SuppressStartupBanner="true"
@@ -474,7 +474,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Release|x64"
+					Name="Debug|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -482,7 +482,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Debug|Win32"
+					Name="Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -510,7 +510,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Release|x64"
+					Name="Debug|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -518,7 +518,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Debug|Win32"
+					Name="Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -546,7 +546,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Release|x64"
+					Name="Debug|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -554,7 +554,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Debug|Win32"
+					Name="Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -582,7 +582,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Release|x64"
+					Name="Debug|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -590,7 +590,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Debug|Win32"
+					Name="Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -618,7 +618,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Release|x64"
+					Name="Debug|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -626,7 +626,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Debug|Win32"
+					Name="Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -654,7 +654,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Release|x64"
+					Name="Debug|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -662,7 +662,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Debug|Win32"
+					Name="Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -690,7 +690,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Release|x64"
+					Name="Debug|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -698,7 +698,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Debug|Win32"
+					Name="Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -726,7 +726,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Release|x64"
+					Name="Debug|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -734,7 +734,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Debug|Win32"
+					Name="Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -762,7 +762,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Release|x64"
+					Name="Debug|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -770,7 +770,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Debug|Win32"
+					Name="Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -805,14 +805,14 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Release|x64"
+					Name="Debug|Win32"
 					>
 					<Tool
 						Name="VCCustomBuildTool"
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Debug|Win32"
+					Name="Release|x64"
 					>
 					<Tool
 						Name="VCCustomBuildTool"
@@ -849,14 +849,14 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Release|x64"
+					Name="Debug|Win32"
 					>
 					<Tool
 						Name="VCCustomBuildTool"
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Debug|Win32"
+					Name="Release|x64"
 					>
 					<Tool
 						Name="VCCustomBuildTool"
@@ -893,14 +893,14 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Release|x64"
+					Name="Debug|Win32"
 					>
 					<Tool
 						Name="VCCustomBuildTool"
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Debug|Win32"
+					Name="Release|x64"
 					>
 					<Tool
 						Name="VCCustomBuildTool"
@@ -929,14 +929,14 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Release|x64"
+					Name="Debug|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Debug|Win32"
+					Name="Release|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -961,14 +961,14 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Release|x64"
+					Name="Debug|Win32"
 					>
 					<Tool
 						Name="VCCustomBuildTool"
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Debug|Win32"
+					Name="Release|x64"
 					>
 					<Tool
 						Name="VCCustomBuildTool"
@@ -997,14 +997,14 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Release|x64"
+					Name="Debug|Win32"
 					>
 					<Tool
 						Name="VCCustomBuildTool"
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Debug|Win32"
+					Name="Release|x64"
 					>
 					<Tool
 						Name="VCCustomBuildTool"
@@ -1033,14 +1033,14 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Release|x64"
+					Name="Debug|Win32"
 					>
 					<Tool
 						Name="VCCustomBuildTool"
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Debug|Win32"
+					Name="Release|x64"
 					>
 					<Tool
 						Name="VCCustomBuildTool"
@@ -1065,14 +1065,14 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Release|x64"
+					Name="Debug|Win32"
 					>
 					<Tool
 						Name="VCCustomBuildTool"
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Debug|Win32"
+					Name="Release|x64"
 					>
 					<Tool
 						Name="VCCustomBuildTool"
@@ -1101,14 +1101,14 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Release|x64"
+					Name="Debug|Win32"
 					>
 					<Tool
 						Name="VCCustomBuildTool"
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Debug|Win32"
+					Name="Release|x64"
 					>
 					<Tool
 						Name="VCCustomBuildTool"
@@ -1141,14 +1141,14 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Release|x64"
+					Name="Debug|Win32"
 					>
 					<Tool
 						Name="VCCustomBuildTool"
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Debug|Win32"
+					Name="Release|x64"
 					>
 					<Tool
 						Name="VCCustomBuildTool"
@@ -1226,7 +1226,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Release|x64"
+					Name="Debug|Win32"
 					>
 					<Tool
 						Name="VCResourceCompilerTool"
@@ -1234,7 +1234,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Debug|Win32"
+					Name="Release|x64"
 					>
 					<Tool
 						Name="VCResourceCompilerTool"
@@ -1297,14 +1297,14 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Release|x64"
+					Name="Debug|Win32"
 					>
 					<Tool
 						Name="VCCustomBuildTool"
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Debug|Win32"
+					Name="Release|x64"
 					>
 					<Tool
 						Name="VCCustomBuildTool"
@@ -1345,14 +1345,14 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Release|x64"
+					Name="Debug|Win32"
 					>
 					<Tool
 						Name="VCCustomBuildTool"
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Debug|Win32"
+					Name="Release|x64"
 					>
 					<Tool
 						Name="VCCustomBuildTool"
@@ -1381,14 +1381,14 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Release|x64"
+					Name="Debug|Win32"
 					>
 					<Tool
 						Name="VCCustomBuildTool"
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Debug|Win32"
+					Name="Release|x64"
 					>
 					<Tool
 						Name="VCCustomBuildTool"
@@ -1461,14 +1461,14 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Release|x64"
+					Name="Debug|Win32"
 					>
 					<Tool
 						Name="VCCustomBuildTool"
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Debug|Win32"
+					Name="Release|x64"
 					>
 					<Tool
 						Name="VCCustomBuildTool"
@@ -1493,14 +1493,14 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Release|x64"
+					Name="Debug|Win32"
 					>
 					<Tool
 						Name="VCCustomBuildTool"
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Debug|Win32"
+					Name="Release|x64"
 					>
 					<Tool
 						Name="VCCustomBuildTool"
@@ -1545,14 +1545,14 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Release|x64"
+					Name="Debug|Win32"
 					>
 					<Tool
 						Name="VCCustomBuildTool"
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Debug|Win32"
+					Name="Release|x64"
 					>
 					<Tool
 						Name="VCCustomBuildTool"
@@ -1601,14 +1601,14 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Release|x64"
+					Name="Debug|Win32"
 					>
 					<Tool
 						Name="VCCustomBuildTool"
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Debug|Win32"
+					Name="Release|x64"
 					>
 					<Tool
 						Name="VCCustomBuildTool"
@@ -1648,27 +1648,7 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Release|x64"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						PreprocessorDefinitions="NO_TCL;THREADSAFE=1"
-						CompileAs="1"
-						DisableSpecificWarnings="4018;4244;4996"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
 					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						PreprocessorDefinitions="NO_TCL;THREADSAFE=1"
-						CompileAs="1"
-						DisableSpecificWarnings="4018;4244;4996"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|x64"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -1701,14 +1681,14 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Release|x64"
+					Name="Debug|Win32"
 					>
 					<Tool
 						Name="VCCustomBuildTool"
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Debug|Win32"
+					Name="Release|x64"
 					>
 					<Tool
 						Name="VCCustomBuildTool"
@@ -1757,14 +1737,14 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Release|x64"
+					Name="Debug|Win32"
 					>
 					<Tool
 						Name="VCCustomBuildTool"
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Debug|Win32"
+					Name="Release|x64"
 					>
 					<Tool
 						Name="VCCustomBuildTool"
@@ -1801,14 +1781,14 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Release|x64"
+					Name="Debug|Win32"
 					>
 					<Tool
 						Name="VCCustomBuildTool"
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Debug|Win32"
+					Name="Release|x64"
 					>
 					<Tool
 						Name="VCCustomBuildTool"
@@ -1841,14 +1821,14 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Release|x64"
+					Name="Debug|Win32"
 					>
 					<Tool
 						Name="VCCustomBuildTool"
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Debug|Win32"
+					Name="Release|x64"
 					>
 					<Tool
 						Name="VCCustomBuildTool"
@@ -1877,14 +1857,14 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Release|x64"
+					Name="Debug|Win32"
 					>
 					<Tool
 						Name="VCCustomBuildTool"
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Debug|Win32"
+					Name="Release|x64"
 					>
 					<Tool
 						Name="VCCustomBuildTool"
@@ -1921,14 +1901,14 @@
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Release|x64"
+					Name="Debug|Win32"
 					>
 					<Tool
 						Name="VCCustomBuildTool"
 					/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Debug|Win32"
+					Name="Release|x64"
 					>
 					<Tool
 						Name="VCCustomBuildTool"

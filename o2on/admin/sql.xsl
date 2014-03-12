@@ -8,7 +8,7 @@
 	  <div id="body" class="body">
       <form method="POST" action="/xml/sql">
   	    SQL:
-  	    <input type="button" class="btn" value="POST" onClick="this.disabled = true;document.forms[0].submit();" /><br/>
+  	    <input type="submit" class="btn" value="POST"/><br/>
   	    <textarea name="sql" style="width:100%" rows="5">
   				<xsl:value-of select="sql"/>
   	    </textarea>

@@ -82,7 +82,7 @@ static HINSTANCE				instance;
 static HWND						hwndMain;
 static HWND						hwndProgressDlg;
 static HWND						hwndUPnPDlg;
-static HANDLE					ThreadHandle = NULL;
+static HANDLE					ThreadHandle;
 static UINT						TaskbarRestartMsg;
 static int						CurrentProperyPage;
 static bool						VisibleOptionDialog;
@@ -254,15 +254,6 @@ _tWinMain(HINSTANCE inst, HINSTANCE previnst, TCHAR *cmdline, int cmdshow)
 //bench();
 //return (0);
 
-	HANDLE Mutex = NULL;
-	if (!O2DEBUG) {
-		Mutex = CreateMutex(NULL, FALSE, _T(CLASS_NAME));
-		if (GetLastError() == ERROR_ALREADY_EXISTS) {
-			if (Mutex) CloseHandle(Mutex);
-			return (0);
-		}
-	}
-
 	if (!O2DEBUG && FindWindow(_T(CLASS_NAME), NULL))
 		return (0);
 
@@ -277,9 +268,6 @@ _tWinMain(HINSTANCE inst, HINSTANCE previnst, TCHAR *cmdline, int cmdshow)
 			DispatchMessage(&msg);
 		}
 	}
-
-	if (Mutex) CloseHandle(Mutex);
-
 	return ((int)msg.wParam);
 }
 
@@ -435,7 +423,6 @@ InitializeApp(TCHAR *cmdline, int cmdshow)
 	SakuKeyDB->SetLimit(O2_SAKUKEY_LIMIT);
 	QueryDB = new O2KeyDB(L"QueryDB", true, Logger);
 	QueryDB->Load(Profile->GetQueryFilePath());
-	QueryDB->SetLimit(Profile->GetQueryLimit());
 	SakuDB = new O2KeyDB(L"SakuDB", true, Logger);
 	SakuDB->Load(Profile->GetSakuFilePath());
 	IMDB = new O2IMDB(Logger);
@@ -2728,32 +2715,11 @@ static void
 ChangeTrayIcon(UINT id)
 {
 	if (time(NULL) - Server_P2P->GetLastAcceptTime() < (5*60)) {
-		// ５分以内に受信出来ていれば、トレイアイコンの O をグレーからグリーンにする。
 		switch (id) {
 			case IDI_A:			id = IDI_B;			break;
 			case IDI_A_IN:		id = IDI_B_IN;		break;
 			case IDI_A_OUT:		id = IDI_B_OUT;		break;
 			case IDI_A_INOUT:	id = IDI_B_INOUT;	break;
-		}
-	}
-	else {
-		// 終了処理中以外で、Port0ではないのに５分以内に受信出来ていなければ、
-		// IPアドレスが変わった可能性がある。
-		// ただし、１０分以内に再起動していれば、無視
-		static time_t LastRestartP2P = 0;
-		if ((ThreadHandle == NULL) &&
-			(Profile->IsPort0() == false) &&
-			(Job_GetGlobalIP->IsActive() == false) &&
-			(time(NULL) - LastRestartP2P > (10*60) )) {
-			// GetGlobalIPを再度立ち上げ、P2Pが止まっているはずなのでP2Pも再起動。
-			LastRestartP2P = time(NULL);
-
-			Profile->SetIP(0);
-			Job_GetGlobalIP->SetActive(true);
-			
-			StopP2P(false);
-			StartP2P(true);
-
 		}
 	}
 

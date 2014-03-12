@@ -308,7 +308,7 @@ public:
 
 
 //
-//	O2Profile_SAX2Handler
+//	O2NodeDB_SAX2Handler
 //
 class O2Profile_SAX2Handler
 	: public SAX2Handler
@@ -320,7 +320,6 @@ protected:
 	uint		*plimit;
 	uint64		*puint64;
 	bool		*pbool;
-	wstring		buf;
 
 public:
 	O2Profile_SAX2Handler(O2Logger *lgr, O2Profile *prof);

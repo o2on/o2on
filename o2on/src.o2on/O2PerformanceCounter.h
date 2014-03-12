@@ -45,7 +45,6 @@ protected:
 	uint64		Total_Send;
 	uint64		Total_Recv;
 	uint64		*pval;
-	wstring		buf;
 
 public:
 	O2PerformanceCounter(const wchar_t	*name
@@ -263,9 +262,6 @@ public:
 				  , const XMLCh* const localname
 				  , const XMLCh* const qname)
 	{
-		if (pval)
-			*pval = _wcstoui64(buf.c_str(), NULL, 10);
-		buf = L"";
 		pval = NULL;
 	}
 	void characters(const XMLCh* const chars
@@ -273,6 +269,6 @@ public:
 	{
 		if (!pval)
 			return;
-		buf.append(chars, length);
+		*pval = _wcstoui64(chars, NULL, 10);
 	}
 };

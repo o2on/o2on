@@ -1150,7 +1150,7 @@ O2Profile::
 ExportToXML(const O2ProfileSelectCondition cond, string &out)
 {
 	wstring tmpstr;
-	wchar_t tmp[32];
+	wchar_t tmp[16];
 
 	wstring xml;
 	xml += L"<?xml version=\"1.0\" encoding=\"";
@@ -1186,18 +1186,18 @@ ExportToXML(const O2ProfileSelectCondition cond, string &out)
 
 	//NodeName
 	if (cond.mask & PROF_XMLELM_NAME) {
-		makeCDATA(NodeNameW, tmpstr);
-		xml += L" <nodename>";
-		xml += tmpstr;
-		xml += L"</nodename>"EOL;
+		//convertGTLT(NodeName, tmpstr);
+		xml += L" <nodename><![CDATA[";
+		xml += NodeNameW;
+		xml += L"]]></nodename>"EOL;
 	}
 
 	//Comment
 	if (cond.mask & PROF_XMLELM_COMMENT) {
-		makeCDATA(Comment, tmpstr);
-		xml += L" <comment>";
-		xml += tmpstr;
-		xml += L"</comment>"EOL;
+		//convertGTLT(Comment, tmpstr);
+		xml += L" <comment><![CDATA[";
+		xml += Comment;
+		xml += L"]]></comment>"EOL;
 	}
 
 	//P2PPort
@@ -1242,26 +1242,23 @@ ExportToXML(const O2ProfileSelectCondition cond, string &out)
 
 	//DBDir
 	if (cond.mask & PROF_XMLELM_DBDIR) {
-		makeCDATA(DBDirW, tmpstr);
-		xml += L" <DBDir>";
-		xml += tmpstr;
-		xml += L"</DBDir>"EOL;
+		xml += L" <DBDir><![CDATA[";
+		xml += DBDirW;
+		xml += L"]]></DBDir>"EOL;
 	}
 
 	//CacheRoot
 	if (cond.mask & PROF_XMLELM_CACHEROOT) {
-		makeCDATA(CacheRootW, tmpstr);
-		xml += L" <CacheRoot>";
-		xml += tmpstr;
-		xml += L"</CacheRoot>"EOL;
+		xml += L" <CacheRoot><![CDATA[";
+		xml += CacheRootW;
+		xml += L"]]></CacheRoot>"EOL;
 	}
 
 	//AdminRoot
 	if (cond.mask & PROF_XMLELM_ADMINROOT) {
-		makeCDATA(AdminRootW, tmpstr);
-		xml += L" <AdminRoot>";
-		xml += tmpstr;
-		xml += L"</AdminRoot>"EOL;
+		xml += L" <AdminRoot><![CDATA[";
+		xml += AdminRootW;
+		xml += L"]]></AdminRoot>"EOL;
 	}
 
 	//AdminBrowserType
@@ -1273,37 +1270,33 @@ ExportToXML(const O2ProfileSelectCondition cond, string &out)
 
 	//AdminBrowserPath
 	if (cond.mask & PROF_XMLELM_ADMIN_BROWSER_PATH) {
-		makeCDATA(AdminBrowserPath, tmpstr);
-		xml += L" <AdminBrowserPath>";
-		xml += tmpstr;
-		xml += L"</AdminBrowserPath>"EOL;
+		xml += L" <AdminBrowserPath><![CDATA[";
+		xml += AdminBrowserPath;
+		xml += L"]]></AdminBrowserPath>"EOL;
 	}
 
 	//UPnPAdapterName
 	if (cond.mask & PROF_XMLELM_UPNP_ADAPTERNAME) {
 		ascii2unicode(UPnPAdapterName, tmpstr);
-		makeCDATA(tmpstr, tmpstr);
-		xml += L" <UPnPAdapterName>";
+		xml += L" <UPnPAdapterName><![CDATA[";
 		xml += tmpstr;
-		xml += L"</UPnPAdapterName>"EOL;
+		xml += L"]]></UPnPAdapterName>"EOL;
 	}
 
 	//UPnPLocation
 	if (cond.mask & PROF_XMLELM_UPNP_LOCATION) {
 		ascii2unicode(UPnPLocation, tmpstr);
-		makeCDATA(tmpstr, tmpstr);
-		xml += L" <UPnPLocation>";
+		xml += L" <UPnPLocation><![CDATA[";
 		xml += tmpstr;
-		xml += L"</UPnPLocation>"EOL;
+		xml += L"]]></UPnPLocation>"EOL;
 	}
 
 	//UPnPServiceId
 	if (cond.mask & PROF_XMLELM_UPNP_SERVICEID) {
 		ascii2unicode(UPnPServiceId, tmpstr);
-		makeCDATA(tmpstr, tmpstr);
-		xml += L" <UPnPServiceId>";
+		xml += L" <UPnPServiceId><![CDATA[";
 		xml += tmpstr;
-		xml += L"</UPnPServiceId>"EOL;
+		xml += L"]]></UPnPServiceId>"EOL;
 	}
 
 	//limits
@@ -1349,7 +1342,7 @@ ExportToXML(const O2ProfileSelectCondition cond, string &out)
 		xml += tmp;
 		xml += L"</ipfloglimit>"EOL;
 
-		swprintf_s(tmp, 32, L"%I64u", QuarterSize);
+		swprintf_s(tmp, 16, L"%I64u", QuarterSize);
 		xml += L" <quartersize>";
 		xml += tmp;
 		xml += L"</quartersize>"EOL;
@@ -1677,83 +1670,6 @@ endElement(const XMLCh* const uri
 		 , const XMLCh* const localname
 		 , const XMLCh* const qname)
 {
-	switch (CurElm) {
-		case PROF_XMLELM_ID:
-			Profile->ID.assign(buf.c_str(), buf.size());
-			break;
-		case PROF_XMLELM_PRIVKEY:
-			Profile->PrivKey.assign(buf.c_str(), buf.size());
-			break;
-		case PROF_XMLELM_PUBKEY:
-			Profile->PubKey.assign(buf.c_str(), buf.size());
-			break;
-		case PROF_XMLELM_IP:
-			Profile->IP = e2ip(buf.c_str(), buf.size());
-			break;
-		case PROF_XMLELM_P2PPORT:
-			Profile->P2PPort = (ushort)wcstoul(buf.c_str(), NULL, 10);
-			break;
-		case PROF_XMLELM_PROXYPORT:
-			Profile->ProxyPort = (ushort)wcstoul(buf.c_str(), NULL, 10);
-			break;
-		case PROF_XMLELM_ADMINPORT:
-			Profile->AdminPort = (ushort)wcstoul(buf.c_str(), NULL, 10);
-			break;
-		case PROF_XMLELM_NAME:
-			if (buf.size() <= O2_MAX_NAME_LEN) {
-				Profile->SetNodeName(buf.c_str());
-			}
-			break;
-		case PROF_XMLELM_COMMENT:
-			if (buf.size() <= O2_MAX_COMMENT_LEN) {
-				for (size_t i = 0; i < buf.size(); i++) {
-					if (buf[i] == L'\n')
-						Profile->Comment += L"\r\n";
-					else
-						Profile->Comment += buf[i];
-				}
-			}
-			break;
-		case PROF_XMLELM_DBDIR:
-			Profile->SetDBDir(buf.c_str());
-			break;
-		case PROF_XMLELM_CACHEROOT:
-			Profile->SetCacheRoot(buf.c_str());
-			break;
-		case PROF_XMLELM_ADMINROOT:
-			Profile->SetAdminRoot(buf.c_str());
-			break;
-		case PROF_XMLELM_ADMIN_BROWSER_TYPE:
-			Profile->AdminBrowserType = buf;
-			break;
-		case PROF_XMLELM_ADMIN_BROWSER_PATH:
-			Profile->AdminBrowserPath = buf;
-			break;
-		case PROF_XMLELM_UPNP_ADAPTERNAME:
-			unicode2ascii(buf, Profile->UPnPAdapterName);
-			break;
-		case PROF_XMLELM_UPNP_LOCATION:
-			unicode2ascii(buf, Profile->UPnPLocation);
-			break;
-		case PROF_XMLELM_UPNP_SERVICEID:
-			unicode2ascii(buf, Profile->UPnPServiceId);
-			break;
-
-		case PROF_XMLELM_LIMIT:
-			if (plimit)
-				*plimit = wcstoul(buf.c_str(), NULL, 10);
-			break;
-		case PROF_XMLELM_SIZE_T:
-			if (puint64)
-				*puint64 = _wcstoui64(buf.c_str(), NULL, 10);
-			break;
-		case PROF_XMLELM_BOOL:
-			*pbool = buf[0] == '1' ? true : false;
-			break;
-	}
-
-	buf = L"";
-
 	CurElm = PROF_XMLELM_NONE;
 	if (!MATCHLNAME(L"profile"))
 		return;
@@ -1771,6 +1687,87 @@ void
 O2Profile_SAX2Handler::
 characters(const XMLCh* const chars, const unsigned int length)
 {
-	if (CurElm != PROF_XMLELM_NONE)
-		buf.append(chars, length);
+	wstring str;
+
+	switch (CurElm) {
+		case PROF_XMLELM_ID:
+			Profile->ID.assign(chars, length);
+			break;
+		case PROF_XMLELM_PRIVKEY:
+			Profile->PrivKey.assign(chars, length);
+			break;
+		case PROF_XMLELM_PUBKEY:
+			Profile->PubKey.assign(chars, length);
+			break;
+		case PROF_XMLELM_IP:
+			Profile->IP = e2ip(chars, length);
+			break;
+		case PROF_XMLELM_P2PPORT:
+			Profile->P2PPort = (ushort)wcstoul(chars, NULL, 10);
+			break;
+		case PROF_XMLELM_PROXYPORT:
+			Profile->ProxyPort = (ushort)wcstoul(chars, NULL, 10);
+			break;
+		case PROF_XMLELM_ADMINPORT:
+			Profile->AdminPort = (ushort)wcstoul(chars, NULL, 10);
+			break;
+		case PROF_XMLELM_NAME:
+			if (length <= O2_MAX_NAME_LEN) {
+				str.assign(chars, length);
+				Profile->SetNodeName(str.c_str());
+			}
+			break;
+		case PROF_XMLELM_COMMENT:
+			if (length <= O2_MAX_COMMENT_LEN) {
+				for (size_t i = 0; i < length; i++) {
+					if (chars[i] == L'\n')
+						Profile->Comment += L"\r\n";
+					else
+						Profile->Comment += chars[i];
+				}
+			}
+			break;
+		case PROF_XMLELM_DBDIR:
+			str.assign(chars, length);
+			Profile->SetDBDir(str.c_str());
+			break;
+		case PROF_XMLELM_CACHEROOT:
+			str.assign(chars, length);
+			Profile->SetCacheRoot(str.c_str());
+			break;
+		case PROF_XMLELM_ADMINROOT:
+			str.assign(chars, length);
+			Profile->SetAdminRoot(str.c_str());
+			break;
+		case PROF_XMLELM_ADMIN_BROWSER_TYPE:
+			Profile->AdminBrowserType.assign(chars, length);
+			break;
+		case PROF_XMLELM_ADMIN_BROWSER_PATH:
+			Profile->AdminBrowserPath.assign(chars, length);
+			break;
+		case PROF_XMLELM_UPNP_ADAPTERNAME:
+			str.assign(chars, length);
+			unicode2ascii(str, Profile->UPnPAdapterName);
+			break;
+		case PROF_XMLELM_UPNP_LOCATION:
+			str.assign(chars, length);
+			unicode2ascii(str, Profile->UPnPLocation);
+			break;
+		case PROF_XMLELM_UPNP_SERVICEID:
+			str.assign(chars, length);
+			unicode2ascii(str, Profile->UPnPServiceId);
+			break;
+
+		case PROF_XMLELM_LIMIT:
+			if (plimit)
+				*plimit = wcstoul(chars, NULL, 10);
+			break;
+		case PROF_XMLELM_SIZE_T:
+			if (puint64)
+				*puint64 = _wcstoui64(chars, NULL, 10);
+			break;
+		case PROF_XMLELM_BOOL:
+			*pbool = chars[0] == '1' ? true : false;
+			break;
+	}
 }

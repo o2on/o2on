@@ -276,10 +276,9 @@ MakeSendXML(O2Profile *profile, const wchar_t *charset, const wchar_t *msg, stri
 	xml += profile->GetNodeNameW();
 	xml += L"</name>"EOL;
 
-	makeCDATA(msg, tmpstr);
-	xml += L" <msg>";
-	xml += tmpstr;
-	xml += L"</msg>"EOL;
+	xml += L" <msg><![CDATA[";
+	xml += msg;
+	xml += L"]]></msg>"EOL;
 
 	xml	+= L"</message>"EOL;
 	xml	+= L"</messages>"EOL;
@@ -330,10 +329,9 @@ MakeSendXML(const O2IMessage &im, string &out)
 	xml += im.name;
 	xml += L"</name>"EOL;
 
-	makeCDATA(im.msg, tmpstr);
-	xml += L" <msg>";
-	xml += tmpstr;
-	xml += L"</msg>"EOL;
+	xml += L" <msg><![CDATA[";
+	xml += im.msg;
+	xml += L"]]></msg>"EOL;
 
 	im.key.to_string(tmpstr);
 	xml += L" <key>";
@@ -567,10 +565,9 @@ MakeIMElement(O2IMessage &im, O2IMSelectCondition &cond, wstring &xml)
 	}
 
 	if (cond.mask & IM_XMLELM_MSG) {
-		makeCDATA(im.msg, tmpstr);
-		xml += L" <msg>";
-		xml += tmpstr;
-		xml += L"</msg>"EOL;
+		xml += L" <msg><![CDATA[";
+		xml += im.msg;
+		xml += L"]]></msg>"EOL;
 	}
 
 	if (cond.mask & IM_XMLELM_KEY) {
@@ -728,47 +725,6 @@ endElement(const XMLCh* const uri
 		 , const XMLCh* const localname
 		 , const XMLCh* const qname)
 {
-	switch (CurElm) {
-		case IM_XMLELM_IP:
-			CurIM->ip = e2ip(buf.c_str(), buf.size());
-			break;
-		case IM_XMLELM_PORT:
-			CurIM->port = (ushort)wcstoul(buf.c_str(), NULL, 10);
-			break;
-		case IM_XMLELM_ID:
-			CurIM->id.assign(buf.c_str(), buf.size());
-			break;
-		case IM_XMLELM_PUBKEY:
-			CurIM->pubkey.assign(buf.c_str(), buf.size());
-			break;
-		case IM_XMLELM_NAME:
-			CurIM->name = buf;
-			break;
-		case IM_XMLELM_DATE:
-			CurIM->date = datetime2time_t(buf.c_str(), buf.size());
-			break;
-		case IM_XMLELM_MSG:
-			CurIM->msg = buf;
-			break;
-		case IM_XMLELM_KEY:
-			CurIM->key.assign(buf.c_str(), buf.size());
-			break;
-		case IM_XMLELM_MINE:
-			CurIM->mine = buf[0] == L'0' ? false : true;
-			break;
-		case IM_XMLELM_PATH:
-			{
-				hashT id;
-				id.assign(buf.c_str(), buf.size());
-				CurIM->paths.push_back(id);
-				while (CurIM->paths.size() > O2_BROADCAST_PATH_LIMIT)
-					CurIM->paths.pop_front();
-			}
-			break;
-	}
-
-	buf = L"";
-
 	CurElm = IM_XMLELM_NONE;
 	if (!CurIM || !MATCHLNAME(L"message"))
 		return;
@@ -786,6 +742,42 @@ characters(const XMLCh* const chars, const unsigned int length)
 	if (!CurIM)
 		return;
 
-	if (CurElm != IM_XMLELM_NONE)
-		buf.append(chars, length);
+	switch (CurElm) {
+		case IM_XMLELM_IP:
+			CurIM->ip = e2ip(chars, length);
+			break;
+		case IM_XMLELM_PORT:
+			CurIM->port = (ushort)wcstoul(chars, NULL, 10);
+			break;
+		case IM_XMLELM_ID:
+			CurIM->id.assign(chars, length);
+			break;
+		case IM_XMLELM_PUBKEY:
+			CurIM->pubkey.assign(chars, length);
+			break;
+		case IM_XMLELM_NAME:
+			CurIM->name.assign(chars, length);
+			break;
+		case IM_XMLELM_DATE:
+			CurIM->date = datetime2time_t(chars, length);
+			break;
+		case IM_XMLELM_MSG:
+			CurIM->msg.assign(chars, length);
+			break;
+		case IM_XMLELM_KEY:
+			CurIM->key.assign(chars, length);
+			break;
+		case IM_XMLELM_MINE:
+			CurIM->mine = chars[0] == L'0' ? false : true;
+			break;
+		case IM_XMLELM_PATH:
+			{
+				hashT id;
+				id.assign(chars, length);
+				CurIM->paths.push_back(id);
+				while (CurIM->paths.size() > O2_BROADCAST_PATH_LIMIT)
+					CurIM->paths.pop_front();
+			}
+			break;
+	}
 }

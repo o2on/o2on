@@ -5,9 +5,8 @@
 	</xsl:template>
 	<xsl:template match="messages">
 	  <iframe name="bc" src="/xml/imbroadcast" width="100%" height="120px"></iframe>
-    <form name="broadcast" method="POST" action="/xml/imbroadcast" target="bc" onSubmit="msg.value=dummy_msg.value;submit();dummy_msg.value='';return false;">
-      <input type="text" name="dummy_msg" class="bcmsg" autocomplete="off" style="width:100%"/>
-      <input type="hidden" name="msg" value=""/>
+    <form name="broadcast" method="POST" action="/xml/imbroadcast" target="bc" onSubmit="submit();msg.value='';return false;">
+      <input type="text" name="msg" class="bcmsg" autocomplete="off" style="width:100%"/>
     </form>
     <form name="d" method="POST" action="/xml/im">
   	  <div id="body" class="body">

@@ -592,32 +592,6 @@ endElement(const XMLCh* const uri
 		 , const XMLCh* const localname
 		 , const XMLCh* const qname)
 {
-	switch (CurElm) {
-		case IPF_XMLELM_DEFAULT:
-			if (_wcsnicmp(buf.c_str(), L"allow", 5) == 0)
-				IPFilter->setdefault(O2_ALLOW);
-			else
-				IPFilter->setdefault(O2_DENY);
-			break;
-		case IPF_XMLELM_ENABLE:
-			if (_wcsnicmp(buf.c_str(), L"true", 4) == 0)
-				CurRecord->enable = true;
-			else
-				CurRecord->enable = false;
-			break;
-		case IPF_XMLELM_FLAG:
-			if (_wcsnicmp(buf.c_str(), L"allow", 5) == 0)
-				CurRecord->flag = O2_ALLOW;
-			else
-				CurRecord->flag = O2_DENY;
-			break;
-		case IPF_XMLELM_COND:
-			CurRecord->cond = buf;
-			break;
-	}
-
-	buf = L"";
-
 	CurElm = IPF_XMLELM_NONE;
 
 	if (!CurRecord || !MATCHLNAME(L"filter"))
@@ -635,6 +609,27 @@ void
 O2IPFilter_SAX2Handler::
 characters(const XMLCh* const chars, const unsigned int length)
 {
-	if (CurElm != IPF_XMLELM_NONE)
-		buf.append(chars, length);
+	switch (CurElm) {
+		case IPF_XMLELM_DEFAULT:
+			if (_wcsnicmp(chars, L"allow", 5) == 0)
+				IPFilter->setdefault(O2_ALLOW);
+			else
+				IPFilter->setdefault(O2_DENY);
+			break;
+		case IPF_XMLELM_ENABLE:
+			if (_wcsnicmp(chars, L"true", 4) == 0)
+				CurRecord->enable = true;
+			else
+				CurRecord->enable = false;
+			break;
+		case IPF_XMLELM_FLAG:
+			if (_wcsnicmp(chars, L"allow", 5) == 0)
+				CurRecord->flag = O2_ALLOW;
+			else
+				CurRecord->flag = O2_DENY;
+			break;
+		case IPF_XMLELM_COND:
+			CurRecord->cond.assign(chars, length);
+			break;
+	}
 }

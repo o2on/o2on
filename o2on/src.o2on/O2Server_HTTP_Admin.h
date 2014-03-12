@@ -246,7 +246,6 @@ private:
 			/xml/sql			: GET	:
 			/xml/sql			: POST	:
 			/xml/notification	: GET	:
-			/xml/shutdown		: GET	:
 		*/
 
 		if (path == "node")
@@ -293,8 +292,6 @@ private:
 			post ? POST_xml_sql(ss,hdr) : GET_xml_sql(ss);
 		else if (path == "notification")
 			GET_xml_notification(ss);
-		else if (path == "shutdown")
-			GET_xml_shutdown(ss);
 		else {
 			ss->Lock();
 			MakeResponse_404(Profile, ss->sbuff);
@@ -1429,7 +1426,7 @@ public:
 						else {
 							NodeDB->SetXMLMessage(L"Šù‚É’Ç‰Á‚³‚ê‚Ä‚¢‚Ü‚·", L"succeeded");
 						}
-						FriendDB->Save(Profile->GetFriendFilePath());
+						NodeDB->Save(Profile->GetFriendFilePath());
 					}
 				}
 				else if (act == "delete") {
@@ -1441,7 +1438,7 @@ public:
 							FriendDB->Delete(hash);
 						}
 					}
-					FriendDB->Save(Profile->GetFriendFilePath());
+					NodeDB->Save(Profile->GetFriendFilePath());
 				}
 			}
 		}
@@ -1657,15 +1654,13 @@ public:
 	void GET_xml_sql(O2SocketSession *ss)
 	{
 		wstring str;
-		wstring tmpstr;
+		wstring escaped;
 		str += L"<?str version=\"1.0\" encoding=\"";
 		str += _T(DEFAULT_XML_CHARSET);
 		str += L"\"?>";
 		str += L"<result>";
-		makeCDATA(sql, tmpstr);
-		str += L"<sql>";
-		str += tmpstr;
-		str += L"</sql>";
+		escapeCDATA(sql, escaped);
+		str += L"<sql><![CDATA["+ escaped +L"]]></sql>";
 		if (!sqlresult.empty()) {
 			wchar_t tmp[16];
 			swprintf_s(tmp, 16, L"%u", sqlresult.size()-1);
@@ -1676,17 +1671,11 @@ public:
 		for (size_t i = 0; i < sqlresult.size(); i++) {
 			str += L"<row>";
 			for (size_t j = 0; j < sqlresult[i].size(); j++) {
-				makeCDATA(sqlresult[i][j], tmpstr);
-				if (i == 0) {
-					str += L"<name>";
-					str += tmpstr;
-					str += L"</name>";
-				}
-				else {
-					str += L"<col>";
-					str += tmpstr;
-					str += L"</col>";
-				}
+				escapeCDATA(sqlresult[i][j], escaped);
+				if (i == 0)
+					str += L"<name><![CDATA[" + escaped + L"]]></name>";
+				else
+					str += L"<col><![CDATA[" + escaped + L"]]></col>";
 			}
 			str += L"</row>";
 		}
@@ -1759,30 +1748,5 @@ public:
 		header.Make(ss->sbuff);
 		ss->sbuff += xml;
 		ss->Unlock();
-	}
-	// -----------------------------------------------------------------------
-	//	GET_xml_shutdown
-	// -----------------------------------------------------------------------
-	void GET_xml_shutdown(O2SocketSession *ss)
-	{
-		string xml;
-		xml += "<?xml version=\"1.0\" encoding=\"";
-		xml += DEFAULT_XML_CHARSET;
-		xml += "\"?>";
-		xml += "<shutdown/>";
-
-		//
-		HTTPHeader header(HTTPHEADERTYPE_RESPONSE);
-		header.status = 200;
-		AddResponseHeaderFields(header, Profile);
-		AddContentFields(header, xml.size(), "text/xml", DEFAULT_XML_CHARSET);
-
-		ss->Lock();
-		header.Make(ss->sbuff);
-		ss->sbuff += xml;
-		ss->Unlock();
-
-		PostMessage(hwndBaloonCallback, WM_CLOSE, 0, 0);
-
 	}
 };

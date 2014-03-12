@@ -210,8 +210,6 @@ protected:
 	UPnPService *cur_service;
 	std::list<UPnPDevice*> parents;	
 
-	wstring buf;
-
 	inline bool matchlname(const wchar_t *a, const wchar_t *b)
 	{
 		return (_wcsicmp(a, b) == 0 ? true : false);
@@ -306,16 +304,35 @@ public:
 			cur_service = new UPnPService;
 			cur_service->rootObject = object;
 		}
-
-		buf = L"";
 	}
 
 	void endElement(const XMLCh* const uri
 				  , const XMLCh* const localname
 				  , const XMLCh* const qname)
 	{
+		if (matchlname(localname, L"device")) {
+			if (!parents.empty()) {
+				parents.back()->deviceList.push_back(*cur_device);
+				delete cur_device;
+				cur_device = parents.back();
+				parents.pop_back();
+			}
+		}
+		else if (matchlname(localname, L"service")) {
+			if (cur_device) {
+				cur_device->serviceList.push_back(*cur_service);
+				delete cur_service;
+				cur_service = NULL;
+			}
+		}
+
+		cur_element = L"";
+	}
+
+	void characters(const XMLCh* const chars, const unsigned int length)
+	{
 		string str;
-		unicode2ascii(buf, str);
+		unicode2ascii(chars, length, str);
 
 		if (wcsstr(cur_element.c_str(), L"URLBase")) {
 			if (str[str.size()-1] == '/')
@@ -363,32 +380,6 @@ public:
 			else if (matchelement(L"eventSubURL"))
 				cur_service->eventSubURL = str;
 		}
-
-		buf =L"";
-
-		if (matchlname(localname, L"device")) {
-			if (!parents.empty()) {
-				parents.back()->deviceList.push_back(*cur_device);
-				delete cur_device;
-				cur_device = parents.back();
-				parents.pop_back();
-			}
-		}
-		else if (matchlname(localname, L"service")) {
-			if (cur_device) {
-				cur_device->serviceList.push_back(*cur_service);
-				delete cur_service;
-				cur_service = NULL;
-			}
-		}
-
-		cur_element = L"";
-	}
-
-	void characters(const XMLCh* const chars, const unsigned int length)
-	{
-		if (!cur_element.empty())
-			buf.append(chars, length);
 	}
 
 	void warning(const SAXParseException& e)
@@ -441,8 +432,6 @@ protected:
 	wstring cur_element;
 	UPnPAction *cur_action;
 	UPnPArgument *cur_argument;
-
-	wstring buf;
 
 	inline bool matchlname(const wchar_t *a, const wchar_t *b)
 	{
@@ -525,32 +514,12 @@ public:
 		else if (matchlname(localname, L"argument")) {
 			cur_argument = new UPnPArgument;
 		}
-
-		buf = L"";
 	}
 
 	void endElement(const XMLCh* const uri
 				  , const XMLCh* const localname
 				  , const XMLCh* const qname)
 	{
-		string str;
-		unicode2ascii(buf, str);
-
-		if (cur_argument) {
-			if (matchelement(L"name"))
-				cur_argument->name = str;
-			else if (matchelement(L"direction"))
-				cur_argument->direction = str;
-			else if (matchelement(L"relatedStateVariable"))
-				cur_argument->relatedStateVariable = str;
-		}
-		else if (cur_action) {
-			if (matchelement(L"name"))
-				cur_action->name = str;
-		}
-
-		buf = L"";
-
 		if (matchlname(localname, L"action")) {
 			if (cur_action) {
 				service->actionList.push_back(*cur_action);
@@ -572,8 +541,21 @@ public:
 
 	void characters(const XMLCh* const chars, const unsigned int length)
 	{
-		if (!cur_element.empty())
-			buf.append(chars, length);
+		string str;
+		unicode2ascii(chars, length, str);
+
+		if (cur_argument) {
+			if (matchelement(L"name"))
+				cur_argument->name = str;
+			else if (matchelement(L"direction"))
+				cur_argument->direction = str;
+			else if (matchelement(L"relatedStateVariable"))
+				cur_argument->relatedStateVariable = str;
+		}
+		else if (cur_action) {
+			if (matchelement(L"name"))
+				cur_action->name = str;
+		}
 	}
 
 	void warning(const SAXParseException& e)
@@ -625,8 +607,6 @@ protected:
 
 	UPnPAction *cur_action;
 	UPnPArgument *cur_argument;
-
-	wstring buf;
 
 public:
 	UPnPSOAPResponseParser(UPnPService *sv, void (*func)(const char *))
@@ -721,11 +701,8 @@ public:
 				  , const XMLCh* const localname
 				  , const XMLCh* const qname)
 	{
-		if (cur_argument) {
-			unicode2ascii(buf, cur_argument->value);
-		}
-
-		buf = L"";
+		string name;
+		unicode2ascii(localname, wcslen(localname), name);
 
 		if (wcsncmp(qname, L"m:", 2) == 0) {
 			cur_action = NULL;
@@ -737,8 +714,11 @@ public:
 
 	void characters(const XMLCh* const chars, const unsigned int length)
 	{
+		string str;
+		unicode2ascii(chars, length, str);
+
 		if (cur_argument) {
-			buf.append(chars, length);
+			unicode2ascii(chars, length, cur_argument->value);
 		}
 	}
 

@@ -799,6 +799,54 @@ error:
 
 uint64
 O2DatDB::
+select_datcount(void)
+{
+#if TRACE_SQL_EXEC_TIME
+	stopwatch sw("select datcount");
+#endif
+
+	sqlite3 *db = NULL;
+	sqlite3_stmt *stmt = NULL;
+
+	int err = sqlite3_open16(dbfilename.c_str(), &db);
+	if (err != SQLITE_OK)
+		goto error;
+
+	sqlite3_busy_timeout(db, 5000);
+
+	wchar_t *sql = L"select count(*) from dat;";
+
+	err = sqlite3_prepare16_v2(db, sql, wcslen(sql)*2, &stmt, NULL);
+	if (err != SQLITE_OK)
+		goto error;
+
+	err = sqlite3_step(stmt);
+	if (err != SQLITE_ROW && err != SQLITE_DONE)
+		goto error;
+
+	uint64 count = sqlite3_column_int64(stmt,0);
+
+	sqlite3_finalize(stmt);
+	stmt = NULL;
+
+	err = sqlite3_close(db);
+	if (err != SQLITE_OK)
+		goto error;
+
+	return (count);
+
+error:
+	log(db);
+	if (stmt) sqlite3_finalize(stmt);
+	if (db) sqlite3_close(db);
+	return (0);
+}
+
+
+
+
+uint64
+O2DatDB::
 select_datcount(wstrnummap &out)
 {
 #if TRACE_SQL_EXEC_TIME
@@ -856,7 +904,7 @@ O2DatDB::
 select_totaldisksize(void)
 {
 #if TRACE_SQL_EXEC_TIME
-	stopwatch sw("select totaldisksize");
+	stopwatch sw("select totakdisksize");
 #endif
 
 	sqlite3 *db = NULL;
@@ -898,12 +946,12 @@ error:
 
 
 
-void
+uint64
 O2DatDB::
-select_report(time_t publish_tt, uint64 &count, uint64 &disksize, uint64 &publish)
+select_publishcount(time_t publish_tt)
 {
 #if TRACE_SQL_EXEC_TIME
-	stopwatch sw("select report");
+	stopwatch sw("select datcount by lastpublish");
 #endif
 
 	sqlite3 *db = NULL;
@@ -912,13 +960,9 @@ select_report(time_t publish_tt, uint64 &count, uint64 &disksize, uint64 &publis
 	int err = sqlite3_open16(dbfilename.c_str(), &db);
 	if (err != SQLITE_OK)
 		goto error;
-
 	sqlite3_busy_timeout(db, 5000);
 
-	wchar_t *sql = L"select count(*),"
-			L"sum(disksize),"
-			L"sum(case when lastpublish > ? then 1 else 0 end)"
-			L"from dat;";
+	wchar_t *sql = L"select count(*) from dat where lastpublish > ?;";
 
 	err = sqlite3_prepare16_v2(db, sql, wcslen(sql)*2, &stmt, NULL);
 	if (err != SQLITE_OK)
@@ -926,14 +970,12 @@ select_report(time_t publish_tt, uint64 &count, uint64 &disksize, uint64 &publis
 
 	if (!bind(db, stmt, 1, time(NULL)-publish_tt))
 		goto error;
-	
+
 	err = sqlite3_step(stmt);
 	if (err != SQLITE_ROW && err != SQLITE_DONE)
 		goto error;
 
-	count = sqlite3_column_int64(stmt,0);
-	disksize = sqlite3_column_int64(stmt,1);
-	publish = sqlite3_column_int64(stmt,2);
+	uint64 count = sqlite3_column_int64(stmt,0);
 
 	sqlite3_finalize(stmt);
 	stmt = NULL;
@@ -942,13 +984,13 @@ select_report(time_t publish_tt, uint64 &count, uint64 &disksize, uint64 &publis
 	if (err != SQLITE_OK)
 		goto error;
 
-	return;
+	return (count);
 
 error:
 	log(db);
 	if (stmt) sqlite3_finalize(stmt);
 	if (db) sqlite3_close(db);
-	return;
+	return (0);
 }
 
 
@@ -1246,11 +1288,11 @@ void
 O2DatDB::
 AddUpdateQueue(const hashT &hash)
 {
-	//note:前提条件 DBに更新対象のレコードが存在すること
 	UpdateQueueLock.Lock();
 	{
 		O2DatRec rec;
 		rec.hash = hash;
+		rec.lastpublish = time(NULL);
 		rec.userdata = 1;
 		UpdateQueue.push_back(rec);
 	}

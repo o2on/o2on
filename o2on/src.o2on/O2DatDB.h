@@ -95,9 +95,10 @@ public:
 	bool select(O2DatRecList &out, const wchar_t *domain, const wchar_t *bbsname);
 	bool select(O2DatRec &out, const wchar_t *domain, const wchar_t *bbsname, const wchar_t *datname);
 	bool select(O2DatRecList &out, time_t publish_tt, size_t limit);
+	uint64 select_datcount(void);
 	uint64 select_datcount(wstrnummap &out);
 	uint64 select_totaldisksize(void);
-	void select_report(time_t publish_tt, uint64 &count, uint64 &disksize, uint64 &publish);
+	uint64 select_publishcount(time_t publish_tt);
 
 	void insert(O2DatRecList &in, bool to_rebuild);
 

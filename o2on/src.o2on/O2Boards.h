@@ -89,7 +89,6 @@ private:
 	uint			parse_elm;
 	wstring			parse_name;
 	bool			parse_enable;
-	wstring			buf;
 
 	wchar_t *host2domain(const wchar_t *host);
 

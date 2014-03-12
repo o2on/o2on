@@ -15,8 +15,7 @@
       <body style="font-size:75%">
     	  <form method="POST" action="/xml/bbsmenu">
       	  <input type="button" style="width:100%" value="再表示" onClick="location.replace(location.href)"/><br/>
-      	  <input type="button" style="width:100%" value="確定" onClick="this.disabled = true;document.forms[0].submit();"/><br/>
-
+      	  <input type="submit" style="width:100%" value="確定"/><br/>
       	  <input type="button" class="btn0" value="板取得" onClick="getBoards()"/>
       	  <input type="button" class="btn0" value="全" onClick="checkAllBoard(true)"/>
       	  <input type="button" class="btn0" value="解" onClick="checkAllBoard(false)"/>

@@ -13,7 +13,6 @@
 #include "httpheader.h"
 #include "O2Profile.h"
 #include "O2Node.h"
-#include "O2Version.h"
 
 
 
@@ -230,51 +229,6 @@ public:
 		if (it == header.fields.end())
 			return false;
 		ascii2unicode(it->second, node.ua);
-
-		// ノードのユーザーエージェントから情報を取得
-		// O2/0.2 (o2on/0.02.0027; Win32)
-		// O2/0.2 (opy2on/0.00.0001; Linux x86_64)
-		//など「O2/プロトコルバージョン (アプリ名/アプリバージョン; 環境等)」形式であること
-		size_t ProtoNamePos = node.ua.find(L"O2/", 0);
-		if (ProtoNamePos != 0) {
-			// プロトコル名が見つからない
-			return false;
-		}
-		size_t AppNamePeriodPos = node.ua.find(L" ", ProtoNamePos);
-		if ( AppNamePeriodPos == wstring::npos ) {
-			// プロトコル・アプリ名の区切りが見つからない
-			return false;
-		}
-		node.proto_ver = node.ua.substr( 3, AppNamePeriodPos - 3 );
-		size_t AppNameStartPos = node.ua.find(L"(", AppNamePeriodPos);
-		if (( AppNameStartPos == wstring::npos ) || ((AppNameStartPos + 1) == node.ua.size() )) {
-			// アプリ名の開始位置が見つからない
-			return false;
-		}
-		AppNameStartPos++;
-		size_t AppNameEndPos = node.ua.find(L"/", AppNameStartPos);
-		if ( AppNameEndPos == wstring::npos ) {
-			// アプリ名の終了位置が見つからない
-			return false;
-		}
-		node.app_name = node.ua.substr( AppNameStartPos, AppNameEndPos - AppNameStartPos );
- 		if ((wcscmp(node.app_name.c_str(), _T(APP_NAME)) == 0) && ((AppNameEndPos + 1) < node.ua.size() )) {
-			// 同じアプリならバージョン番号を取得
-			AppNameEndPos++;
-			size_t VerEndPos = node.ua.find(L";", AppNameEndPos);
-			if ( VerEndPos == wstring::npos ) {
-				// バージョン番号の終了位置が見つからない
-				return false;
-			}
-			node.app_ver = node.ua.substr(AppNameEndPos, VerEndPos - AppNameEndPos);
-		}
-#ifdef O2DEBUG
-		else {
-			wchar_t tmpW[128];
-			swprintf_s(tmpW, 128, L"異なるアプリ:%s\n", node.app_name.c_str());
-			TRACEW(tmpW);
-		}
-#endif
 
 		return true;
 	}
