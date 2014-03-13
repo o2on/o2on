@@ -275,7 +275,7 @@ CheckDat2(const char *in, uint64 inlen)
 		}
 
 		if (*p == '\n') {
-			if (cnt != 4)
+			if (cnt != 4 && cnt != 5)
 				return false;
 
 			cnt = 0;
