@@ -249,7 +249,42 @@ CheckDat(const char *in, uint64 inlen)
 	return true;
 }
 
+//
+// 2012-06-15 簡易チェック用　by fujisaki
+//
+bool
+O2DatIO::
+CheckDat2(const char *in, uint64 inlen)
+{
+	if (inlen < 2)
+		return false;
+	if (in[inlen-1] != '\n')
+		return false;
+	if (in[inlen-2] == '\r')
+		return false;
 
+	const char *end = in + inlen;
+	const char *p = in + 2;
+	int cnt = 0;
+
+	while (p < end) {
+		if (*p == '<' && *(p+1) == '>') {
+			cnt++;
+			p += 2;
+			continue;
+		}
+
+		if (*p == '\n') {
+			if (cnt != 4 && cnt != 5)
+				return false;
+
+			cnt = 0;
+		}
+		
+		p++;
+	}
+	return true;
+}
 
 
 // ---------------------------------------------------------------------------
@@ -1012,8 +1047,10 @@ TRACEA("\n");
 					}
 					break;
 				case 1:
+					// 板フォルダ名のチェック
 					for (uint j = 0; j < wcslen(s); j++) {
 						if (!(s[j] >= 0x30 && s[j] <= 0x39)
+							&& !(s[j] >= 0x41 && s[j] <= 0x5A) // 2013-09-12 Fujisaki
 							&& !(s[j] >= 0x61 && s[j] <= 0x7a)) {
 								invalid = true;
 								Logger->AddLog(O2LT_WARNING, L"DB再構築", 0, 0,
@@ -1026,6 +1063,7 @@ TRACEA("\n");
 					}
 					break;
 				case 2:
+					// 4桁の数字フォルダ名のチェック
 					if (wcslen(s) != 4
 						|| !(s[0] >= 0x30 && s[0] <= 0x39)
 						|| !(s[1] >= 0x30 && s[1] <= 0x39)

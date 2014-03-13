@@ -160,6 +160,10 @@ private:
 
 		uint64 request_first_byte = GetRequestFirstBytePos(hdr);
 
+		if (urltype == URLTYPE_CRAWL) {
+			request_first_byte = 0;
+		}
+
 		TRACEA("-------------------------------------------------------\n");
 		TRACEA("■オリジナルリクエスト\n");
 		TRACEA("-------------------------------------------------------\n");
@@ -456,6 +460,11 @@ private:
 		if (urltype == URLTYPE_OFFLAW) {
 			uint pos = body.find("\n");
 			body.erase(0, pos+1);
+		}
+
+		// 2012-06-15 簡易チェック
+		if (!DatIO->CheckDat2(&body[0], body.size())) {
+			return;
 		}
 
 		//キャッシュへ書き込み
