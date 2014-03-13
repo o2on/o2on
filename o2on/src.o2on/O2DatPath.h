@@ -39,7 +39,8 @@ enum URLTYPE : uint
 	URLTYPE_KAKO_DAT,
 	URLTYPE_KAKO_GZ,
 	URLTYPE_OFFLAW,
-	URLTYPE_MACHI
+	URLTYPE_MACHI,
+	URLTYPE_CRAWL
 };
 
 
@@ -378,6 +379,7 @@ private:
 		// URLTYPE_KAKO_GZ	http://news20.2ch.net:80/news/kako/1163/11631/1163170977.dat.gz
 		// URLTYPE_OFFLAW	http://news20.2ch.net:80/test/offlaw.cgi/news/1163170977/?raw=...
 		// URLTYPE_MACHI	http://hokkaido.machi.to:80/bbs/read.pl?BBS=hokkaidou&KEY=1162641850
+		// URLTYPE_CRAWL    http://bg20.2ch.net/test/r.so/society6.2ch.net/gline/1169964276/
 		strmap::iterator it;
 		switch (h.paths.size()) {
 			case 3:
@@ -434,6 +436,12 @@ private:
 						dat = h.paths[4];
 						type = URLTYPE_KAKO_DAT;
 					}
+				}
+				else if (h.paths[0] == "test"
+					&& h.paths[1] == "r.so") {
+						bbs = h.paths[3];
+						dat = h.paths[4] + ".dat";
+						type = URLTYPE_CRAWL;
 				}
 				break;
 			case 2:

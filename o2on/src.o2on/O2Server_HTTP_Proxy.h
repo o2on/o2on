@@ -160,6 +160,10 @@ private:
 
 		uint64 request_first_byte = GetRequestFirstBytePos(hdr);
 
+		if (urltype == URLTYPE_CRAWL) {
+			request_first_byte = 0;
+		}
+
 		TRACEA("-------------------------------------------------------\n");
 		TRACEA("■オリジナルリクエスト\n");
 		TRACEA("-------------------------------------------------------\n");
