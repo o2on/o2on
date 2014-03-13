@@ -390,7 +390,20 @@ private:
 				}
 				break;
 			case 4:
-				if (h.paths[0] == "test"
+				if (h.paths[1] == "kako") {
+					if (strstr(h.paths[3].c_str(), ".dat.gz")) {
+						bbs = h.paths[0];
+						dat = h.paths[3].substr(0, h.paths[3].size()-3);
+						type = URLTYPE_KAKO_GZ;
+					}
+					else if (strstr(h.paths[3].c_str(), ".dat")) {
+						// URLTYPE_KAKO_DAT
+						bbs = h.paths[0];
+						dat = h.paths[3];
+						type = URLTYPE_KAKO_DAT;
+					}
+				}
+				else if (h.paths[0] == "test"
 						&& h.paths[1] == "offlaw.cgi") {
 					// URLTYPE_OFFLAW
 					bbs = h.paths[2];
