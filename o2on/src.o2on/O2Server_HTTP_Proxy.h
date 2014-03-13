@@ -458,6 +458,11 @@ private:
 			body.erase(0, pos+1);
 		}
 
+		// 2012-06-15 簡易チェック
+		if (!DatIO->CheckDat2(&body[0], body.size())) {
+			return;
+		}
+
 		//キャッシュへ書き込み
 		uint64 hokan_byte = DatIO->Put(
 			datpath, &body[0], body.size(), request_first_byte);

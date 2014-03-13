@@ -52,6 +52,7 @@ public:
 	bool KakoHantei(const O2DatPath &datpath);
 	bool KakoHantei(const char *dat, uint64 len, bool is_be);
 	bool CheckDat(const char *in, uint64 inlen);
+	bool CheckDat2(const char *in, uint64 inlen);
 	bool GetTitle(O2DatPath &datpath);
 	uint64 GetSize(const O2DatPath &datpath);
 

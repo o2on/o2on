@@ -249,7 +249,42 @@ CheckDat(const char *in, uint64 inlen)
 	return true;
 }
 
+//
+// 2012-06-15 簡易チェック用　by fujisaki
+//
+bool
+O2DatIO::
+CheckDat2(const char *in, uint64 inlen)
+{
+	if (inlen < 2)
+		return false;
+	if (in[inlen-1] != '\n')
+		return false;
+	if (in[inlen-2] == '\r')
+		return false;
 
+	const char *end = in + inlen;
+	const char *p = in + 2;
+	int cnt = 0;
+
+	while (p < end) {
+		if (*p == '<' && *(p+1) == '>') {
+			cnt++;
+			p += 2;
+			continue;
+		}
+
+		if (*p == '\n') {
+			if (cnt != 4)
+				return false;
+
+			cnt = 0;
+		}
+		
+		p++;
+	}
+	return true;
+}
 
 
 // ---------------------------------------------------------------------------
