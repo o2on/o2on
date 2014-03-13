@@ -1047,8 +1047,10 @@ TRACEA("\n");
 					}
 					break;
 				case 1:
+					// 板フォルダ名のチェック
 					for (uint j = 0; j < wcslen(s); j++) {
 						if (!(s[j] >= 0x30 && s[j] <= 0x39)
+							&& !(s[j] >= 0x41 && s[j] <= 0x5A) // 2013-09-12 Fujisaki
 							&& !(s[j] >= 0x61 && s[j] <= 0x7a)) {
 								invalid = true;
 								Logger->AddLog(O2LT_WARNING, L"DB再構築", 0, 0,
@@ -1061,6 +1063,7 @@ TRACEA("\n");
 					}
 					break;
 				case 2:
+					// 4桁の数字フォルダ名のチェック
 					if (wcslen(s) != 4
 						|| !(s[0] >= 0x30 && s[0] <= 0x39)
 						|| !(s[1] >= 0x30 && s[1] <= 0x39)
