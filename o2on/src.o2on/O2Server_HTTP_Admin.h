@@ -391,7 +391,7 @@ private:
 			HTTPHeader header(HTTPHEADERTYPE_RESPONSE);
 			header.status = 200;
 			AddResponseHeaderFields(header, Profile);
-			AddContentFields(header, st.st_size, header.filename2contenttype(filename.c_str()), NULL);
+			AddContentFields(header, out.size(), header.filename2contenttype(filename.c_str()), NULL);
 			header.AddFieldDate("Last-Modified", st.st_mtime);
 			header.Make(ss->sbuff);
 			ss->sbuff += out;
